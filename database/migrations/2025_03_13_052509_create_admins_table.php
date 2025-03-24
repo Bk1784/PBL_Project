@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
+            $table->enum('gender', ['laki-laki', 'perempuan']);
             $table->string('role')->default('admin');
             $table->string('status')->default('1');
             $table->rememberToken();

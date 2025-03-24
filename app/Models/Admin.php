@@ -14,6 +14,18 @@ class Admin extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $fillable = [
+        'name',
+        'username',
+        'email',
+        'contact',
+        'address',
+        'gender',
+        'bio',
+        'satus',
+        'photo',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *

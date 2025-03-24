@@ -7,6 +7,8 @@ use App\Models\Admin;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 use Mail;
 
 class AdminController extends Controller
@@ -86,4 +88,53 @@ class AdminController extends Controller
         return redirect()->route('admin.login')->with('success', 'Password Reset Success');
 
     }
+    public function AdminProfile(){
+        $id = Auth::guard('admin')->id();
+        $profileData = Admin::find($id);
+        return view('admin.admin_profile',compact('profileData'));
+    }
+
+    public function AdminEditProfile() {
+        $admin = Auth::guard('admin')->user();
+        return view('admin.admin_edit_profile', compact('admin'));
+    }
+
+    public function AdminUpdateProfile(Request $request)
+    {
+        $admin = Auth::guard('admin')->user();
+    
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:admins,email,' . $admin->id,
+            'phone' => 'nullable|string|max:15',
+            'address' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|in:Laki-Laki,Perempuan',
+            'bio' => 'nullable|string|max:255',
+            'status' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+    
+        // Update data
+        $admin->name = $request->name;
+        $admin->email = $request->email;
+        $admin->phone = $request->phone;
+        $admin->address = $request->address;
+        $admin->gender = $request->gender;
+        $admin->bio = $request->bio;
+        $admin->status = $request->status;
+    
+        // Handle foto profil
+        if ($request->hasFile('photo')) {
+            if ($admin->photo) {
+                Storage::delete('public/' . $admin->photo);
+            }
+            $photoPath = $request->file('photo')->store('profile_photos', 'public');
+            $admin->photo = $photoPath;
+        }
+        $admin->save();
+    
+        return redirect()->route('admin.profile')->with('success', 'Profil berhasil diperbarui.');
+    }
+
+   
 }

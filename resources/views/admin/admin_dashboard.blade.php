@@ -46,7 +46,9 @@
                      <input type="text" placeholder="🔍 Pencarian Produk"
                          class="px-4 py-2 w-72 rounded-full bg-white text-gray-700 border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:outline-none transition-all duration-300 shadow-sm">
                      <div class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden">
-                         <img src="avatar.jpg" alt="Avatar">
+                     <a href="{{ route('admin.profile') }}" class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden block">
+                         <img src="{{ asset('images/logo.jpg') }}" alt="Logo">
+                     </a>
                      </div>
                  </div>
              </div>
