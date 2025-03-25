@@ -154,12 +154,19 @@
     </style>
 </head>
 <body>
+    <form action="{{ route('admin.login_submit') }}" method="post">
+        @csrf
+        <div class="login-container">
+            <div class="login-form">
+                <h2>LOGIN</h2>
     <!-- menampilkan pesan error -->
 
         @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
         @endif
 
     <!-- menampilkan sesi jika error dan jika sukses -->
@@ -170,12 +177,7 @@
             <li>{{ Session::get('success') }}</li>
         @endif
         
-<form action="{{ route('admin.login_submit') }}" method="post">
-    @csrf
 
-    <div class="login-container">
-        <div class="login-form">
-            <h2>LOGIN</h2>
             <div class="input-group">
                 <i class="fas fa-user"></i>
                 <input class="email" type="email" name="email" placeholder="Email" required>

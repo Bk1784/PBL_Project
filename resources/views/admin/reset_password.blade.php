@@ -154,6 +154,14 @@
     </style>
 </head>
 <body>
+    <form action="{{ route('admin.reset_password_submit') }}" method="post">
+        @csrf
+        <input type="hidden" name="token" value="{{ $token }}">
+        <input type="hidden" name="email" value="{{ $email }}">
+    
+        <div class="login-container">
+            <div class="login-form">
+                <h2>Reset Password</h2>
     <!-- menampilkan pesan error -->
 
         @if ($errors->any())
@@ -170,14 +178,6 @@
             <li>{{ Session::get('success') }}</li>
         @endif
         
-<form action="{{ route('admin.reset_password_submit') }}" method="post">
-    @csrf
-    <input type="hidden" name="token" value="{{ $token }}">
-    <input type="hidden" name="email" value="{{ $email }}">
-
-    <div class="login-container">
-        <div class="login-form">
-            <h2>Reset Password</h2>
             <div class="input-group">
                 <i class="fas fa-user"></i>
                 <input class="password" type="password" name="password" placeholder="New Password" required>
