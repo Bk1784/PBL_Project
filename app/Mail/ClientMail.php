@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class Websitemail extends Mailable
+class ClientMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -40,7 +40,7 @@ class Websitemail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'email',
+            view: 'email', // Menggunakan tampilan khusus untuk client
         );
     }
 

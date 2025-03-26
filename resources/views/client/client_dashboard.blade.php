@@ -7,5 +7,6 @@
 </head>
 <body>
     <h1>Client Dashboard</h1>
+    <a href="{{ route('client.logout') }}">Log out</a>
 </body>
 </html>

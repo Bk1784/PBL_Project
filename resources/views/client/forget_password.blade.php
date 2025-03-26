@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Login Page</title>
+    <title>Forget Password Client</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" >
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -108,68 +105,16 @@
              cursor: pointer;
              margin-top: 10px;
          }
-        .footer-container {
-             width: 100%;
-             background-color: #e5eaf2;
-             padding: 20px;
-             border-radius: 10px;
-             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-        .footer {
-            display: flex;
-             justify-content: space-around;
-             align-items: center;
-        }
-        .footer div {
-             text-align: center;
-         }
-         .footer h3 {
-            font-size: 16px;
-            font-weight: bold;
-            display: flex;
-            justify-content: center;
-        }
-        .footer i{
-            margin-right: 8px;
-            color: #d84315;
-        }
-        .footer a {
-             text-decoration: none;
-             color: #007bff;
-             font-weight: bold;
-         }
-         .footer a:hover {
-             color: #ff6600;
-         }
-         .footer p {
-             font-size: 14px;
-             color: #333;
-             margin: 5px 0;
-         }
-         .footer-bottom {
-             text-align: center;
-             font-size: 12px;
-             color: #666;
-             margin-top: 10px;
-         }
 
     </style>
 </head>
 <body>
-    <form action="{{ route('client.login_submit') }}" method="post">
-        @csrf
-        <div class="login-container">
-            <div class="login-form">
-                <h2>Client LOGIN</h2>
     <!-- menampilkan pesan error -->
 
         @if ($errors->any())
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
         @endif
 
     <!-- menampilkan sesi jika error dan jika sukses -->
@@ -180,71 +125,25 @@
             <li>{{ Session::get('success') }}</li>
         @endif
         
+<form action="{{ route('client.password_submit') }}" method="post">
+    @csrf
 
+    <div class="login-container">
+        <div class="login-form">
+            <h2>Forget Password</h2>
             <div class="input-group">
                 <i class="fas fa-user"></i>
                 <input class="email" type="email" name="email" placeholder="Email" required>
             </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" name="password" placeholder="Password" required>
-            </div>
-            <button type="submit" class="btn">Submit</button>
-            <p class="divider">ATAU</p>
-            <p class="link"><a href="#">DAFTAR</a> tidak memiliki akun</p>
-            <a href="{{ route('client.forget_password') }}">Forget Password?</a>
+
+            <button type="submit" class="btn">Email Password Reset Link</button>
+           
         </div>
         <div class="image-container">
             <img src="{{ asset('images/logo.jpg') }}" alt="Profile Image"> <!-- Ganti dengan path yang benar -->
         </div>
     </div>
     </form>
-    <div class="footer-container">
-         <div class="footer">
-             <div>
-                 <h3><i class="fas fa-map-marker-alt"></i> Alamat</h3>
-                 <p>Galaxy Store, Srono</p>
-             </div>
-             <div>
-                 <h3><i class="fas fa-bullhorn"></i> Ikuti Kami</h3>
-                 <p><a href="#">Instagram</a> <a href="#" style="color: orange;">Shopee</a></p>
-             </div>
-             <div>
-                 <h3><i class="fas fa-phone-alt"></i> Kontak Kami</h3>
-                 <p>0812-3456-7890</p>
-                 <p>0812-9876-5432</p>
-             </div>
-         </div>
-         <div class="footer-bottom">
-             © 2025 Galaxy Store - All Rights Reserved.
-         </div>
-
-
-         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-<script>
-    @if(Session::has('message'))
-        var type = "{{ Session::get('alert-type','info') }}"
-        switch(type){
-            case 'info':
-            toastr.info(" {{ Session::get('message') }} ");
-            break;
-
-            case 'success':
-            toastr.success(" {{ Session::get('message') }} ");
-            break;
-
-            case 'warning':
-            toastr.warning(" {{ Session::get('message') }} ");
-            break;
-
-            case 'error':
-            toastr.error(" {{ Session::get('message') }} ");
-            break; 
-        }
-    @endif 
-</script>
-
-    </div>
+   
 </body>
 </html>

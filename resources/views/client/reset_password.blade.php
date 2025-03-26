@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Login Page</title>
+    <title>Reset Password Page</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" >
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -157,19 +154,20 @@
     </style>
 </head>
 <body>
-    <form action="{{ route('client.login_submit') }}" method="post">
+    <form action="{{ route('client.reset_password_submit') }}" method="post">
         @csrf
+        <input type="hidden" name="token" value="{{ $token }}">
+        <input type="hidden" name="email" value="{{ $email }}">
+    
         <div class="login-container">
             <div class="login-form">
-                <h2>Client LOGIN</h2>
+                <h2>Reset Password</h2>
     <!-- menampilkan pesan error -->
 
         @if ($errors->any())
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
         @endif
 
     <!-- menampilkan sesi jika error dan jika sukses -->
@@ -180,71 +178,20 @@
             <li>{{ Session::get('success') }}</li>
         @endif
         
-
             <div class="input-group">
                 <i class="fas fa-user"></i>
-                <input class="email" type="email" name="email" placeholder="Email" required>
+                <input class="password" type="password" name="password" placeholder="New Password" required>
             </div>
             <div class="input-group">
                 <i class="fas fa-lock"></i>
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="password_confirmation" placeholder="Confirm New Password" required>
             </div>
             <button type="submit" class="btn">Submit</button>
-            <p class="divider">ATAU</p>
-            <p class="link"><a href="#">DAFTAR</a> tidak memiliki akun</p>
-            <a href="{{ route('client.forget_password') }}">Forget Password?</a>
         </div>
         <div class="image-container">
             <img src="{{ asset('images/logo.jpg') }}" alt="Profile Image"> <!-- Ganti dengan path yang benar -->
         </div>
     </div>
     </form>
-    <div class="footer-container">
-         <div class="footer">
-             <div>
-                 <h3><i class="fas fa-map-marker-alt"></i> Alamat</h3>
-                 <p>Galaxy Store, Srono</p>
-             </div>
-             <div>
-                 <h3><i class="fas fa-bullhorn"></i> Ikuti Kami</h3>
-                 <p><a href="#">Instagram</a> <a href="#" style="color: orange;">Shopee</a></p>
-             </div>
-             <div>
-                 <h3><i class="fas fa-phone-alt"></i> Kontak Kami</h3>
-                 <p>0812-3456-7890</p>
-                 <p>0812-9876-5432</p>
-             </div>
-         </div>
-         <div class="footer-bottom">
-             © 2025 Galaxy Store - All Rights Reserved.
-         </div>
-
-
-         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-<script>
-    @if(Session::has('message'))
-        var type = "{{ Session::get('alert-type','info') }}"
-        switch(type){
-            case 'info':
-            toastr.info(" {{ Session::get('message') }} ");
-            break;
-
-            case 'success':
-            toastr.success(" {{ Session::get('message') }} ");
-            break;
-
-            case 'warning':
-            toastr.warning(" {{ Session::get('message') }} ");
-            break;
-
-            case 'error':
-            toastr.error(" {{ Session::get('message') }} ");
-            break; 
-        }
-    @endif 
-</script>
-
-    </div>
 </body>
 </html>

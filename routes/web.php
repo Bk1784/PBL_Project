@@ -41,6 +41,7 @@ Route::middleware('admin.guest')->group(function(){
 //CLIENT
 Route::middleware('client')->group(function() {
     Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->name('client.dashboard');
+    Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');
 });
 //CLIENT GUEST
 Route::middleware('client.guest')->group(function() {
@@ -48,4 +49,8 @@ Route::middleware('client.guest')->group(function() {
     Route::get('/client/register', [ClientController::class, 'ClientRegister'])->name('client.register');
     Route::post('/client/register/submit', [ClientController::class, 'ClientRegisterSubmit'])->name('client.register.submit');
     Route::post('/client/login_submit', [ClientController::class, 'ClientLoginSubmit'])->name('client.login_submit');
+    Route::get('/client/forget_password', [ClientController::class, 'ClientForgetPassword'])->name('client.forget_password');
+    Route::post('/client/password_submit', [ClientController::class, 'ClientPasswordSubmit'])->name('client.password_submit');
+    Route::get('client/reset-password/{token}/{email}', [ClientController::class, 'ClientResetPassword']);
+    Route::post('/client/reset_password_submit', [ClientController::class, 'ClientResetPasswordSubmit'])->name('client.reset_password_submit');
 });
