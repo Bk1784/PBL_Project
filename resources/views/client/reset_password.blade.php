@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body class="flex flex-col justify-center items-center h-screen bg-gray-200">
-    <form action="{{ route('admin.reset_password_submit') }}" method="post" class="w-full max-w-lg">
+    <form action="{{ route('client.reset_password_submit') }}" method="post" class="w-full max-w-lg">
         @csrf
         <input type="hidden" name="token" value="{{ $token }}">
         <input type="hidden" name="email" value="{{ $email }}">

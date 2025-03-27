@@ -11,7 +11,7 @@
 
 <body class="flex flex-col justify-center items-center h-screen bg-gray-200 m-0">
     
-    <form action="{{ route('admin.password_submit') }}" method="post" class="w-full max-w-md flex justify-center">
+    <form action="{{ route('client.password_submit') }}" method="post" class="w-full max-w-md flex justify-center">
         @csrf
         <div class="flex bg-white rounded-2xl shadow-md overflow-hidden w-[600px] mt-8 items-center justify-center">
             <div class="w-1/2 p-5 text-center">

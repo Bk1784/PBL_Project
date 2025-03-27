@@ -21,25 +21,22 @@
                     <span>🏠</span> <span>Dashboard</span>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>🤝</span> <a href="{{ route('admin.manage_client') }}">Manage Client</a>
-                </li>
-                <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>💳</span> <span>Pembayaran</span>
-                </li>
-                <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>📦</span> <span>Produk</span>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>🎨</span> <span>Dekorasi</span>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
+                    <span>💳</span> <span>Pembayaran</span>
+                </li>
+                <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>⚙️</span> <span>Pengaturan</span>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>👤</span> <a href="{{ route('admin.profile') }}">Profile</a>
+                    <span>👤</span> <a href="">Profile</a>
                 </li>
                 <li class="flex items-center gap-3 text-red-500 hover:text-red-400 transition-all cursor-pointer">
-                    <span>🚪</span> <a href="{{ route('admin.logout') }}">Log Out</a>
+                    <span>🚪</span> <a href="{{ route('client.logout') }}">Log Out</a>
                 </li>
             </ul>
         </div>

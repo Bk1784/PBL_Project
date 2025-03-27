@@ -6,6 +6,45 @@
     <title>Admin Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .content {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .profile-card {
+            background: rgb(251, 251, 251);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 700px; /* Agar ukurannya tidak terlalu besar */
+            width: 100%;
+        }
+        .edit-btn {
+            background-color: #adb5bd;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.5s;
+        }
+        .edit-btn:hover {
+            background-color: #6c757d;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 10px;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <div class="flex min-h-screen">
@@ -31,6 +70,7 @@
                 <i class="fa fa-sign-out-alt mr-2"></i>Logout
             </a>
         </div>
+<body>
 
 
         <!-- Content -->
@@ -52,6 +92,33 @@
             <!-- Edit Button -->
             <div>
                 <a href="{{ route('admin.edit.profile') }}" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition">EDIT</a>
+    <div class="content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="profile-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <img src="{{ asset('storage/' . $admin->photo) }}" alt="Profile Picture" class="rounded-circle" width="150">
+                            </div>
+                            <div class="col-md-8">
+                                <h2><?= $admin->name ?></h2>
+                                <p><strong>Name:</strong> <?= $admin->name ?></p>
+                                <p><strong>Email:</strong> <?= $admin->email ?></p>
+                                <p><strong>Contact:</strong> <?= $admin->phone ?></p>
+                                <p><strong>Address:</strong> <?= $admin->address ?></p>
+                                <p><strong>Gender:</strong> <?= $admin->gender ?? 'Tidak Diketahui' ?></p>
+                                <p><strong>Status:</strong> <?= $admin->status ?></p>
+                                <p><strong>Bio:</strong> <?= $admin->bio ?></p>
+                                <a href="{{ route('admin.edit.profile') }}" class="btn edit-btn">EDIT</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-card mt-3 text-end">
+                        <h3>Tanggung Jawab</h3>
+                        <p>Menerima pesanan, mengeksekusi pesanan, mengedit produk</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -89,5 +156,7 @@
             <p class="mt-4 text-gray-500">&copy; 2025 Galaxy Store. Project Based Learning</p>
         </div>
     </footer>
+
 </body>
 </html>
+

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,14 +21,16 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
+//ADMIN
 Route::middleware('admin')->group(function(){
+    Route::get('/admin/manage_client', [AdminController::class, 'AdminManageClient'])->name('admin.manage_client');
     Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
     Route::get('/admin/logout', [AdminController::class, 'AdminLogout'])->name('admin.logout');
     Route::get('/admin/profile', [AdminController::class, 'AdminProfile'])->name('admin.profile');
     Route::get('/admin/edit_profile', [AdminController::class, 'AdminEditProfile'])->name('admin.edit.profile');
     Route::put('/admin/profile/update', [AdminController::class, 'AdminUpdateProfile'])->name('admin.update.profile'); 
 });
-
+//ADMIN GUEST
 Route::middleware('admin.guest')->group(function(){
     Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
     Route::post('/admin/login_submit', [AdminController::class, 'AdminLoginSubmit'])->name('admin.login_submit');
@@ -35,4 +38,20 @@ Route::middleware('admin.guest')->group(function(){
     Route::post('/admin/password_submit', [AdminController::class, 'AdminPasswordSubmit'])->name('admin.password_submit');
     Route::get('/admin/reset-password/{token}/{email}', [AdminController::class, 'AdminResetPassword']);
     Route::post('admin.reset_password_submit', [AdminController::class, 'AdminResetPasswordSubmit'])->name('admin.reset_password_submit');
+});
+//CLIENT
+Route::middleware('client')->group(function() {
+    Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->name('client.dashboard');
+    Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');
+});
+//CLIENT GUEST
+Route::middleware('client.guest')->group(function() {
+    Route::get('/client/login', [ClientController::class, 'ClientLogin'])->name('client.login');
+    Route::get('/client/register', [ClientController::class, 'ClientRegister'])->name('client.register');
+    Route::post('/client/register/submit', [ClientController::class, 'ClientRegisterSubmit'])->name('client.register.submit');
+    Route::post('/client/login_submit', [ClientController::class, 'ClientLoginSubmit'])->name('client.login_submit');
+    Route::get('/client/forget_password', [ClientController::class, 'ClientForgetPassword'])->name('client.forget_password');
+    Route::post('/client/password_submit', [ClientController::class, 'ClientPasswordSubmit'])->name('client.password_submit');
+    Route::get('client/reset-password/{token}/{email}', [ClientController::class, 'ClientResetPassword']);
+    Route::post('/client/reset_password_submit', [ClientController::class, 'ClientResetPasswordSubmit'])->name('client.reset_password_submit');
 });

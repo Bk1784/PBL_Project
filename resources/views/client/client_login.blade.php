@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Client Login Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" >
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 </head>
 
 <!-- BODY -->
 
 <body class="flex flex-col justify-center items-center h-screen bg-gray-200">
-    <form action="{{ route('admin.login_submit') }}" method="post" class="w-full max-w-lg">
+    <form action="{{ route('client.login_submit') }}" method="post" class="w-full max-w-lg">
         @csrf
         <div class="flex bg-white rounded-2xl shadow-lg overflow-hidden w-full">
             <div class="w-1/2 p-6 text-center">
@@ -43,8 +46,8 @@
                 
                 <button type="submit" class="w-full bg-gray-300 text-black py-2 rounded-full font-bold mt-2 hover:bg-gray-400">Submit</button>
                 <p class="text-gray-500 text-sm my-3">ATAU</p>
-                <p class="text-sm font-bold"><a href="#" class="text-black">DAFTAR</a> tidak memiliki akun</p>
-                <a href="{{ route('admin.forget_password') }}" class="text-blue-500 text-sm underline">Forget Password?</a>
+                <p class="text-sm font-bold"><a href="{{ route('client.register') }}" class="text-black">DAFTAR</a> tidak memiliki akun</p>
+                <a href="{{ route('client.forget_password') }}" class="text-blue-500 text-sm underline">Forget Password?</a>
             </div>
             <div class="w-1/2 flex justify-center items-center">
                 <img src="{{ asset('images/logo.jpg') }}" alt="Profile Image" class="w-36 h-auto rounded-2xl object-cover"> 
@@ -75,6 +78,32 @@
 </div>
 
 <!-- END FOOTER -->
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    @if(Session::has('message'))
+        var type = "{{ Session::get('alert-type','info') }}"
+        switch(type){
+            case 'info':
+            toastr.info(" {{ Session::get('message') }} ");
+            break;
+
+            case 'success':
+            toastr.success(" {{ Session::get('message') }} ");
+            break;
+
+            case 'warning':
+            toastr.warning(" {{ Session::get('message') }} ");
+            break;
+
+            case 'error':
+            toastr.error(" {{ Session::get('message') }} ");
+            break; 
+        }
+    @endif 
+</script>
+
 
 </body>
 </html>
