@@ -136,5 +136,9 @@ class AdminController extends Controller
         return redirect()->route('admin.profile')->with('success', 'Profil berhasil diperbarui.');
     }
 
+    public function AdminManageClient(){
+        return view('admin.manage_client');
+    }
+
    
 }
