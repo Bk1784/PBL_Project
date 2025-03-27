@@ -89,9 +89,8 @@ class AdminController extends Controller
 
     }
     public function AdminProfile(){
-        $id = Auth::guard('admin')->id();
-        $profileData = Admin::find($id);
-        return view('admin.admin_profile',compact('profileData'));
+        $admin = Auth::guard('admin')->user();
+        return view('admin.admin_profile', compact('admin'));
     }
 
     public function AdminEditProfile() {
@@ -108,9 +107,7 @@ class AdminController extends Controller
             'email' => 'required|email|max:255|unique:admins,email,' . $admin->id,
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:255',
-            'gender' => 'nullable|string|in:Laki-Laki,Perempuan',
             'bio' => 'nullable|string|max:255',
-            'status' => 'nullable|string|max:255',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
     
@@ -119,9 +116,8 @@ class AdminController extends Controller
         $admin->email = $request->email;
         $admin->phone = $request->phone;
         $admin->address = $request->address;
-        $admin->gender = $request->gender;
         $admin->bio = $request->bio;
-        $admin->status = $request->status;
+        $admin->photo = $request->photo;
     
         // Handle foto profil
         if ($request->hasFile('photo')) {
