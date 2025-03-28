@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->string('role')->default('client');
+            $table->text('bio')->nullable();
             $table->string('status')->default('1');
             $table->rememberToken();
             $table->timestamps();
