@@ -1,52 +1,78 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Register Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-200 pt-12">
+    <form action="{{ route('register') }}" method="post" class="w-full max-w-xl">
         @csrf
-
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
-
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
+        <div class="flex bg-white rounded-2xl shadow-lg overflow-hidden w-[600px] mx-auto">
+            <div class="w-1/2 p-6 text-center">
+                <h2 class="text-2xl font-bold mb-4">Customer Register</h2>
+                @if ($errors->any())
+                    <ul class="text-red-500 text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+                @if (Session::has('error'))
+                    <p class="text-red-500">{{ Session::get('error') }}</p>
+                @endif
+                @if (Session::has('success'))
+                    <p class="text-green-500">{{ Session::get('success') }}</p>
+                @endif
+                <div class="space-y-3">
+                    <div class="flex items-center border-b border-gray-300 py-2">
+                        <i class="fas fa-user text-gray-600 mr-3"></i>
+                        <input type="text" name="name" placeholder="Nama" required class="w-full border-none focus:outline-none p-2">
+                    </div>
+                    <div class="flex items-center border-b border-gray-300 py-2">
+                        <i class="fas fa-envelope text-gray-600 mr-3"></i>
+                        <input type="email" name="email" placeholder="Email" required class="w-full border-none focus:outline-none p-2">
+                    </div>
+                    <div class="flex items-center border-b border-gray-300 py-2">
+                        <i class="fas fa-lock text-gray-600 mr-3"></i>
+                        <input type="password" name="password" placeholder="Password" required class="w-full border-none focus:outline-none p-2">
+                    </div>
+                    <div class="flex items-center border-b border-gray-300 py-2">
+                        <i class="fas fa-lock text-gray-600 mr-3"></i>
+                        <input type="password" name="password_confirmation" placeholder="Confirm Password" required class="w-full border-none focus:outline-none p-2">
+                    </div>
+                </div>
+                <button type="submit" class="bg-gray-300 text-black font-bold py-3 rounded-xl w-full mt-4 hover:bg-gray-400">Sign Up</button>
+            </div>
+            <div class="w-1/2 flex justify-center items-center p-4">
+                <img src="{{ asset('images/logo.jpg') }}" alt="Profile Image" class="w-full max-w-[150px] rounded-2xl object-cover">
+            </div>
         </div>
     </form>
-</x-guest-layout>
+
+
+    <!-- FOOTER -->
+    <div class="w-full bg-gray-300 p-6 rounded-lg shadow-md mt-5">
+    <div class="flex justify-between flex-wrap md:flex-nowrap">
+        <div class="text-center w-full md:w-1/3 mb-4 md:mb-0">
+            <h3 class="text-lg font-bold flex justify-center items-center"><i class="fas fa-map-marker-alt text-red-600 mr-2"></i>Alamat</h3>
+            <p class="text-sm">Galaxy Store, Srono</p>
+        </div>
+        <div class="text-center w-full md:w-1/3 mb-4 md:mb-0">
+            <h3 class="text-lg font-bold flex justify-center items-center"><i class="fas fa-bullhorn text-red-600 mr-2"></i>Ikuti Kami</h3>
+            <p class="text-sm"><a href="#" class="text-blue-500">Instagram</a> <a href="#" class="text-orange-500">Shopee</a></p>
+        </div>
+        <div class="text-center w-full md:w-1/3">
+            <h3 class="text-lg font-bold flex justify-center items-center"><i class="fas fa-phone-alt text-red-600 mr-2"></i>Kontak Kami</h3>
+            <p class="text-sm">0812-3456-7890</p>
+            <p class="text-sm">0812-9876-5432</p>
+        </div>
+    </div>
+    <div class="text-center text-xs text-gray-600 mt-4">© 2025 Galaxy Store - All Rights Reserved.</div>
+</div>
+
+    <!-- END FOOTER -->
+</body>
+</html>
