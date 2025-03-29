@@ -42,12 +42,12 @@
                     </div>
                     <div class="flex-1">
                         <h2 class="text-2xl font-bold mb-2">{{ $client->name }}</h2>
-                        <p class="text-gray-700"><strong>Username:</strong> {{ $client->username }}</p>
+                        <p class="text-gray-700"><strong>Username:</strong> {{ $client->name }}</p>
                         <p class="text-gray-700"><strong>Email:</strong> {{ $client->email }}</p>
-                        <p class="text-gray-700"><strong>Contact:</strong> {{ $client->contact }}</p>
+                        <p class="text-gray-700"><strong>Contact:</strong> {{ $client->phone }}</p>
                         <p class="text-gray-700"><strong>Address:</strong> {{ $client->address }}</p>
                         <p class="text-gray-700"><strong>Bio:</strong> {{ $client->bio }}</p>
-                        <p class="text-gray-700"><strong>Status:</strong> {{ $client->status }}</p>
+                        <p class="text-gray-700"><strong>Status:</strong> {{ $client->role }}</p>
                     </div>
                     <div>
                         <a href="{{ route('client.edit.profile') }}"

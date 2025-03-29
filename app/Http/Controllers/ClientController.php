@@ -34,7 +34,7 @@ class ClientController extends Controller
             'phone' => $request->phone,
             'address' => $request->address,
             'password' => Hash::make($request->password),
-            'role' => 'client',
+            'role' => 'Client',
             'status' => '0',
         ]);
         $notification = array(
@@ -139,41 +139,34 @@ class ClientController extends Controller
 
     public function updateProfile(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:50|unique:clients,username,' . Auth::guard('client')->id(),
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:255',
-            'bio' => 'nullable|string',
-            'status' => 'nullable|string|max:100',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
         $client = Client::find(Auth::guard('client')->id());
 
         if (!$client) {
-            return redirect()->route('client.profile')->withErrors('Data client tidak ditemukan.');
+            return redirect()->back()->with('error', 'Client tidak ditemukan.');
         }
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'phone' => 'required|string|max:15',
+            'address' => 'nullable|string',
+            'bio' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
 
         if ($request->hasFile('photo')) {
-            if ($client->photo && file_exists(storage_path('app/public/' . $client->photo))) {
-                unlink(storage_path('app/public/' . $client->photo));
-            }
-            $photoPath = $request->file('photo')->store('profile_photos', 'public');
-            $client->photo = $photoPath;
+            $filePath = $request->file('photo')->store('profile_photos', 'public');
+            $validatedData['photo'] = $filePath;
         }
 
-        $client->name = $request->name;
-        $client->username = $request->username;
-        $client->email = $request->email;
-        $client->phone = $request->phone;
-        $client->address = $request->address;
-        $client->bio = $request->bio;
-        $client->status = $request->status;
+        $client->fill($validatedData);
 
-        $client->save();
+        if ($client->isDirty()) {
+            $client->update($validatedData);
+            $client->save();
+            return redirect()->route('client.profile')->with('success', 'Profil berhasil diperbarui!');
+        }
 
-        return redirect()->route('client.profile')->with('success', 'Profil berhasil diperbarui!');
+        return redirect()->route('client.profile')->with('info', 'Tidak ada perubahan pada profil.');
     }
 }

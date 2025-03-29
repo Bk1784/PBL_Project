@@ -55,62 +55,83 @@
                         @csrf
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="text-center">
-                                <img src="{{ asset('storage/' . $client->photo) }}" alt="Profile Picture"
+                                <img id="profilePreview" src="{{ asset('storage/' . $client->photo) }}"
+                                    alt="Profile Picture"
                                     class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300">
-                                <input type="file" name="photo"
-                                    class="mt-4 block w-full text-sm text-gray-600 border border-gray-300 rounded p-2">
-                            </div>
-                            <div class="col-span-2">
-                                <div class="mb-4">
-                                    <label class="block text-gray-700 font-medium">Username</label>
-                                    <input type="text" name="name"
-                                        class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                                        value="{{ $client->name }}" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="block text-gray-700 font-medium">Email</label>
-                                    <input type="email" name="email"
-                                        class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                                        value="{{ $client->email }}" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="block text-gray-700 font-medium">Contact</label>
-                                    <input type="text" name="phone"
-                                        class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                                        value="{{ $client->phone }}">
-                                </div>
-                                <div class="mb-4">
-                                    <label class="block text-gray-700 font-medium">Address</label>
-                                    <input type="text" name="address"
-                                        class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                                        value="{{ $client->address }}">
-                                </div>
-                                <div class="mb-4">
-                                    <label class="block text-gray-700 font-medium">Bio</label>
-                                    <textarea name="bio"
-                                        class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                                        rows="3">{{ $client->bio }}</textarea>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="block text-gray-700 font-medium">Status</label>
-                                    <input type="text" name="status"
-                                        class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                                        value="{{ $client->status }}">
-                                </div>
-                                <button type="button" id="save-button"
-                                    class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Simpan
-                                    Perubahan</button>
+
+                                <input type="file" name="photo" id="photoInput"
+                                    class="mt-4 block w-full text-sm text-gray-600 border border-gray-300 rounded p-2"
+                                    onchange="previewImage(event)">
                             </div>
                         </div>
-                    </form>
+
+                        <script>
+                        function previewImage(event) {
+                            const image = document.getElementById('profilePreview');
+                            const file = event.target.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function(e) {
+                                    image.src = e.target.result;
+                                }
+                                reader.readAsDataURL(file);
+                            }
+                        }
+                        </script>
+                        <div class="col-span-2">
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium">Username</label>
+                                <input type="text" name="name"
+                                    class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
+                                    value="{{ $client->name }}" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium">Email</label>
+                                <input type="email" name="email"
+                                    class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
+                                    value="{{ $client->email }}" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium">Contact</label>
+                                <input type="text" name="phone"
+                                    class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
+                                    value="{{ old('phone', $client->phone) }}">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium">Address</label>
+                                <input type="text" name="address"
+                                    class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
+                                    value="{{ $client->address }}">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium">Bio</label>
+                                <textarea name="bio"
+                                    class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
+                                    rows="3">{{ $client->bio }}</textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium">Status</label>
+                                <input type="text" name="status"
+                                    class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
+                                    value="{{ $client->role }}">
+                            </div>
+                            <button type="submit" id="save-button"
+                                class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Simpan
+                                Perubahan</button>
+                        </div>
                 </div>
+                </form>
+
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Tambahkan JavaScript -->
     <script>
-    document.getElementById('save-button').addEventListener('click', function() {
+    document.getElementById('edit-profile-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
         Swal.fire({
             title: 'Konfirmasi Simpan Perubahan',
             text: 'Apakah Anda yakin ingin menyimpan perubahan?',
@@ -122,11 +143,12 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById('edit-profile-form').submit();
+                this.submit();
             }
         });
     });
     </script>
+
 </body>
 
 </html>

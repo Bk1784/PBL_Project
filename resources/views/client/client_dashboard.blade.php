@@ -60,7 +60,8 @@
                         <a href="{{ route('client.profile') }}" class="block">
                             @php
                             $client = Auth::guard('client')->user();
-                            $photo = $client && $client->photo ? 'storage/' . $client->photo : 'images/default.jpg';
+                            $photo = $client && $client->photo ? 'storage/' . $client->photo :
+                            'profile_photos/default.jpg';
                             @endphp
                             <img src="{{ asset($photo) }}" alt="Profile" class="w-full h-full object-cover">
                         </a>
