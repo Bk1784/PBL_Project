@@ -93,9 +93,9 @@
                                 </div>
                                 <div class="mb-4">
                                     <label class="block text-gray-700 font-medium">Status</label>
-                                    <input type="text" name="address"
+                                    <input type="text" name="status"
                                         class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                                        value="{{ $client->address }}">
+                                        value="{{ $client->status }}">
                                 </div>
                                 <button type="button" id="save-button"
                                     class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Simpan

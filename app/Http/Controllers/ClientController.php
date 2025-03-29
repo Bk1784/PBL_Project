@@ -141,24 +141,37 @@ class ClientController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'username' => 'required|string|max:50|unique:clients,username,' . Auth::guard('client')->id(),
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
+            'status' => 'nullable|string|max:100',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $client = Auth::guard('client')->user();
+        $client = Client::find(Auth::guard('client')->id());
+
+        if (!$client) {
+            return redirect()->route('client.profile')->withErrors('Data client tidak ditemukan.');
+        }
+
         if ($request->hasFile('photo')) {
+            if ($client->photo && file_exists(storage_path('app/public/' . $client->photo))) {
+                unlink(storage_path('app/public/' . $client->photo));
+            }
             $photoPath = $request->file('photo')->store('profile_photos', 'public');
             $client->photo = $photoPath;
         }
 
         $client->name = $request->name;
+        $client->username = $request->username;
         $client->email = $request->email;
         $client->phone = $request->phone;
         $client->address = $request->address;
         $client->bio = $request->bio;
+        $client->status = $request->status;
+
         $client->save();
 
         return redirect()->route('client.profile')->with('success', 'Profil berhasil diperbarui!');
