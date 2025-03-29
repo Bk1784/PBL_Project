@@ -108,7 +108,6 @@ class AdminController extends Controller
             'email' => 'required|email|max:255|unique:admins,email,' . $admin->id,
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:255',
-            'bio' => 'nullable|string|max:255',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
     
@@ -117,7 +116,6 @@ class AdminController extends Controller
         $admin->email = $request->email;
         $admin->phone = $request->phone;
         $admin->address = $request->address;
-        $admin->bio = $request->bio;
         $admin->photo = $request->photo;
     
         // Handle foto profil

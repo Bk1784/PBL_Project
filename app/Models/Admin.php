@@ -20,7 +20,6 @@ class Admin extends Authenticatable
         'email',
         'contact',
         'address',
-        'bio',
         'photo',
     ];
 
