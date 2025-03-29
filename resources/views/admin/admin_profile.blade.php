@@ -47,7 +47,6 @@
                 <p class="text-gray-700"><strong>Email:</strong> {{ $admin->email }}</p>
                 <p class="text-gray-700"><strong>Contact:</strong> {{ $admin->phone }}</p>
                 <p class="text-gray-700"><strong>Address:</strong> {{ $admin->address }}</p>
-                <p class="text-gray-700"><strong>Bio:</strong> {{ $admin->bio }}</p>
             </div>
             <!-- Edit Button -->
             <div>

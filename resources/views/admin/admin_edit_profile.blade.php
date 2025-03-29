@@ -71,10 +71,6 @@
                                     <label class="block text-gray-700 font-medium">Address</label>
                                     <input type="text" name="address" class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300" value="{{ $admin->address }}">
                                 </div>
-                                <div class="mb-4">
-                                    <label class="block text-gray-700 font-medium">Bio</label>
-                                    <textarea name="bio" class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300" rows="3">{{ $admin->bio }}</textarea>
-                                </div>
                                 <!-- Tambahkan ID pada tombol -->
                                 <button type="button" id="save-button" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Simpan Perubahan</button>
                             </div>
