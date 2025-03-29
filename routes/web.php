@@ -10,9 +10,12 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect('/dashboard'); // Redirect jika sudah login
+    }
+    return view('customer.master');
+});
 
 //// CUSTOMER GUEST: Hanya bisa diakses jika belum login
 Route::prefix('customer')->middleware('customer.guest')->group(function () {
@@ -31,19 +34,13 @@ Route::prefix('customer')->middleware('customer.guest')->group(function () {
 
 // CUSTOMER AUTH: Hanya bisa diakses jika sudah login
 Route::middleware('customer')->group(function(){
-    Route::get('/', [CustomerController::class, 'Index'])->name('index');
+    // Route::get('/', [CustomerController::class, 'Index'])->name('index');
     Route::get('/atk_dashboard', [CustomerController::class, 'Atk'])->name('atk_dashboard');
     Route::get('/customer/logout', [CustomerController::class, 'CustomerLogout'])->name('customer.logout');
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->middleware(['auth', 'verified'])->name('dashboard');
-
 });
-
-
-
-
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

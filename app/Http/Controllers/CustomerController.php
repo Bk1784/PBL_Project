@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
-    public function Index(){
-        return view('customer.master');
-    }
+    // public function Index(){
+    //     return view('customer.master');
+    // }
     public function Atk(){
         return view('customer.atk_dashboard');
     }
