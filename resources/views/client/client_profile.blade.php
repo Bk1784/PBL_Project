@@ -1,101 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('client.client_dashboard')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Profile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-</head>
+@section('content')
 
-<body class="bg-gray-100">
-    <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <div class="w-64 bg-white p-5 fixed h-full shadow-md">
-            <h2 class="text-xl font-bold mb-5">Galaxy Store</h2>
-            <a href="{{ route('client.dashboard') }}"
-                class="block py-2 px-4 text-gray-700 hover:bg-blue-100 rounded mb-2">
-                <i class="fa fa-home mr-2"></i>Dashboard
-            </a>
-            <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-blue-100 rounded mb-2">
-                <i class="fa fa-wallet mr-2"></i>Transaksi
-            </a>
-            <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-blue-100 rounded mb-2">
-                <i class="fa fa-user mr-2"></i>Profil
-            </a>
-            <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-blue-100 rounded mb-2">
-                <i class="fa fa-cog mr-2"></i>Pengaturan
-            </a>
-            <a href="{{ route('client.logout') }}" class="block py-2 px-4 text-red-500 hover:bg-red-100 rounded">
-                <i class="fa fa-sign-out-alt mr-2"></i>Logout
-            </a>
-        </div>
-
-        <!-- Content -->
-        <div class="ml-64 p-6 w-full">
-            <div class="container mx-auto">
-                <div class="bg-white p-8 rounded-lg shadow-md flex items-center gap-8">
-                    <div>
-                        <img src="{{ asset('storage/' . $client->photo) }}" alt="Profile Picture"
-                            class="rounded-full w-32 h-32 object-cover shadow-md">
-                    </div>
-                    <div class="flex-1">
-                        <h2 class="text-2xl font-bold mb-2">{{ $client->name }}</h2>
-                        <p class="text-gray-700"><strong>Username:</strong> {{ $client->name }}</p>
-                        <p class="text-gray-700"><strong>Email:</strong> {{ $client->email }}</p>
-                        <p class="text-gray-700"><strong>Contact:</strong> {{ $client->phone }}</p>
-                        <p class="text-gray-700"><strong>Address:</strong> {{ $client->address }}</p>
-                        <p class="text-gray-700"><strong>Bio:</strong> {{ $client->bio }}</p>
-                        <p class="text-gray-700"><strong>Status:</strong> {{ $client->role }}</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('client.edit.profile') }}"
-                            class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition">EDIT</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Responsibility Section -->
-    <div class="bg-white p-11 rounded-lg shadow-md mt-11">
-        <h3 class="text-xl font-bold mb-2">Tanggung Jawab</h3>
-        <p class="text-gray-550">Menerima pesanan, mengeksekusi pesanan, mengedit produk</p>
+<div class="bg-white text-gray-800 p-6 flex justify-between text-sm rounded-lg shadow-md mt-6 border border-gray-300">
+<div class="flex items-center gap-6">
+    <!-- Foto Profil -->
+    <div class="w-1/4 flex justify-center">
+        <img src="{{ asset('storage/' . $client->photo) }}" alt="Profile Picture"
+            class="rounded-full w-40 h-40 object-cover shadow-md">
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-100 py-6 mt-6">
-        <div class="container mx-auto text-center">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                    <h5 class="font-bold">Alamat</h5>
-                    <p>Srono, Banyuwangi, Jawa Timur, Indonesia</p>
-                </div>
-                <div>
-                    <h5 class="font-bold">Ikuti Kami</h5>
-                    <p>
-                        <a href="https://instagram.com" target="_blank" class="text-blue-500 hover:underline"><i
-                                class="fab fa-instagram mr-2"></i>Instagram</a> |
-                        <a href="https://shopee.co.id" target="_blank"
-                            class="text-orange-500 hover:underline">Shopee</a>
-                    </p>
-                </div>
-                <div>
-                    <h5 class="font-bold">Kontak Kami</h5>
-                    <p>0812345678908</p>
-                </div>
-            </div>
-            <div class="mt-6">
-                <a href="https://facebook.com" target="_blank" class="text-blue-400 mx-2"><i
-                        class="fab fa-facebook fa-2x"></i></a>
-                <a href="https://instagram.com" target="_blank" class="text-pink-400 mx-2"><i
-                        class="fab fa-instagram fa-2x"></i></a>
-                <a href="https://youtube.com" target="_blank" class="text-red-400 mx-2"><i
-                        class="fab fa-youtube fa-2x"></i></a>
-            </div>
-            <p class="mt-4 text-gray-500">&copy; 2025 Galaxy Store. Project Based Learning</p>
-        </div>
-    </footer>
-</body>
 
-</html>
+    <!-- Informasi Client (Grid) -->
+    <div class="w-2/4 grid grid-cols-2 gap-4">
+        <h2 class="col-span-2 text-2xl font-bold text-center bg-gray-200 p-3 rounded-md">
+            Profile
+        </h2>
+        <div class="border p-3 rounded-md">
+            <strong>Username:</strong> {{ $client->name }}
+        </div>
+        <div class="border p-3 rounded-md">
+            <strong>Email:</strong> {{ $client->email }}
+        </div>
+        <div class="border p-3 rounded-md">
+            <strong>Contact:</strong> {{ $client->phone }}
+        </div>
+        <div class="border p-3 rounded-md">
+            <strong>Address:</strong> {{ $client->address }}
+        </div>
+        <div class="border p-3 rounded-md col-span-2">
+            <strong>Bio:</strong> {{ $client->bio }}
+        </div>
+        <div class="border p-3 rounded-md col-span-2 text-center">
+            <strong>Status:</strong> {{ $client->role }}
+        </div>
+    </div>
+
+
+
+    <!-- Tombol Edit -->
+    <div class="w-1/4 flex justify-end">
+        <a href="{{ route('client.edit.profile') }}"
+            class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 transition text-center">
+            EDIT
+        </a>
+    </div>
+</div>
+
+
+</div>
+
+
+@endsection
