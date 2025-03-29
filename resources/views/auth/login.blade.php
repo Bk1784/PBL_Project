@@ -1,47 +1,80 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
 
-    <form method="POST" action="{{ route('login') }}">
+<!-- BODY -->
+
+<body class="flex flex-col justify-center items-center h-screen bg-gray-200">
+    <form action="{{ route('login') }}" method="post" class="w-full max-w-lg">
         @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+        <div class="flex bg-white rounded-2xl shadow-lg overflow-hidden w-full">
+            <div class="w-1/2 p-6 text-center">
+                <h2 class="text-lg font-bold mb-4">LOGIN</h2>
+                
+                @if ($errors->any())
+                <ul class="text-red-500 text-sm mb-3">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                @endif
+                
+                @if (Session::has('error'))
+                    <p class="text-red-500 text-sm">{{ Session::get('error') }}</p>
+                @endif
+                @if (Session::has('success'))
+                    <p class="text-green-500 text-sm">{{ Session::get('success') }}</p>
+                @endif
+                
+                <div class="flex items-center border-b border-gray-300 py-2 mb-3">
+                    <i class="fa-solid fa-envelope text-gray-500 mr-2 "></i>
+                    <input class="w-full outline-none bg-transparent px-2" type="email" name="email" placeholder="Email" required>
+                </div>
+                <div class="flex items-center border-b border-gray-300 py-2 mb-3">
+                    <i class="fas fa-lock text-gray-500 mr-2"></i>
+                    <input class="w-full outline-none bg-transparent px-2" type="password" name="password" placeholder="Password" required>
+                </div>
+                
+                <button type="submit" class="w-full bg-gray-300 text-black py-2 rounded-full font-bold mt-2 hover:bg-gray-400">Submit</button>
+                <p class="text-gray-500 text-sm my-3">ATAU</p>
+                <p class="text-sm font-bold"><a href="{{ route('register') }}" class="text-black">DAFTAR</a> tidak memiliki akun</p>
+                <a href="" class="text-blue-500 text-sm underline">Forget Password?</a>
+            </div>
+            <div class="w-1/2 flex justify-center items-center">
+                <img src="{{ asset('images/logo.jpg') }}" alt="Profile Image" class="w-36 h-auto rounded-2xl object-cover"> 
+            </div>
         </div>
     </form>
-</x-guest-layout>
+
+    <!-- END BODY -->
+    
+    <!-- FOOTER -->
+<div class="w-full bg-gray-300 p-6 rounded-lg shadow-md mt-5">
+    <div class="flex justify-between flex-wrap md:flex-nowrap">
+        <div class="text-center w-full md:w-1/3 mb-4 md:mb-0">
+            <h3 class="text-lg font-bold flex justify-center items-center"><i class="fas fa-map-marker-alt text-red-600 mr-2"></i>Alamat</h3>
+            <p class="text-sm">Galaxy Store, Srono</p>
+        </div>
+        <div class="text-center w-full md:w-1/3 mb-4 md:mb-0">
+            <h3 class="text-lg font-bold flex justify-center items-center"><i class="fas fa-bullhorn text-red-600 mr-2"></i>Ikuti Kami</h3>
+            <p class="text-sm"><a href="#" class="text-blue-500">Instagram</a> <a href="#" class="text-orange-500">Shopee</a></p>
+        </div>
+        <div class="text-center w-full md:w-1/3">
+            <h3 class="text-lg font-bold flex justify-center items-center"><i class="fas fa-phone-alt text-red-600 mr-2"></i>Kontak Kami</h3>
+            <p class="text-sm">0812-3456-7890</p>
+            <p class="text-sm">0812-9876-5432</p>
+        </div>
+    </div>
+    <div class="text-center text-xs text-gray-600 mt-4">© 2025 Galaxy Store - All Rights Reserved.</div>
+</div>
+
+<!-- END FOOTER -->
+
+</body>
+</html>

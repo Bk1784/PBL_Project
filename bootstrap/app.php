@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.guest' => App\Http\Middleware\RedirectIfAuthenticatedAdmin::class, // middleware yang baru kita buat
             'client' => App\Http\Middleware\Client::class,
             'client.guest' => App\Http\Middleware\RedirectIfAuthenticatedClient::class, 
+            'customer' => App\Http\Middleware\Customer::class,
+            'customer.guest' => App\Http\Middleware\RedirectIfAuthenticatedCustomer::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

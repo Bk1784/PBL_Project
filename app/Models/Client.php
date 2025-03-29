@@ -30,7 +30,7 @@ class Client extends Authenticatable
      *
      * @var list<string>
      */
-    protected $guard = 'client';
+    // Guard tidak perlu didefinisikan di model, sebaiknya diatur di config/auth.php
     protected $guarded = [];
 
     //percobaan commmittt
@@ -46,15 +46,12 @@ class Client extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 }
