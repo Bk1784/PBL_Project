@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
@@ -33,7 +34,7 @@ Route::prefix('customer')->middleware('customer.guest')->group(function () {
 });
 
 // CUSTOMER AUTH: Hanya bisa diakses jika sudah login
-Route::middleware('customer')->group(function(){
+Route::middleware('customer')->group(function () {
     // Route::get('/', [CustomerController::class, 'Index'])->name('index');
     Route::get('/atk_dashboard', [CustomerController::class, 'Atk'])->name('atk_dashboard');
     Route::get('/customer/logout', [CustomerController::class, 'CustomerLogout'])->name('customer.logout');
@@ -75,6 +76,8 @@ Route::middleware('client')->group(function () {
     Route::get('/client/profile', [ClientController::class, 'profile'])->name('client.profile');
     Route::get('/client/profile/edit', [ClientController::class, 'editProfile'])->name('client.edit.profile');
     Route::put('/client/profile/update', [ClientController::class, 'updateProfile'])->name('client.update.profile');
+    Route::get('/client/change-password', [ClientController::class, 'ClientChangePassword'])->name('client.change.password');
+    Route::post('/client/update-password', [ClientController::class, 'ClientUpdatePassword'])->name('client.update.password');
 });
 //CLIENT GUEST
 Route::middleware('client.guest')->group(function () {
