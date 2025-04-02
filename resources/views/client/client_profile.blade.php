@@ -2,58 +2,58 @@
 
 @section('content')
 
-<div class="p-6 w-full">
-    <div class="container mx-auto">
-        <div class="p-8 bg-white rounded-lg shadow-md border border-gray-300 flex flex-col md:flex-row items-center gap-8">
-            <!-- Profile Picture -->
-            <div>
-                <img src="{{ $client->photo ? asset('storage/' . $client->photo) : asset('default-profile.png') }}" 
-                    alt="Profile Picture" 
-                    class="rounded-full w-32 h-32 object-cover shadow-md border">
+<div class="bg-white text-gray-800 p-6 flex justify-between text-sm rounded-lg shadow-md mt-6 border border-gray-300">
+    <div class="flex items-center gap-6">
+        <!-- Foto Profil -->
+        <div class="w-1/4 flex justify-center">
+            <img src="{{ asset('storage/' . $client->photo) }}" alt="Profile Picture"
+                class="rounded-full w-40 h-40 object-cover shadow-md">
+        </div>
+
+
+        <!-- Informasi Client (Grid) -->
+        <div class="w-2/4 grid grid-cols-2 gap-4">
+            <h2 class="col-span-2 text-2xl font-bold text-center bg-gray-200 p-3 rounded-md">
+                Profile
+            </h2>
+            <div class="border p-3 rounded-md">
+                <strong>Username:</strong> {{ $client->name }}
             </div>
-
-            <!-- Admin Info dalam Card -->
-            <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white p-4 rounded-lg shadow-md border">
-                    <p class="text-gray-700 font-semibold">Nama</p>
-                    <h2 class="text-lg font-bold">{{ $client->name }}</h2>
-                </div>
-
-                <div class="bg-white p-4 rounded-lg shadow-md border">
-                    <p class="text-gray-700 font-semibold">Email</p>
-                    <p>{{ $client->email }}</p>
-                </div>
-
-                <div class="bg-white p-4 rounded-lg shadow-md border">
-                    <p class="text-gray-700 font-semibold">Contact</p>
-                    <p>{{ $client->phone }}</p>
-                </div>
-
-                <div class="bg-white p-4 rounded-lg shadow-md border">
-                    <p class="text-gray-700 font-semibold">Address</p>
-                    <p>{{ $client->address}}</p>
-                </div>
-
-                <div class="bg-white p-4 rounded-lg shadow-md border">
-                    <p class="text-gray-700 font-semibold">Bio</p>
-                    <p>{{ $client->bio }}</p>
-                </div>
-                
-                <div class="bg-white p-4 rounded-lg shadow-md border">
-                    <p class="text-gray-700 font-semibold">Status</p>
-                    <p>{{ $client->role}}</p>
-                </div>
+            <div class="border p-3 rounded-md">
+                <strong>Email:</strong> {{ $client->email }}
             </div>
-
-            <!-- Edit Button -->
-            <div>
-                <a href="{{ route('client.edit.profile') }}" 
-                    class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition">
-                    EDIT
-                </a>
+            <div class="border p-3 rounded-md">
+                <strong>Contact:</strong> {{ $client->phone }}
             </div>
+            <div class="border p-3 rounded-md">
+                <strong>Address:</strong> {{ $client->address }}
+            </div>
+            <div class="border p-3 rounded-md col-span-2">
+                <strong>Bio:</strong> {{ $client->bio }}
+            </div>
+            <div class="border p-3 rounded-md col-span-2 text-center">
+                <strong>Status:</strong> {{ $client->role }}
+            </div>
+        </div>
+
+
+        <!-- Tombol Edit -->
+        <div class="w-1/4 flex justify-end ml-10">
+            <a href="{{ route('client.edit.profile') }}"
+                class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 transition text-center whitespace-nowrap w-full">
+                EDIT
+            </a>
+        </div>
+
+        <!-- Tombol Change Password -->
+        <div class="w-1/4 flex justify-end">
+            <a href="{{ route('client.change.password') }}"
+                class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 transition text-center whitespace-nowrap">
+                CHANGE PASSWORD
+            </a>
         </div>
     </div>
 </div>
+
 
 @endsection

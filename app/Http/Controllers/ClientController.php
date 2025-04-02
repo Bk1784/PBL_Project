@@ -16,10 +16,12 @@ class ClientController extends Controller
     {
         return view('client.client_login');
     }
+
     public function ClientRegister()
     {
         return view('client.client_register');
     }
+
     public function ClientRegisterSubmit(Request $request)
     {
         $request->validate([
@@ -67,8 +69,6 @@ class ClientController extends Controller
         Auth::guard('client')->logout();
         return redirect()->route('client.login')->with('success', 'Logout Success');
     }
-
-
 
     public function ClientForgetPassword()
     {
@@ -168,5 +168,29 @@ class ClientController extends Controller
         }
 
         return redirect()->route('client.profile')->with('info', 'Tidak ada perubahan pada profil.');
+    }
+
+    public function ClientChangePassword()
+    {
+        return view('client.change_password');
+    }
+
+    public function ClientUpdatePassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
+        ]);
+
+        $client = Client::find(Auth::guard('client')->id());
+
+        if (!Hash::check($request->old_password, $client->password)) {
+            return back()->withErrors(['old_password' => 'Password lama tidak sesuai']);
+        }
+
+        $client->password = Hash::make($request->new_password);
+        $client->save();
+
+        return redirect()->route('client.dashboard')->with('success', 'Password berhasil diperbarui!');
     }
 }
