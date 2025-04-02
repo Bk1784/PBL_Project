@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Login Page</title>
+    <title>Customer Login Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
@@ -15,7 +15,7 @@
 <!-- BODY -->
 
 <body class="flex flex-col justify-center items-center h-screen bg-gray-200">
-    <form action="{{ route('client.login_submit') }}" method="post" class="w-full max-w-lg">
+    <form action="{{ route('customer.login_submit') }}" method="post" class="w-full max-w-lg">
         @csrf
         <div class="flex bg-white rounded-2xl shadow-lg overflow-hidden w-full">
             <div class="w-1/2 p-6 text-center">
@@ -52,7 +52,7 @@
                 <p class="text-gray-500 text-sm my-3">ATAU</p>
                 <p class="text-sm font-bold"><a href="{{ route('client.register') }}" class="text-black">DAFTAR</a>
                     tidak memiliki akun</p>
-                <a href="{{ route('client.forget_password') }}" class="text-blue-500 text-sm underline">Forget
+                <a href="{{ route('customer.forget_password') }}" class="text-blue-500 text-sm underline">Forget
                     Password?</a>
             </div>
             <div class="w-1/2 flex justify-center items-center">

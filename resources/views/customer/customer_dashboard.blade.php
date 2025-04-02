@@ -16,8 +16,8 @@
         <div class="w-64 bg-white shadow-lg p-5 border-r border-gray-300">
             <h2 class="text-base font-bold mb-6 tracking-wide text-gray-800 text-center">
                 @php
-                $client = Auth::guard('client')->user();
-                $logo = $client && $client->logo ? 'storage/' . $client->logo : 'images/logo.jpg';
+                $customer = Auth::guard('customer')->user();
+                $logo = $customer && $customer->logo ? 'storage/' . $customer->logo : 'images/logo.jpg';
                 @endphp
                 <img src="{{ asset($logo) }}" alt="Logo" class="mx-auto w-32 h-32 object-cover rounded-full">
             </h2>
@@ -59,8 +59,8 @@
                     <div class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden">
                         <a href="{{ route('client.profile') }}" class="block">
                             @php
-                            $client = Auth::guard('client')->user();
-                            $photo = $client && $client->photo ? 'storage/' . $client->photo :
+                            $customer = Auth::guard('customer')->user();
+                            $photo = $customer && $customer->photo ? 'storage/' . $customer->photo :
                             'profile_photos/default.jpg';
                             @endphp
                             <img src="{{ asset($photo) }}" alt="Profile" class="w-full h-full object-cover">
