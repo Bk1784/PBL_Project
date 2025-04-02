@@ -8,9 +8,6 @@
 </head>
 <body class="bg-[#DBE2EF] font-sans antialiased">
 
-
-
-
     <!-- Layout Utama -->
     <div class="flex min-h-screen">
         <!-- Sidebar -->
