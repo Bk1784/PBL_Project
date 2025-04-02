@@ -50,7 +50,7 @@
         <div class="flex-1 max-w-6xl mx-auto mt-10 p-6">
             <!-- Header -->
             <div class="bg-white p-4 flex justify-between items-center rounded-lg shadow-md border border-gray-300">
-                <h1 class="text-3xl font-extrabold tracking-wide text-gray-800">GALAXY STORE</h1>
+                <h1 class="text-3xl font-extrabold tracking-wide text-gray-800">INTAN STORE</h1>
                 <div class="flex items-center gap-3">
                     <input type="text" placeholder="🔍 Pencarian Produk"
                         class="px-4 py-2 w-72 rounded-full bg-white text-gray-700 border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:outline-none transition-all duration-300 shadow-sm">

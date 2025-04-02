@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ManageController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -59,6 +60,12 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/profile', [AdminController::class, 'AdminProfile'])->name('admin.profile');
     Route::get('/admin/edit_profile', [AdminController::class, 'AdminEditProfile'])->name('admin.edit.profile');
     Route::put('/admin/profile/update', [AdminController::class, 'AdminUpdateProfile'])->name('admin.update.profile');
+
+    Route::controller(ManageController::class)->group(function(){
+        Route::get('/admin/all/product', 'AdminAllProduct')->name('admin.all.product');
+        Route::get('/admin/add/product', 'AdminAddProduct')->name('admin.add.product');
+        Route::post('/admin/store/product', 'AdminStoreProduct')->name('admin.product.store');
+    });
 });
 //ADMIN GUEST
 Route::middleware('admin.guest')->group(function () {
@@ -68,6 +75,8 @@ Route::middleware('admin.guest')->group(function () {
     Route::post('/admin/password_submit', [AdminController::class, 'AdminPasswordSubmit'])->name('admin.password_submit');
     Route::get('/admin/reset-password/{token}/{email}', [AdminController::class, 'AdminResetPassword']);
     Route::post('admin.reset_password_submit', [AdminController::class, 'AdminResetPasswordSubmit'])->name('admin.reset_password_submit');
+
+    
 });
 //CLIENT
 Route::middleware('client')->group(function () {
@@ -90,3 +99,9 @@ Route::middleware('client.guest')->group(function () {
     Route::get('client/reset-password/{token}/{email}', [ClientController::class, 'ClientResetPassword']);
     Route::post('/client/reset_password_submit', [ClientController::class, 'ClientResetPasswordSubmit'])->name('client.reset_password_submit');
 });
+
+
+
+
+// UNTUK SEMUA PENGGUNA
+Route::get('/changeStatus', [ManageController::class, 'ChangeStatus']);
