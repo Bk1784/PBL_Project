@@ -69,6 +69,11 @@ Route::middleware('admin')->group(function () {
         Route::put('/admin/update/product', 'AdminUpdateProduct')->name('admin.update.product');
         Route::get('/admin/delete/product/{id}', 'AdminDeleteProduct')->name('admin.delete.product');
     });
+    Route::controller(ManageController::class)->group(function(){
+        Route::get('/pending/toko', 'PendingToko')->name('pending.toko');
+        Route::get('/clientchangeStatus', 'ClientChangeStatus');
+        Route::get('/approve/toko', 'ApproveToko')->name('approve.toko');
+    });
 });
 //ADMIN GUEST
 Route::middleware('admin.guest')->group(function () {
@@ -82,8 +87,9 @@ Route::middleware('admin.guest')->group(function () {
     
 });
 //CLIENT
-Route::middleware('client')->group(function () {
     Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->name('client.dashboard');
+    
+Route::middleware(['status','client'])->group(function () {
     Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');
     Route::get('/client/profile', [ClientController::class, 'profile'])->name('client.profile');
     Route::get('/client/profile/edit', [ClientController::class, 'editProfile'])->name('client.edit.profile');

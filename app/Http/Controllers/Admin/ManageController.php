@@ -90,10 +90,8 @@ class ManageController extends Controller
         'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         'remove_image' => 'nullable|boolean'
     ]);
-
     $pro_id = $request->id;
     $product = Product::findOrFail($pro_id);
-    
     $data = [
         'name' => $request->name,
         'slug' => strtolower(str_replace(' ', '-', $request->name)),
@@ -102,7 +100,6 @@ class ManageController extends Controller
         'price' => $request->price,
         'updated_at' => now()
     ];
-
     // Handle image removal
     if ($request->has('remove_image') && $request->remove_image) {
         if ($product->image && file_exists(public_path($product->image))) {
@@ -110,32 +107,25 @@ class ManageController extends Controller
         }
         $data['image'] = null;
     }
-
     // Handle new image upload
     if ($request->file('image')) {
         // Delete old image if exists
         if ($product->image && file_exists(public_path($product->image))) {
             unlink(public_path($product->image));
         }
-
         $image = $request->file('image');
         $manager = new ImageManager(new Driver());
         $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
-        
         $img = $manager->read($image);
         $img->resize(300, 300)->save(public_path('upload/product/'.$name_gen));
-        
         $data['image'] = 'upload/product/'.$name_gen;
     }
-
     // Update product
     $product->update($data);
-
     $notification = [
         'message' => 'Product Updated Successfully',
         'alert-type' => 'success'
     ];
-
     return redirect()->route('admin.all.product')->with($notification);
 }
     // End Method 
@@ -144,17 +134,26 @@ class ManageController extends Controller
         $item = Product::find($id);
         $img = $item->image;
         unlink($img);
-
         Product::find($id)->delete();
-
         $notification = array(
             'message' => 'Product Delete Successfully',
             'alert-type' => 'success'
         );
-
         return redirect()->back()->with($notification);
-
     }
     // End Method 
+
+    public function PendingToko() {
+        $client = Client::all(); // atau Client::get()
+        return view('admin.backend.toko.pending_toko', compact('client'));
+    }
+
+    public function ClientChangeStatus(Request $request){
+        $client = Client::find($request->client_id);
+        $client->status = $request->status;
+        $client->save();
+        return response()->json(['success' => 'Status Change Successfully']);
+    }
+     // End Method 
 
 }

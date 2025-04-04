@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => App\Http\Middleware\Admin::class,
             'admin.guest' => App\Http\Middleware\RedirectIfAuthenticatedAdmin::class, // middleware yang baru kita buat
             'client' => App\Http\Middleware\Client::class,
+            'status' => App\Http\Middleware\ChangeStatus::class,
             'client.guest' => App\Http\Middleware\RedirectIfAuthenticatedClient::class, 
             'customer' => App\Http\Middleware\Customer::class,
             'customer.guest' => App\Http\Middleware\RedirectIfAuthenticatedCustomer::class,
