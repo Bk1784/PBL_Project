@@ -2,6 +2,10 @@
 
 @section('content')
 
+
+<!-- Tambahkan script ini di bagian bawah sebelum </body> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- Customer Table -->
 <div class="bg-white p-6 rounded-lg shadow-lg">
     <h3 class="text-2xl font-bold mb-4">Produk List</h3>
@@ -34,18 +38,18 @@
                 </td>
                 <td class="p-3 border-b border-gray-200 flex gap-2 items-center">
                     <!-- Tombol Edit -->
-                    <a href="#" class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                    <a href="{{ route('admin.edit.product', $item->id) }}" class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                         <i class="fas fa-edit"></i>
                     </a>
 
-                    <!-- Tombol Hapus -->
-                    <form action="#" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </form>
+                     <!-- Tombol Hapus (Diperbaiki) -->
+                <form action="{{ route('admin.delete.product', $item->id) }}"  class="delete-form">
+                    @csrf
+
+                    <button type="button" class="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 delete-button">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
 
                     <!-- Tombol Toggle Status -->
                     <label class="relative inline-flex items-center cursor-pointer">
@@ -60,6 +64,29 @@
         </tbody>
     </table>
 </div>
+
+<script>
+    document.querySelectorAll('.delete-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('.delete-form');
+            
+            Swal.fire({
+                title: 'Konfirmasi Hapus Produk',
+                text: "Apakah Anda yakin ingin menghapus produk ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
 
 <script type="text/javascript">
     $(document).ready(function() {
