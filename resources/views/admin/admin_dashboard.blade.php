@@ -102,10 +102,10 @@
                     </div>
                     <ul class="sub-menu hidden mt-2 ml-8 space-y-2" aria-expanded="false" id="manageStoreSubmenu">
                         <li class="p-1 rounded hover:bg-gray-100">
-                            <a href="{{ route('pending.toko') }}">All Toko</a>
+                            <a href="{{ route('pending.toko') }}">Pending Toko</a>
                         </li>
                         <li class="p-1 rounded hover:bg-gray-100">
-                            <a href="#">Approve Toko</a>
+                            <a href="{{ route('approve.toko') }}">Approve Toko</a>
                         </li>
                     </ul>
                 </li>
