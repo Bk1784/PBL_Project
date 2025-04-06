@@ -6,7 +6,7 @@
 
     <h3 class="text-xl font-bold text-gray-800 mb-4">Edit Profil Customer</h3>
 
-    <form id="edit-profile-form" action="{{ route('customer.update.profile') }}" method="POST"
+    <form id="edit-profile-form" action="{{ route('customer.profile.update') }}" method="POST"
         enctype="multipart/form-data">
         @method('PUT')
         @csrf
@@ -18,58 +18,78 @@
         @endif
 
         <div class="flex flex-col md:flex-row gap-6">
-            <!-- Bagian Foto Profil -->
+            <!-- Foto Profil -->
             <div class="w-full md:w-1/3 text-center">
                 <img id="profilePreview"
                     src="{{ $customer->photo ? asset('storage/' . $customer->photo) : asset('default-avatar.png') }}"
-                    alt="Profile Picture" class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300">
+                    alt="Foto Profil" class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300">
 
                 <input type="file" name="photo" id="photoInput"
                     class="mt-4 block w-full text-sm text-gray-600 border border-gray-300 rounded p-2"
                     onchange="previewImage(event)">
             </div>
 
-            <!-- Bagian Form -->
+            <!-- Form Input -->
             <div class="w-full md:w-2/3">
+
                 <div class="mb-4">
-                    <label class="block text-gray-700 font-medium">Username</label>
-                    <input type="text" name="name"
+                    <label class="block text-gray-700 font-medium">Nama Lengkap</label>
+                    <input type="text" name="nama"
                         class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                        value="{{ old('name', $client->name) }}" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 font-medium">Email</label>
-                    <input type="email" name="email"
-                        class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                        value="{{ old('email', $client->email) }}" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 font-medium">Contact</label>
-                    <input type="text" name="phone"
-                        class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                        value="{{ old('phone', $client->phone) }}">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 font-medium">Address</label>
-                    <input type="text" name="address"
-                        class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                        value="{{ old('address', $client->address) }}">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 font-medium">Bio</label>
-                    <textarea name="bio"
-                        class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                        rows="3">{{ old('bio', $client->bio) }}</textarea>
+                        value="{{ old('nama', $customer->nama) }}" required>
                 </div>
 
-                <button type="submit" id="save-button"
-                    class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium">Username</label>
+                    <input type="text" name="username" class="block w-full border border-gray-300 rounded p-2"
+                        value="{{ old('username', $customer->username) }}" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium">Email</label>
+                    <input type="email" name="email" class="block w-full border border-gray-300 rounded p-2"
+                        value="{{ old('email', $customer->email) }}" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium">Kontak</label>
+                    <input type="text" name="kontak" class="block w-full border border-gray-300 rounded p-2"
+                        value="{{ old('kontak', $customer->kontak) }}">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium">Alamat</label>
+                    <input type="text" name="alamat" class="block w-full border border-gray-300 rounded p-2"
+                        value="{{ old('alamat', $customer->alamat) }}">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium">Jenis Kelamin</label>
+                    <select name="jenis_kelamin" class="block w-full border border-gray-300 rounded p-2">
+                        <option value="">-- Pilih --</option>
+                        <option value="Laki-laki"
+                            {{ old('jenis_kelamin', $customer->jenis_kelamin) == 'Laki-laki' ? 'selected' : '' }}>
+                            Laki-laki</option>
+                        <option value="Perempuan"
+                            {{ old('jenis_kelamin', $customer->jenis_kelamin) == 'Perempuan' ? 'selected' : '' }}>
+                            Perempuan</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium">Bio</label>
+                    <textarea name="bio" class="block w-full border border-gray-300 rounded p-2"
+                        rows="3">{{ old('bio', $customer->bio) }}</textarea>
+                </div>
+
+                <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
                     Simpan Perubahan
                 </button>
             </div>
         </div>
     </form>
 
+    <!-- Preview Foto JavaScript -->
     <script>
     function previewImage(event) {
         const image = document.getElementById('profilePreview');

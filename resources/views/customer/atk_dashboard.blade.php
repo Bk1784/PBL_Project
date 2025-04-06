@@ -8,6 +8,9 @@
 <body class="bg-gray-100 p-6">
     <div class="max-w-7xl mx-auto">
 
+        <h2 class="text-base font-semibold text-white bg-[#a0b4e3] inline-block px-6 py-2 rounded-full mb-4">
+            Alat Tulis Kantor
+        </h2>
         <div class="flex space-x-4 overflow-x-auto p-4 bg-gray-200 rounded-lg">
             <!-- Produk 1 -->
             <a href="">

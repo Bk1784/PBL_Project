@@ -15,18 +15,35 @@ class CustomerController extends Controller
     // public function Index(){
     //     return view('customer.master');
     // }
-    public function Atk(){
+    public function atkDashboard()
+    {
         return view('customer.atk_dashboard');
     }
 
-    public function CustomerLogout(){
-        Auth::guard('web')->logout();
+    public function CustomerLogout()
+    {
+        // Auth::guard('web')->logout();
+        Auth::guard('customer')->logout();
         return redirect()->route('login')->with('success', 'Logout Success');
     }
 
     public function CustomerLogin()
     {
         return view('customer.customer_login');
+    }
+
+    public function CustomerForgotPassword()
+    {
+        return view('customer.customer_forgot_password');
+    }
+
+    public function CustomerForgotPasswordSubmit(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:customers,email',
+        ]);
+
+        return back()->with('success', 'Link reset password telah dikirimkan ke email Anda.');
     }
 
     public function CustomerRegister()
@@ -42,6 +59,11 @@ class CustomerController extends Controller
             'password' => ['required', 'min:8'],
         ]);
 
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('profile_photos', 'public');
+        }
+
         Customer::create([
             'nama' => $request->nama,
             'username' => $request->username,
@@ -50,7 +72,7 @@ class CustomerController extends Controller
             'alamat' => $request->alamat,
             'jenis_kelamin' => $request->jenis_kelamin,
             'bio' => $request->bio,
-            'photo' => $request->photo,
+            'photo' => $photoPath,
             'password' => Hash::make($request->password),
         ]);
 
@@ -64,11 +86,42 @@ class CustomerController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::guard('customer')->attempt($request->only('email', 'password'))) {
-            return redirect()->route('customer.dashboard')->with('success', 'Login berhasil!');
-        } else {
-            return redirect()->route('customer.login')->with('error', 'Email atau password salah');
+        $customer = \App\Models\Customer::where('email', $request->email)->first();
+
+        if (!$customer) {
+            // Cek apakah password cocok dengan siapapun → berarti dua-duanya salah
+            $anyCustomer = \App\Models\Customer::get();
+            $passwordMatch = false;
+            foreach ($anyCustomer as $cust) {
+                if (\Illuminate\Support\Facades\Hash::check($request->password, $cust->password)) {
+                    $passwordMatch = true;
+                    break;
+                }
+            }
+
+            if ($passwordMatch) {
+                // Password cocok dengan user lain → berarti email aja yang salah
+                return back()->withErrors([
+                    'email' => 'Email yang anda masukkan salah.',
+                ])->withInput();
+            } else {
+                // Password nggak cocok dengan siapa-siapa → berarti dua-duanya salah
+                return back()->withErrors([
+                    'error' => 'Data tidak ditemukan! Silakan masukkan data anda dengan benar atau DAFTAR.',
+                ])->withInput();
+            }
         }
+
+        if (!\Illuminate\Support\Facades\Hash::check($request->password, $customer->password)) {
+            return back()->withErrors([
+                'password' => 'Password yang anda masukkan salah.',
+            ])->withInput();
+        }
+
+        // Autentikasi sukses
+        Auth::guard('customer')->login($customer);
+
+        return redirect()->route('customer.dashboard')->with('success', 'Login berhasil!');
     }
 
     // public function CustomerLogout()
@@ -82,19 +135,19 @@ class CustomerController extends Controller
         return view('customer.customer_dashboard');
     }
 
-    public function profile()
+    public function CustomerProfile()
     {
         $customer = Auth::guard('customer')->user();
         return view('customer.customer_profile', compact('customer'));
     }
 
-    public function editProfile()
+    public function CustomerEditProfile()
     {
         $customer = Auth::guard('customer')->user();
         return view('customer.customer_edit_profile', compact('customer'));
     }
 
-    public function updateProfile(Request $request)
+    public function CustomerUpdateProfile(Request $request)
     {
         $customer = Auth::guard('customer')->user();
 
@@ -109,37 +162,48 @@ class CustomerController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
+        $data = $request->only(['nama', 'username', 'email', 'kontak', 'alamat', 'jenis_kelamin', 'bio']);
+
         if ($request->hasFile('photo')) {
             $filePath = $request->file('photo')->store('profile_photos', 'public');
-            $customer->photo = $filePath;
+            $data['photo'] = $filePath;
         }
 
-        $customer->update($request->except('photo'));
+        $customer->update($data);
 
         return redirect()->route('customer.profile')->with('success', 'Profil berhasil diperbarui!');
     }
 
     public function CustomerChangePassword()
     {
-        return view('customer.change_password');
+        return view('customer.customer_change_password');
     }
 
     public function CustomerUpdatePassword(Request $request)
     {
         $request->validate([
             'old_password' => 'required',
-            'new_password' => 'required|min:6|confirmed',
+            'new_password' => 'required|confirmed|min:8',
+        ], [
+            'old_password.required' => 'Password lama wajib diisi.',
+            'new_password.required' => 'Password baru wajib diisi.',
+            'new_password.min' => 'Password baru minimal 8 karakter.',
+            'new_password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
 
         $customer = Customer::find(Auth::guard('customer')->id());
-        
+
+        if (!$customer) {
+            return back()->with('error', 'Akun tidak ditemukan.');
+        }
+
         if (!Hash::check($request->old_password, $customer->password)) {
-            return back()->withErrors(['old_password' => 'Password lama tidak sesuai']);
+            return back()->with('error', 'Password lama salah.');
         }
 
         $customer->password = Hash::make($request->new_password);
         $customer->save();
 
-        return redirect()->route('customer.dashboard')->with('success', 'Password berhasil diperbarui!');
+        return back()->with('success', 'Password berhasil diperbarui!');
     }
 }
