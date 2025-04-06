@@ -48,37 +48,6 @@ Route::controller(CustomerController::class)->group(function () {
     Route::post('/customer/forgot-password', 'CustomerForgotPasswordSubmit')->name('customer.forgot_password.submit');
 });
 
-//// CUSTOMER GUEST: Hanya bisa diakses jika belum login
-// Route::prefix('customer')->middleware('customer.guest')->group(function () {
-//     Route::get('register', [CustomerController::class, 'CustomerRegister'])->name('customer.register');
-//     Route::post('register', [CustomerController::class, 'CustomerRegisterSubmit']);
-
-//     Route::get('login', [AuthenticatedSessionController::class, 'CustomerLogin'])->name('customer.login');
-//     Route::post('login', [AuthenticatedSessionController::class, 'CustomerLoginSubmit']);
-
-//     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('customer.password.request');
-//     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('customer.password.email');
-
-//     Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('customer.password.reset');
-//     Route::post('reset-password', [NewPasswordController::class, 'store'])->name('customer.password.store');
-// });
-
-// // CUSTOMER AUTH: Hanya bisa diakses jika sudah login
-// Route::middleware('customer')->group(function () {
-//     // Route::get('/', [CustomerController::class, 'Index'])->name('index');
-//     Route::get('/atk_dashboard', [CustomerController::class, 'Atk'])->name('customer.atk_dashboard');
-//     Route::get('/customer/logout', [CustomerController::class, 'CustomerLogout'])->name('customer.logout');
-//     Route::get('/dashboard', function () {
-//         return view('dashboard');
-//     })->middleware(['auth', 'verified'])->name('dashboard');
-// });
-
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
-
 require __DIR__ . '/auth.php';
 
 //ADMIN
