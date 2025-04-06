@@ -144,10 +144,15 @@ class ManageController extends Controller
     // End Method 
 
     public function PendingToko() {
-        $client = Client::all(); // atau Client::get()
+        $client = Client::where('status', 0)->get(); // atau Client::get()
         return view('admin.backend.toko.pending_toko', compact('client'));
     }
 
+    public function ApproveToko(){
+        $client = Client::where('status',1)->get();
+        return view('admin.backend.toko.approve_toko',compact('client')); 
+    }
+   
     public function ClientChangeStatus(Request $request){
         $client = Client::find($request->client_id);
         $client->status = $request->status;

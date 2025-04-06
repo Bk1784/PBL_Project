@@ -7,7 +7,7 @@
 
 <!-- Customer Table -->
 <div class="bg-white p-6 rounded-lg shadow-lg">
-    <h3 class="text-2xl font-bold mb-4">Pending Toko</h3>
+    <h3 class="text-2xl font-bold mb-4">Approve Toko</h3>
     <table class="w-full border-collapse">
         <thead>
             <tr class="bg-gray-200">
