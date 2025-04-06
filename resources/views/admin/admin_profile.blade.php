@@ -36,10 +36,14 @@
             </div>
 
             <!-- Edit Button -->
-            <div>
+            <div class="flex flex-col gap-2">
                 <a href="{{ route('admin.edit.profile') }}" 
-                    class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition">
+                    class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition text-center">
                     EDIT
+                </a>
+                <a href="{{ route('admin.change.password') }}" 
+                    class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition text-center">
+                    CHANGE PASSWORD
                 </a>
             </div>
         </div>

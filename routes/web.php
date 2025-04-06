@@ -89,11 +89,21 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/profile', [AdminController::class, 'AdminProfile'])->name('admin.profile');
     Route::get('/admin/edit_profile', [AdminController::class, 'AdminEditProfile'])->name('admin.edit.profile');
     Route::put('/admin/profile/update', [AdminController::class, 'AdminUpdateProfile'])->name('admin.update.profile');
+    Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
+    Route::post('/admin/update/password', [AdminController::class, 'AdminUpdatePassword'])->name('admin.update.password');
 
     Route::controller(ManageController::class)->group(function () {
         Route::get('/admin/all/product', 'AdminAllProduct')->name('admin.all.product');
         Route::get('/admin/add/product', 'AdminAddProduct')->name('admin.add.product');
         Route::post('/admin/store/product', 'AdminStoreProduct')->name('admin.product.store');
+        Route::get('/admin/edit/product/{id}', 'AdminEditProduct')->name('admin.edit.product');
+        Route::put('/admin/update/product', 'AdminUpdateProduct')->name('admin.update.product');
+        Route::get('/admin/delete/product/{id}', 'AdminDeleteProduct')->name('admin.delete.product');
+    });
+    Route::controller(ManageController::class)->group(function(){
+        Route::get('/pending/toko', 'PendingToko')->name('pending.toko');
+        Route::get('/clientchangeStatus', 'ClientChangeStatus');
+        Route::get('/approve/toko', 'ApproveToko')->name('approve.toko');
     });
 });
 //ADMIN GUEST
@@ -107,8 +117,9 @@ Route::middleware('admin.guest')->group(function () {
 });
 
 //CLIENT
-Route::middleware('client')->group(function () {
     Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->name('client.dashboard');
+    
+Route::middleware(['status','client'])->group(function () {
     Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');
     Route::get('/client/profile', [ClientController::class, 'profile'])->name('client.profile');
     Route::get('/client/profile/edit', [ClientController::class, 'editProfile'])->name('client.edit.profile');

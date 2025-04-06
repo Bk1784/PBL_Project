@@ -135,5 +135,28 @@ class AdminController extends Controller
         return view('admin.manage_client');
     }
 
+    public function AdminChangePassword()
+    {
+        return view('admin.change_password');
+    }
+
+    public function AdminUpdatePassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
+        ]);
+
+        $admin = Admin::find(Auth::guard('admin')->id());
+
+        if (!Hash::check($request->old_password, $admin->password)) {
+            return back()->withErrors(['old_password' => 'Password lama tidak sesuai']);
+        }
+
+        $admin->password = Hash::make($request->new_password);
+        $admin->save();
+
+        return redirect()->route('admin.dashboard')->with('success', 'Password berhasil diperbarui!');
+    }
    
 }
