@@ -151,7 +151,7 @@ class ClientController extends Controller
             'phone' => 'required|string|max:15',
             'address' => 'nullable|string',
             'bio' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'photo' => 'nullable|image|max:2048'
         ]);
 
         if ($request->hasFile('photo')) {

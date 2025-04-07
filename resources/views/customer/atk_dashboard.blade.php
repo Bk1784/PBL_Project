@@ -1,4 +1,4 @@
-@extends('dashboard')
+@extends('customer.customer_dashboard')
 
 @section('content')
 

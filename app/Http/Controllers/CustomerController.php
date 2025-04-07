@@ -24,7 +24,7 @@ class CustomerController extends Controller
     {
         // Auth::guard('web')->logout();
         Auth::guard('customer')->logout();
-        return redirect()->route('login')->with('success', 'Logout Success');
+        return redirect()->route('customer.login')->with('success', 'Logout Success');
     }
 
     public function CustomerLogin()
@@ -89,7 +89,6 @@ class CustomerController extends Controller
         $customer = \App\Models\Customer::where('email', $request->email)->first();
 
         if (!$customer) {
-            // Cek apakah password cocok dengan siapapun → berarti dua-duanya salah
             $anyCustomer = \App\Models\Customer::get();
             $passwordMatch = false;
             foreach ($anyCustomer as $cust) {
@@ -100,12 +99,10 @@ class CustomerController extends Controller
             }
 
             if ($passwordMatch) {
-                // Password cocok dengan user lain → berarti email aja yang salah
                 return back()->withErrors([
                     'email' => 'Email yang anda masukkan salah.',
                 ])->withInput();
             } else {
-                // Password nggak cocok dengan siapa-siapa → berarti dua-duanya salah
                 return back()->withErrors([
                     'error' => 'Data tidak ditemukan! Silakan masukkan data anda dengan benar atau DAFTAR.',
                 ])->withInput();

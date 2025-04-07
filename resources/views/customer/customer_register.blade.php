@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+    @php
+    $customer = Auth::guard('customer')->user();
+    @endphp
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $customer ? 'Edit Profile' : 'Customer Register' }}</title>
@@ -10,9 +13,6 @@
 </head>
 
 <body class="flex flex-col items-center justify-center min-h-screen bg-gray-200 pt-12">
-    @php
-    $customer = Auth::guard('customer')->user();
-    @endphp
 
     <form action="{{ $customer ? route('customer.profile.update') : route('customer.register.submit') }}" method="POST"
         class="w-full max-w-xl">
@@ -45,22 +45,29 @@
                 <div class="space-y-3">
                     <div class="flex items-center border-b border-gray-300 py-2">
                         <i class="fas fa-user text-gray-600 mr-3"></i>
-                        <input type="text" name="nama" placeholder="Nama"
+                        <input type="text" name="nama" placeholder="Nama Lengkap"
                             value="{{ old('nama', $customer->nama ?? '') }}"
                             class="w-full border-none focus:outline-none p-2" required>
                     </div>
 
                     <div class="flex items-center border-b border-gray-300 py-2">
+                        <i class="fas fa-user text-gray-600 mr-3"></i>
+                        <input type="text" name="username" placeholder="Username"
+                            value="{{ old('username', $customer->username ?? '') }}"
+                            class="w-full border-none focus:outline-none p-2" required>
+                    </div>
+
+                    <div class="flex items-center border-b border-gray-300 py-2">
                         <i class="fas fa-phone text-gray-600 mr-3"></i>
-                        <input type="text" name="phone" placeholder="Nomor HP"
-                            value="{{ old('phone', $customer->phone ?? '') }}"
+                        <input type="text" name="kontak" placeholder="Nomor HP"
+                            value="{{ old('kontak', $customer->kontak ?? '') }}"
                             class="w-full border-none focus:outline-none p-2" required>
                     </div>
 
                     <div class="flex items-center border-b border-gray-300 py-2">
                         <i class="fas fa-map-marker-alt text-gray-600 mr-3"></i>
-                        <input type="text" name="address" placeholder="Alamat"
-                            value="{{ old('address', $customer->address ?? '') }}"
+                        <input type="text" name="alamat" placeholder="Alamat"
+                            value="{{ old('alamat', $customer->alamat ?? '') }}"
                             class="w-full border-none focus:outline-none p-2" required>
                     </div>
 
