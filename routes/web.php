@@ -9,13 +9,13 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
 
  //// CUSTOMER GUEST: Hanya bisa diakses jika belum login
  Route::prefix('customer')->middleware('customer.guest')->group(function () {
+    Route::get('/', [CustomerController::class, 'Index'])->name('index');
     Route::get('register', [RegisteredUserController::class, 'create'])->name('customer.register');
     Route::post('register', [RegisteredUserController::class, 'store']);
 
@@ -31,60 +31,22 @@ use Illuminate\Support\Facades\Route;
 
 // CUSTOMER AUTH: Hanya bisa diakses jika sudah login
 Route::middleware('customer')->group(function(){
-    Route::get('/', [CustomerController::class, 'Index'])->name('index');
     Route::get('/atk_dashboard', [CustomerController::class, 'Atk'])->name('atk_dashboard');
     Route::get('/customer/logout', [CustomerController::class, 'CustomerLogout'])->name('customer.logout');
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->middleware(['auth', 'verified'])->name('dashboard');
+
+    // ----------------------------------------------- RUTE UNTUK PROFILE, EDIT, CHANGE PASSWORD -------------------------------------//
     Route::get('/customer/profile', [CustomerController::class, 'CustomerProfile'])->name('customer.profile');
     Route::get('/customer/edit/profile', [CustomerController::class, 'CustomerEditProfile'])->name('customer.edit_profile');
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->middleware(['auth', 'verified'])->name('dashboard');
-
-});
-
-<<<<<<< HEAD
-
-Route::middleware('auth')->group(function () {
     Route::post('/profile/store', [CustomerController::class, 'ProfileStore'])->name('profile.store');
-    
-=======
-// CUSTOMER AUTH: Hanya bisa diakses jika sudah login
-Route::middleware('customer')->group(function () {
-    // Route::get('/', [CustomerController::class, 'Index'])->name('index');
-    Route::get('/atk_dashboard', [CustomerController::class, 'Atk'])->name('atk_dashboard');
-    Route::get('/customer/logout', [CustomerController::class, 'CustomerLogout'])->name('customer.logout');
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->middleware(['auth', 'verified'])->name('dashboard');
 
-    
-});
+    // ----------------------------------------------- RUTE UNTUK CART ---------------------------------------------------//
+    Route::get('/produk/detail', [CustomerController::class, 'CustomerDetailProduct'])->name('produk.detail');
+    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
 
-Route::get('/produk/detail', [CustomerController::class, 'CustomerDetailProduct'])->name('produk.detail');
-
-Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
-
-
-
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// CUSTOMER AUTH
-Route::controller(CustomerController::class)->group(function () {
-    Route::get('/customer/atk-dashboard',  'atkDashboard')->name('customer.atk_dashboard');
-    Route::get('/produk-atk', 'atkDashboard')->name('atk_dashboard');
-    Route::get('/customer/dashboard', 'CustomerDashboard')->name('customer.dashboard');
-    Route::get('/customer/logout', 'CustomerLogout')->name('customer.logout');
-    Route::get('/customer/profile', 'CustomerProfile')->name('customer.profile');
-    Route::get('/customer/profile/edit', 'CustomerEditProfile')->name('customer.profile.edit');
-    Route::put('/customer/profile/update', 'CustomerUpdateProfile')->name('customer.profile.update');
-    Route::get('/customer/change-password', 'CustomerChangePassword')->name('customer.change.password');
-    Route::post('/customer/update-password', 'CustomerUpdatePassword')->name('customer.update.password');
-    Route::post('/customer/forgot-password', 'CustomerForgotPasswordSubmit')->name('customer.forgot_password.submit');
->>>>>>> f178caba8e6022187ed39930a4be590817bb6540
 });
 
 require __DIR__ . '/auth.php';
@@ -152,5 +114,3 @@ Route::middleware('client.guest')->group(function () {
 
 // UNTUK SEMUA PENGGUNA
 Route::get('/changeStatus', [ManageController::class, 'ChangeStatus']);
-
-});
