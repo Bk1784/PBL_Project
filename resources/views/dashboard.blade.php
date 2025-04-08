@@ -8,20 +8,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-[#DBE2EF] font-sans antialiased">
 
-    @php
-    if (Auth::guard('customer')->check()) {
-    $profileRoute = route('customer.profile');
-    $photo = Auth::guard('customer')->user()->photo ?? 'profile_photos/default.jpg';
-    } elseif (Auth::guard('admin')->check()) {
-    $profileRoute = route('admin.profile');
-    $photo = Auth::guard('admin')->user()->photo ?? 'images/logo.jpg';
-    } else {
-    $profileRoute = '#'; // fallback
-    $photo = 'images/logo.jpg';
-    }
-    @endphp
+
+<body class="bg-[#DBE2EF] font-sans antialiased">
 
 
     <!-- Layout Utama -->
@@ -44,7 +33,7 @@
                     <span>⚙️</span> <span>Pengaturan</span>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>👤</span> <a href="">Profile</a>
+                    <span>👤</span> <a href="{{ route('customer.profile') }}">Profile</a>
                 </li>
                 <li class="flex items-center gap-3 text-red-500 hover:text-red-400 transition-all cursor-pointer">
                     <span>🚪</span> <a href="{{ route('customer.logout') }}">Log Out</a>
@@ -61,8 +50,8 @@
                     <input type="text" placeholder="🔍 Pencarian Produk"
                         class="px-4 py-2 w-72 rounded-full bg-white text-gray-700 border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:outline-none transition-all duration-300 shadow-sm">
                     <div class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden">
-                        <a href="{{ $profileRoute }}" class="block">
-                            <img src="{{ asset($photo) }}" alt="Profile" class="w-full h-full object-cover">
+                        <a href="" class="block">
+                            <img src="" alt="Profile" class="w-full h-full object-cover">
                         </a>
                     </div>
                 </div>
