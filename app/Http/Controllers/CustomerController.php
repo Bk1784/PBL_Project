@@ -8,6 +8,7 @@ use App\Mail\Websitemail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Customer;
+use App\Models\Product;
 
 
 class CustomerController extends Controller
@@ -141,5 +142,10 @@ class CustomerController extends Controller
         $customer->save();
 
         return redirect()->route('customer.dashboard')->with('success', 'Password berhasil diperbarui!');
+    }
+
+    public function CustomerDetailProduct(){
+        $product = Product::orderBy('id', 'desc')->get();
+        return view('customer.detail_produk', compact('product'));    
     }
 }
