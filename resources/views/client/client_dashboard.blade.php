@@ -84,6 +84,7 @@
                             @endphp
                             <img src="{{ asset($photo) }}" alt="Profile" class="w-full h-full object-cover">
                         </a>
+
                     </div>
                 </div>
             </div>

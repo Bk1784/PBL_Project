@@ -13,26 +13,26 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
+//CUSTOMER
 Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect('/dashboard'); // Redirect jika sudah login
+    if (Auth::guard('admin')->check()) {
+        return redirect('/admin/dashboard');
+    } elseif (Auth::guard('client')->check()) {
+        return redirect('/client/dashboard');
+    } elseif (Auth::guard('customer')->check()) {
+        return redirect('/customer/dashboard');
     }
     return view('customer.master');
 });
 
-//// CUSTOMER GUEST: Hanya bisa diakses jika belum login
-Route::prefix('customer')->middleware('customer.guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])->name('customer.register');
-    Route::post('register', [RegisteredUserController::class, 'store']);
-
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('customer.login');
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
-
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('customer.password.request');
-    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('customer.password.email');
-
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('customer.password.reset');
-    Route::post('reset-password', [NewPasswordController::class, 'store'])->name('customer.password.store');
+//CUSTOMER GUEST
+Route::middleware('guest:customer')->group(function () {
+    Route::get('/customer/register', [CustomerController::class, 'CustomerRegister'])->name('customer.register');
+    Route::post('/customer/register', [CustomerController::class, 'CustomerRegisterSubmit'])->name('customer.register.submit');
+    Route::get('/customer/login', [CustomerController::class, 'CustomerLogin'])->name('customer.login');
+    Route::post('/customer/login', [CustomerController::class, 'CustomerLoginSubmit'])->name('customer.login_submit');
+    Route::get('/customer/forgot-password', [CustomerController::class, 'CustomerForgotPassword'])->name('customer.forgot_password');
+    Route::post('/customer/forgot-password', [CustomerController::class, 'CustomerForgotPasswordSubmit'])->name('customer.forgot_password.submit');
 });
 
 // CUSTOMER AUTH: Hanya bisa diakses jika sudah login
@@ -59,6 +59,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// CUSTOMER AUTH
+Route::controller(CustomerController::class)->group(function () {
+    Route::get('/customer/atk-dashboard',  'atkDashboard')->name('customer.atk_dashboard');
+    Route::get('/produk-atk', 'atkDashboard')->name('atk_dashboard');
+    Route::get('/customer/dashboard', 'CustomerDashboard')->name('customer.dashboard');
+    Route::get('/customer/logout', 'CustomerLogout')->name('customer.logout');
+    Route::get('/customer/profile', 'CustomerProfile')->name('customer.profile');
+    Route::get('/customer/profile/edit', 'CustomerEditProfile')->name('customer.profile.edit');
+    Route::put('/customer/profile/update', 'CustomerUpdateProfile')->name('customer.profile.update');
+    Route::get('/customer/change-password', 'CustomerChangePassword')->name('customer.change.password');
+    Route::post('/customer/update-password', 'CustomerUpdatePassword')->name('customer.update.password');
+    Route::post('/customer/forgot-password', 'CustomerForgotPasswordSubmit')->name('customer.forgot_password.submit');
 });
 
 require __DIR__ . '/auth.php';
@@ -74,7 +86,7 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
     Route::post('/admin/update/password', [AdminController::class, 'AdminUpdatePassword'])->name('admin.update.password');
 
-    Route::controller(ManageController::class)->group(function(){
+    Route::controller(ManageController::class)->group(function () {
         Route::get('/admin/all/product', 'AdminAllProduct')->name('admin.all.product');
         Route::get('/admin/add/product', 'AdminAddProduct')->name('admin.add.product');
         Route::post('/admin/store/product', 'AdminStoreProduct')->name('admin.product.store');
@@ -96,9 +108,8 @@ Route::middleware('admin.guest')->group(function () {
     Route::post('/admin/password_submit', [AdminController::class, 'AdminPasswordSubmit'])->name('admin.password_submit');
     Route::get('/admin/reset-password/{token}/{email}', [AdminController::class, 'AdminResetPassword']);
     Route::post('admin.reset_password_submit', [AdminController::class, 'AdminResetPasswordSubmit'])->name('admin.reset_password_submit');
-
-    
 });
+
 //CLIENT
     Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->name('client.dashboard');
     
@@ -128,3 +139,4 @@ Route::middleware('client.guest')->group(function () {
 // UNTUK SEMUA PENGGUNA
 Route::get('/changeStatus', [ManageController::class, 'ChangeStatus']);
 
+});

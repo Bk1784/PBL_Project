@@ -48,6 +48,10 @@ return [
             'driver' => 'session',
             'provider' => 'clients',
         ],
+        'customer' => [
+            'driver' => 'session',
+            'provider' => 'customers',
+        ],
     ],
 
     /*
@@ -80,7 +84,10 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\Client::class),
         ],
-
+        'customers' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\Customer::class),
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
@@ -113,7 +120,7 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
-       
+
     ],
 
     /*

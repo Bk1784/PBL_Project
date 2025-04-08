@@ -22,11 +22,14 @@
                 <img src="{{ asset($logo) }}" alt="Logo" class="mx-auto w-32 h-32 object-cover rounded-full">
             </h2>
             <ul class="space-y-4 text-gray-700">
-                <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>🏠</span> <span>Dashboard</span>
+                <li>
+                    <a href="{{ route('customer.dashboard') }}"
+                        class="flex items-center gap-3 hover:text-gray-500 transition-all">
+                        <span>🏠</span> <span>Dashboard</span>
+                    </a>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>📦</span> <span>Produk</span>
+                    <span>📦</span> <a href="{{ route('customer.atk_dashboard') }}">Produk</a>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>🎨</span> <span>Dekorasi</span>
@@ -38,10 +41,10 @@
                     <span>⚙️</span> <span>Pengaturan</span>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>👤</span> <a href="{{ route('client.profile') }}">Profile</a>
+                    <span>👤</span> <a href="{{ route('customer.profile') }}">Profile</a>
                 </li>
                 <li class="flex items-center gap-3 text-red-500 hover:text-red-400 transition-all cursor-pointer">
-                    <span>🚪</span> <a href="{{ route('client.logout') }}">Log Out</a>
+                    <span>🚪</span> <a href="{{ route('customer.logout') }}">Log Out</a>
                 </li>
             </ul>
         </div>
@@ -57,7 +60,7 @@
 
                     <!-- Foto Profil -->
                     <div class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden">
-                        <a href="{{ route('client.profile') }}" class="block">
+                        <a href="{{ route('customer.profile') }}" class="block">
                             @php
                             $customer = Auth::guard('customer')->user();
                             $photo = $customer && $customer->photo ? 'storage/' . $customer->photo :
