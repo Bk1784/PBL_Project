@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 
 
  //// CUSTOMER GUEST: Hanya bisa diakses jika belum login
+ Route::get('/', [CustomerController::class, 'Index'])->name('index');
  Route::prefix('customer')->middleware('customer.guest')->group(function () {
-    Route::get('/', [CustomerController::class, 'Index'])->name('index');
     Route::get('register', [RegisteredUserController::class, 'create'])->name('customer.register');
     Route::post('register', [RegisteredUserController::class, 'store']);
 
@@ -37,7 +37,7 @@ Route::middleware('customer')->group(function(){
         return view('dashboard');
     })->middleware(['auth', 'verified'])->name('dashboard');
 
-    // ----------------------------------------------- RUTE UNTUK PROFILE, EDIT, CHANGE PASSWORD -------------------------------------//
+    // ---------------------------------- RUTE UNTUK PROFILE, EDIT, CHANGE PASSWORD -------------------------------------//
     Route::get('/customer/profile', [CustomerController::class, 'CustomerProfile'])->name('customer.profile');
     Route::get('/customer/edit/profile', [CustomerController::class, 'CustomerEditProfile'])->name('customer.edit_profile');
     Route::post('/profile/store', [CustomerController::class, 'ProfileStore'])->name('profile.store');
@@ -46,6 +46,7 @@ Route::middleware('customer')->group(function(){
     Route::get('/produk/detail', [CustomerController::class, 'CustomerDetailProduct'])->name('produk.detail');
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::get('/checkout', [CartController::class, 'CheckoutToko'])->name('checkout');
 
 });
 
