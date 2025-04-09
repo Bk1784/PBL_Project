@@ -1,19 +1,18 @@
 @extends('dashboard')
- 
+
 @section('content')
- 
+
 <div class="bg-white text-gray-800 p-6 text-sm rounded-lg shadow-md mt-6 border border-gray-300 w-full">
 
     <h3 class="text-xl font-bold text-gray-800 mb-4">Edit Profil Customer</h3>
 
-    <form id="edit-profile-form" action="{{ route('profile.store') }}" method="POST"
-        enctype="multipart/form-data">
+    <form id="edit-profile-form" action="{{ route('profile.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         @php
-       $id = Auth::user()->id;
-       $profileData = App\Models\User::find($id);
-       @endphp
+        $id = Auth::user()->id;
+        $profileData = App\Models\User::find($id);
+        @endphp
 
         @if (session('success'))
         <div class="bg-green-100 text-green-700 p-4 rounded mb-4">
@@ -85,15 +84,16 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         const form = document.getElementById('edit-profile-form');
-        
+
         // Cek jika ada pesan sukses dari session
         @if(session('success'))
-            Swal.fire({
-                title: 'Sukses!',
-                text: '{{ session('success') }}',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
+        Swal.fire({
+            title: 'Sukses!',
+            text: '{{ session('
+            success ') }}',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
         @endif
 
         if (form) {
@@ -120,5 +120,5 @@
     });
     </script>
 </div>
- 
+
 @endsection
