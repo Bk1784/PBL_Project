@@ -13,7 +13,7 @@
         </h2>
         <div class="flex space-x-4 overflow-x-auto p-4 bg-gray-200 rounded-lg">
             <!-- Produk 1 -->
-            <a href="#" class="cursor-pointer">
+            <a href="customer/product/1" class="cursor-pointer">
                 <div
                     class="w-48 p-4 bg-gray-100 rounded-lg shadow-md flex-none hover:scale-105 hover:shadow-lg transform transition">
                     <img src="{{ asset('asset/image1.png') }}" alt="Produk 1" class="w-full h-24 object-cover rounded">
@@ -24,7 +24,7 @@
             </a>
 
             <!-- Produk 2 -->
-            <a href="#" class="cursor-pointer">
+            <a href="customer/product/2" class="cursor-pointer">
                 <div
                     class="w-48 p-4 bg-gray-100 rounded-lg shadow-md flex-none hover:scale-105 hover:shadow-lg transform transition">
                     <img src="{{ asset('asset/image2.png') }}" alt="Produk 2" class="w-full h-24 object-cover rounded">
@@ -35,7 +35,7 @@
             </a>
 
             <!-- Produk 3 -->
-            <a href="#" class="cursor-pointer">
+            <a href="customer/product/3" class="cursor-pointer">
                 <div
                     class="w-48 p-4 bg-gray-100 rounded-lg shadow-md flex-none hover:scale-105 hover:shadow-lg transform transition">
                     <img src="{{ asset('asset/vasbunga.png') }}" alt="Produk 3"
@@ -47,7 +47,7 @@
             </a>
 
             <!-- Produk 4 -->
-            <a href="#" class="cursor-pointer">
+            <a href="customer/product/4" class="cursor-pointer">
                 <div
                     class="w-48 p-4 bg-gray-100 rounded-lg shadow-md flex-none hover:scale-105 hover:shadow-lg transform transition">
                     <img src="{{ asset('asset/stickynote.png') }}" alt="Produk 4"
@@ -59,7 +59,7 @@
             </a>
 
             <!-- Produk 5 -->
-            <a href="#" class="cursor-pointer">
+            <a href="customer/product/5" class="cursor-pointer">
                 <div
                     class="w-48 p-4 bg-gray-100 rounded-lg shadow-md flex-none hover:scale-105 hover:shadow-lg transform transition">
                     <img src="{{ asset('asset/stickynote.png') }}" alt="Produk 5"
@@ -71,7 +71,7 @@
             </a>
 
             <!-- Produk 6 -->
-            <a href="#" class="cursor-pointer">
+            <a href="customer/product/6" class="cursor-pointer">
                 <div
                     class="w-48 p-4 bg-gray-100 rounded-lg shadow-md flex-none hover:scale-105 hover:shadow-lg transform transition">
                     <img src="{{ asset('asset/stickynote.png') }}" alt="Produk 6"
