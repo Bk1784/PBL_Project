@@ -45,6 +45,7 @@ Route::middleware('customer')->group(function(){
     // ----------------------------------------------- RUTE UNTUK CART ---------------------------------------------------//
     Route::get('/customer/product/{id}', [CustomerController::class, 'CustomerDetailProduct']);
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
     Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
 
 });
