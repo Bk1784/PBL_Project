@@ -43,11 +43,13 @@ Route::middleware('customer')->group(function(){
     Route::post('/profile/store', [CustomerController::class, 'ProfileStore'])->name('profile.store');
 
     // ----------------------------------------------- RUTE UNTUK CART ---------------------------------------------------//
-    Route::get('/produk/detail', [CustomerController::class, 'CustomerDetailProduct'])->name('produk.detail');
+    Route::get('/customer/product/{id}', [CustomerController::class, 'CustomerDetailProduct']);
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
 
 });
+
+
 
 require __DIR__ . '/auth.php';
 
