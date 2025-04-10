@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ManageController;
+use App\Http\Controllers\Customer\HomeController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -49,6 +50,9 @@ Route::middleware('customer')->group(function(){
     Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::get('/checkout', [CartController::class, 'CheckoutToko'])->name('checkout');
 
+    Route::controller(HomeController::class)->group(function(){
+        Route::get('/produk/details/{id}', 'DetailProduk')->name('detail_products');
+    });
 });
 
 

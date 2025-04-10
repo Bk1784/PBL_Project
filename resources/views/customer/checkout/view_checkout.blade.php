@@ -7,15 +7,11 @@
                 <!-- Cart Items -->
                 <div class="bg-white p-6 rounded-lg shadow-md border border-gray-300">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Keranjang Belanja</h2>
-
                     <div class="divide-y divide-gray-200">
-
                     <!-- ------------------------ KODE UNTUK JUMLAH ITEM -------------------------------->
                      <p class="mb-4 text-black">{{ count((array) session('cart')) }} ITEMS</p>
 
                     <!-- --------------------------------///////////--------------------------- -->
-                        
-                        
                     @php $total = 0 @endphp
 
                     @if (session('cart'))
@@ -24,15 +20,12 @@
                             $total += $details['price'] * $details['quantity']
                         @endphp
 
-                       
-                    
                     <!-- Item 1 -->
                         <div class="py-4 flex justify-between items-center">
                             <div class="flex items-center space-x-4">
                                 <img src="https://via.placeholder.com/80" alt="Product" class="w-16 h-16 rounded-md object-cover border border-gray-200">
                                 <div>
-                                    <h3 class="font-medium text-gray-800">Pulpen Premium</h3>
-                                    <p class="text-sm text-gray-500">Warna: Hitam</p>
+                                    <h3 class="font-medium text-gray-800">{{ $details['name'] }}</h3>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-4">
@@ -149,5 +142,87 @@
                 </div>
             </div>
 
+
+            <script>
+     $(document).ready(function() {
+        
+        const Toast = Swal.mixin({
+           toast: true,
+           position: 'top-end',
+           showConfirmButton: false,
+           timer: 1500,
+           timerProgressBar: true,
+           didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+           }
+        });
+  
+        $('.inc').on('click', function() {
+           var id = $(this).data('id');
+           var input = $(this).closest('span').find('input');
+           var newQuantity = parseInt(input.val()) + 1;
+           updateQuantity(id,newQuantity);
+        });
+  
+        $('.dec').on('click', function() {
+           var id = $(this).data('id');
+           var input = $(this).closest('span').find('input');
+           var newQuantity = parseInt(input.val()) - 1;
+           if (newQuantity >= 1) {
+              updateQuantity(id,newQuantity);
+           } 
+        });
+  
+        $('.remove').on('click', function() {
+           var id = $(this).data('id');
+           removeFromCart(id);
+        });
+  
+        function updateQuantity(id,quantity){
+           $.ajax({
+              url: '{{ route("cart.updateQuantity") }}',
+              method: 'POST',
+              data: {
+                 _token: '{{ csrf_token() }}',
+                 id: id,
+                 quantity: quantity
+              },
+              success: function(response){
+                 Toast.fire({
+                    icon: 'success',
+                    title: 'Quantity Updated'
+                 }).then(() => {
+                    location.reload();
+                 });
+  
+              }
+           })
+        }
+  
+        function removeFromCart(id){
+           $.ajax({
+              url: '{{ route("cart.remove") }}',
+              method: 'POST',
+              data: {
+                 _token: '{{ csrf_token() }}',
+                 id: id
+              },
+              success: function(response){
+  
+                 Toast.fire({
+                    icon: 'success',
+                    title: 'Cart Remove Successfully'
+                 }).then(() => {
+                    location.reload();
+                 });
+  
+              }
+           });
+        }
+  
+     })
+   </script>
+ 
 
 @endsection
