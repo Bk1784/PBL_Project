@@ -14,7 +14,7 @@
             <div class="flex flex-col lg:flex-row">
                 <!-- Gambar Produk (30% width) -->
                 <div class="w-[300px] h-[300px] rounded-full overflow-hidden border-4 border-white shadow-lg">
-                <img src="{{ asset('upload/product/'.$product->image) }}" 
+                <img src="{{ asset($product->image) }}" 
                         class="w-full h-full object-cover" 
                         alt="{{ $product->name }}">
             </div>
@@ -56,31 +56,6 @@
                                     {{ $product->qty > 10 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
                             {{ $product->qty > 10 ? 'Stok Tersedia' : 'Stok Terbatas' }}: {{ $product->qty }} pcs
                         </span>
-                    </div>
-                    
-                    <!-- Grid Informasi Produk -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-700 mb-3">Informasi Produk</h3>
-                            <div class="space-y-2">
-                                <p><span class="text-gray-500">Kategori:</span> <span class="font-medium">{{ $product->category ?? 'Alat Kantor' }}</span></p>
-                                <p><span class="text-gray-500">Berat:</span> <span class="font-medium">0.5 kg</span></p>
-                                <p><span class="text-gray-500">Merek:</span> <span class="font-medium">{{ $product->brand ?? 'Merek Premium' }}</span></p>
-                                <p><span class="text-gray-500">SKU:</span> <span class="font-medium">PRD-{{ $product->id }}</span></p>
-                            </div>
-                        </div>
-                        
-                        <!-- Informasi Pengiriman -->
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-700 mb-3">Informasi Pengiriman</h3>
-                            @foreach($customer as $custom)
-                            <div class="space-y-2">
-                                <p><span class="text-gray-500">Dikirim ke:</span> <span class="font-medium">{{ $custom->address }}</span></p>
-                                <p><span class="text-gray-500">Estimasi:</span> <span class="font-medium">2-3 hari kerja</span></p>
-                                <p><span class="text-gray-500">Pengiriman:</span> <span class="font-medium">Reguler</span></p>
-                            </div>
-                            @endforeach
-                        </div>
                     </div>
                 </div>
             </div>

@@ -67,6 +67,16 @@
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium">Deskripsi</label>
+                    <textarea name="description" id="description" maxlength="65535" rows="5" oninput="updateCharCounter()" required
+                        class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300 h-32"
+                        rows="4">{{ old('description', $product->description) }}</textarea>
+                        <small class="text-muted"><span id="charCount">0</span>/65535 characters</small>
+                    @error('description')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
                 <div class="flex items-center space-x-4">
                     <button type="submit"
                         class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
@@ -82,6 +92,28 @@
     </form>
 
 </div>
+
+<script>
+    function updateCharCounter() {
+        const textarea = document.getElementById('description');
+        const charCount = document.getElementById('charCount');
+        const currentLength = textarea.value.length;
+        
+        charCount.textContent = currentLength;
+        
+        // Optional: Change color when approaching limit
+        if (currentLength > 60000) {
+            charCount.style.color = 'red';
+        } else {
+            charCount.style.color = '';
+        }
+    }
+    
+    // Initialize counter on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCharCounter();
+    });
+</script>
 
 <script>
     $(document).ready(function() {
