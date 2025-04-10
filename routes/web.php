@@ -98,6 +98,8 @@ Route::middleware('admin.guest')->group(function () {
     Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->name('client.dashboard');
     
 Route::middleware(['status','client'])->group(function () {
+    Route::get('/client/pesanan', [ClientController::class, 'ClientPesanan'])->name('client.pesanan');
+    Route::get('/client/laporan', [ClientController::class, 'ClientLaporan'])->name('client.laporan');
     Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');
     Route::get('/client/profile', [ClientController::class, 'profile'])->name('client.profile');
     Route::get('/client/profile/edit', [ClientController::class, 'editProfile'])->name('client.edit.profile');
