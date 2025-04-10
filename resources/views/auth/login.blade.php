@@ -47,9 +47,11 @@
                 <button type="submit"
                     class="w-full bg-gray-300 text-black py-2 rounded-full font-bold mt-2 hover:bg-gray-400">Submit</button>
                 <p class="text-gray-500 text-sm my-3">ATAU</p>
-                <p class="text-sm font-bold"><a href="{{ route('register') }}" class="text-black">DAFTAR</a> jika belum
+
+                <p class="text-sm font-bold"><a href="{{ route('register') }}" class="text-black">DAFTAR</a> tidak
                     memiliki akun</p>
-                <a href="" class="text-blue-500 text-sm underline">Forgot Password?</a>
+                <a href="{{ route('customer.password.request') }}" class="text-blue-500 text-sm underline">Forget
+                    Password?</a>
             </div>
             <div class="w-1/2 flex justify-center items-center">
                 <img src="{{ asset('images/logo.jpg') }}" alt="Profile Image"

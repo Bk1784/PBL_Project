@@ -33,6 +33,9 @@
                     <span>⚙️</span> <span>Pengaturan</span>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
+                    <span>💳</span> <a href="{{ route('checkout') }}">Checkout</a>
+                </li>
+                <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>👤</span> <a href="{{ route('customer.profile') }}">Profile</a>
                 </li>
                 <li class="flex items-center gap-3 text-red-500 hover:text-red-400 transition-all cursor-pointer">

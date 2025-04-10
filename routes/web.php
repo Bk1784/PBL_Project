@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ManageController;
+use App\Http\Controllers\Customer\HomeController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -14,8 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 
  //// CUSTOMER GUEST: Hanya bisa diakses jika belum login
+ Route::get('/', [CustomerController::class, 'Index'])->name('index');
  Route::prefix('customer')->middleware('customer.guest')->group(function () {
-    Route::get('/', [CustomerController::class, 'Index'])->name('index');
     Route::get('register', [RegisteredUserController::class, 'create'])->name('customer.register');
     Route::post('register', [RegisteredUserController::class, 'store']);
 
@@ -37,17 +38,24 @@ Route::middleware('customer')->group(function(){
         return view('dashboard');
     })->middleware(['auth', 'verified'])->name('dashboard');
 
-    // ----------------------------------------------- RUTE UNTUK PROFILE, EDIT, CHANGE PASSWORD -------------------------------------//
+    // ---------------------------------- RUTE UNTUK PROFILE, EDIT, CHANGE PASSWORD -------------------------------------//
     Route::get('/customer/profile', [CustomerController::class, 'CustomerProfile'])->name('customer.profile');
     Route::get('/customer/edit/profile', [CustomerController::class, 'CustomerEditProfile'])->name('customer.edit_profile');
     Route::post('/profile/store', [CustomerController::class, 'ProfileStore'])->name('profile.store');
 
     // ----------------------------------------------- RUTE UNTUK CART ---------------------------------------------------//
-    Route::get('/produk/detail', [CustomerController::class, 'CustomerDetailProduct'])->name('produk.detail');
+    Route::get('/customer/product/{id}', [CustomerController::class, 'CustomerDetailProduct']);
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
     Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::get('/checkout', [CartController::class, 'CheckoutToko'])->name('checkout');
 
+    Route::controller(HomeController::class)->group(function(){
+        Route::get('/produk/details/{id}', 'DetailProduk')->name('detail_products');
+    });
 });
+
+
 
 require __DIR__ . '/auth.php';
 
