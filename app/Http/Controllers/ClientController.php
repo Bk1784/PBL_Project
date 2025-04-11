@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\ClientMail;
 use App\Models\Client;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -172,7 +173,41 @@ class ClientController extends Controller
 
     public function ClientPesanan()
     {
-        return view('client.pesanan');
+        $client = Auth::guard('client')->user();
+        $orders = Order::with('product')
+            ->where('client_id', $client->id)
+            ->where('status', '!=', 'completed')
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+        return view('client.pesanan', compact('orders'));
+    }
+
+    public function executeOrder($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->status = 'completed';
+        $order->save();
+
+        return redirect()->back()->with('success', 'Pesanan berhasil dieksekusi');
+    }
+
+    public function orderDetails($id)
+    {
+        $order = Order::with('product')->findOrFail($id);
+        return view('client.order_details', compact('order'));
+    }
+
+    public function executedOrders()
+    {
+        $client = Auth::guard('client')->user();
+        $orders = Order::with('product')
+            ->where('client_id', $client->id)
+            ->where('status', 'completed')
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+        return view('client.executed_pesanan', compact('orders'));
     }
 
     public function ClientLaporan()

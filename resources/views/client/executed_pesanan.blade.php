@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold mb-6">Daftar Pesanan</h1>
+    <h1 class="text-2xl font-bold mb-6">Pesanan Terkirim</h1>
     
     @if($orders->isEmpty())
         <div class="bg-white rounded-lg shadow p-6 text-center">
-            <p class="text-gray-500">Belum ada pesanan</p>
+            <p class="text-gray-500">Belum ada pesanan terkirim</p>
         </div>
     @else
         <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -17,13 +17,12 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Harga</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($orders as $order)
-                        <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('client.pesanan.details', $order->id) }}'">
+                        <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0 h-10 w-10">
@@ -39,13 +38,6 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 Rp {{ number_format($order->total_price, 0, ',', '.') }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    {{ $order->status == 'completed' ? 'bg-green-100 text-green-800' : 
-                                       ($order->status == 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                    {{ ucfirst($order->status) }}
-                                </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ $order->created_at->format('d M Y') }}
