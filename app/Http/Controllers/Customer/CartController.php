@@ -68,4 +68,35 @@ class CartController extends Controller
             'message' => 'Item not found in cart'
         ], 404);
     }
+
+    public function CartRemove(Request $request)
+    {
+        $cart = session()->get('cart', []);
+        $total = 0;
+        $totalItems = 0;
+
+        if(isset($cart[$request->id])) {
+            // Hapus item dari cart
+            unset($cart[$request->id]);
+            session()->put('cart', $cart);
+
+            // Hitung ulang total
+            foreach($cart as $item) {
+                $total += $item['price'] * $item['qty'];
+                $totalItems += $item['qty'];
+            }
+
+            return response()->json([
+                'success' => true,
+                'grandTotal' => $total,
+                'cartCount' => count($cart),
+                'message' => 'Item berhasil dihapus'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Item tidak ditemukan'
+        ], 404);
+    }
 }
