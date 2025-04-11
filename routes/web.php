@@ -49,6 +49,7 @@ Route::middleware('customer')->group(function(){
     Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
     Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::get('/checkout', [CartController::class, 'CheckoutToko'])->name('checkout');
+    Route::post('/cart/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
 
     Route::controller(HomeController::class)->group(function(){
         Route::get('/produk/details/{id}', 'DetailProduk')->name('detail_products');
@@ -83,6 +84,14 @@ Route::middleware('admin')->group(function () {
         Route::get('/clientchangeStatus', 'ClientChangeStatus');
         Route::get('/approve/toko', 'ApproveToko')->name('approve.toko');
     });
+    
+    Route::controller(ManageOrderController::class)->group(function(){
+        Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
+        Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');        
+
+    });
+
+
 });
 //ADMIN GUEST
 Route::middleware('admin.guest')->group(function () {

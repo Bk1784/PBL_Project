@@ -44,7 +44,6 @@ class CartController extends Controller
         return response()->json(['success' => 'Product removed from cart']);
     }
     public function CheckoutToko(){
-
         return view('customer.checkout.view_checkout');
         // if (Auth::check()) {
         //     $cart = session()->get('cart',[]);
@@ -69,5 +68,26 @@ class CartController extends Controller
         //     return redirect()->route('login')->with($notification); 
         // } 
     }
-    //End Method 
+
+    public function updateQuantity(Request $request)
+    {
+      
+        $id = $request->id;
+        $quantity = $request->quantity;
+    
+        // Ambil cart dari session
+        $cart = session()->get('cart');
+    
+        // Jika item ada di dalam cart, update quantity-nya
+        if(isset($cart[$id])) {
+            $cart[$id]['quantity'] = $quantity;
+            session()->put('cart', $cart); // Simpan kembali ke session
+        }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Quantity updated successfully'
+        ]);
+    }
+    
 }
