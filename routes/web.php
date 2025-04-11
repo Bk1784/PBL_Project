@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ManageController;
+use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\HomeController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminController;
@@ -10,7 +11,6 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -45,10 +45,9 @@ Route::middleware('customer')->group(function(){
 
     // ----------------------------------------------- RUTE UNTUK CART ---------------------------------------------------//
     Route::get('/customer/product/{id}', [CustomerController::class, 'CustomerDetailProduct']);
-    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-    Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
-    Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
-    Route::get('/checkout', [CartController::class, 'CheckoutToko'])->name('checkout');
+    Route::controller(CartController::class)->group(function(){
+        Route::get('/add_to_cart/{id}', 'AddToCart')->name('add_to_cart');
+    });
 
     Route::controller(HomeController::class)->group(function(){
         Route::get('/produk/details/{id}', 'DetailProduk')->name('detail_products');

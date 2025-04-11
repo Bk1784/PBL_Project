@@ -24,13 +24,8 @@
                     <!-- Header Produk -->
                     <div class="flex justify-between items-start mb-4">
                         <h1 class="text-2xl font-bold text-gray-800">{{ $product->name }}</h1>
-                        <button onclick="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})" 
-                                class="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full shadow-md transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 6h13l-1.5-6M7 13h10M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" />
-                            </svg>
-                            Tambah ke Keranjang
-                        </button>
+                        <a href="{{ route('add_to_cart', $product->id) }}" class="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full shadow-md transition">🧺 Tambah Keranjang</a>
+                        
                     </div>
                     
                     <!-- Rating dan Harga -->
@@ -63,22 +58,6 @@
     </div>
 </body>
 
-<script>
-    function addToCart(id, name, price) {
-        fetch("{{ route('cart.add') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ id, name, price })
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.success); 
-            // Bisa ditambahkan update counter keranjang di sini
-        });
-    }
-</script>
+
 
 @endsection
