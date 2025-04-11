@@ -34,4 +34,38 @@ class CartController extends Controller
         return redirect()->back()->with($notification);
 
     }
+
+    public function UpdateCartQuantity(Request $request) {
+        $cart = session()->get('cart', []);
+        $grandTotal = 0;
+        $totalItems = 0;
+    
+        if(isset($cart[$request->id])) {
+            // Update quantity
+            $cart[$request->id]['quantity'] = $request->quantity;
+            
+            // Hitung ulang total
+            foreach($cart as $item) {
+                $grandTotal += $item['price'] * $item['quantity'];
+                $totalItems += $item['quantity'];
+            }
+            
+            session()->put('cart', $cart);
+    
+            // Return JSON response
+            return response()->json([
+                'success' => true,
+                'price' => (float)$cart[$request->id]['price'],
+                'grandTotal' => (float)$grandTotal,
+                'totalItems' => (int)$totalItems,
+                'cart' => $cart,
+                'message' => 'Cart Updated Successfully'
+            ]);
+        }
+    
+        return response()->json([
+            'success' => false,
+            'message' => 'Item not found in cart'
+        ], 404);
+    }
 }
