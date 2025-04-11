@@ -41,7 +41,13 @@
                     <span>🎨</span> <span>Dekorasi</span>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
+                    <span>🛒</span> <a href="{{ route('client.pesanan') }}">Pesanan</a>
+                </li>
+                <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>💳</span> <span>Pembayaran</span>
+                </li>
+                <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
+                    <span>📑</span> <a href="{{ route('client.laporan') }}">Laporan</a>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>⚙️</span> <span>Pengaturan</span>

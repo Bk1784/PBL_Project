@@ -170,6 +170,16 @@ class ClientController extends Controller
         return redirect()->route('client.profile')->with('info', 'Tidak ada perubahan pada profil.');
     }
 
+    public function ClientPesanan()
+    {
+        return view('client.pesanan');
+    }
+
+    public function ClientLaporan()
+    {
+        return view('client.laporan');
+    }
+
     public function ClientChangePassword()
     {
         return view('client.change_password');
