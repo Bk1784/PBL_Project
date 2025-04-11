@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -42,4 +43,31 @@ class CartController extends Controller
 
         return response()->json(['success' => 'Product removed from cart']);
     }
+    public function CheckoutToko(){
+
+        return view('customer.checkout.view_checkout');
+        // if (Auth::check()) {
+        //     $cart = session()->get('cart',[]);
+        //     $totalAmount = 0;
+        //     foreach ($cart as $car) {
+        //         $totalAmount += $car['price'];
+        //     }
+        //     if ($totalAmount < 0) {
+        //        return view('checkout.view_checkout', compact('cart'));
+        //     } else {
+        //         $notification = array(
+        //             'message' => 'Shopping at list one item',
+        //             'alert-type' => 'error'
+        //         ); 
+        //         return redirect()->to('/dashboard')->with($notification);
+        //     } 
+        // }else{
+        //     $notification = array(
+        //         'message' => 'Login terlebih dahulu',
+        //         'alert-type' => 'success'
+        //     );
+        //     return redirect()->route('login')->with($notification); 
+        // } 
+    }
+    //End Method 
 }
