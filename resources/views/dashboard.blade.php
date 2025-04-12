@@ -306,31 +306,32 @@
         });
 
         function updateCart(id, quantity) {
-            $.ajax({
-                url: '{{ route("cart.updateQuantity") }}',
-                method: 'POST',
-                data: {
-                    id: id,
-                    quantity: quantity,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    // Update price display
-                    $('#item-price-' + id).text('Rp' + (response.price * quantity));
+    $.ajax({
+        url: '{{ route("cart.updateQuantity") }}',
+        method: 'POST',
+        data: {
+            id: id,
+            quantity: quantity,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            // Update price display
+            $('#item-price-' + id).text('Rp' + (response.price * quantity));
 
-                    // Update totals
-                    $('#total-items').text(response.totalItems);
-                    $('#total-price').text('Rp' + response.grandTotal);
-                    $('#cart-count').text(Object.keys(response.cart).length);
+            // Update totals
+            $('#total-items').text(response.totalItems);
+            $('#total-price').text('Rp' + response.grandTotal);
+            $('#cart-count').text(Object.keys(response.cart).length);
 
-                    toastr.success('Keranjang berhasil diperbarui');
-                },
-                error: function(xhr) {
-                    toastr.error('Gagal memperbarui keranjang');
-                    location.reload(); // Fallback
-                }
-            });
+            toastr.success('Keranjang berhasil diperbarui');
+        },
+        error: function(xhr) {
+            toastr.error('Gagal memperbarui keranjang');
+            console.error(xhr.responseText);
+            location.reload();
         }
+    });
+}
 
         function removeItem(id) {
             $.ajax({

@@ -49,19 +49,12 @@ Route::middleware('customer')->group(function () {
 
     // ----------------------------------------------- RUTE UNTUK CART ---------------------------------------------------//
     Route::get('/customer/product/{id}', [CustomerController::class, 'CustomerDetailProduct']);
-
-    // Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-    // Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
-    // Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
-    // Route::post('/cart/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
-
     Route::controller(CartController::class)->group(function () {
         Route::get('/add_to_cart/{id}', 'AddToCart')->name('add_to_cart');
         Route::post('/cart/update-quantity', 'UpdateCartQuantity')->name('cart.updateQuantity');
         Route::post('/cart/remove', 'CartRemove')->name('cart.remove');
         Route::get('/checkout', 'CheckoutProduk')->name('customer.checkout.view_checkout');
-        
-
+        Route::post('/cart/sync', [CartController::class, 'sync'])->name('cart.sync');
     });
 
     Route::controller(HomeController::class)->group(function () {

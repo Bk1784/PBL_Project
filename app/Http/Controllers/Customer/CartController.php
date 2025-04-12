@@ -44,15 +44,16 @@ class CartController extends Controller
     
         if(isset($cart[$request->id])) {
             // Update quantity
-            $cart[$request->id]['quantity'] = $request->quantity;
+            $cart[$request->id]['qty'] = $request->quantity;
             
             // Hitung ulang total
             foreach($cart as $item) {
-                $grandTotal += $item['price'] * $item['quantity'];
-                $totalItems += $item['quantity'];
+                $grandTotal += $item['price'] * $item['qty'];
+                $totalItems += $item['qty'];
             }
             
             session()->put('cart', $cart);
+            session()->save();
     
             // Return JSON response
             return response()->json([
