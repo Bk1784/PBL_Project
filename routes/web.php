@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ManageController;
+use App\Http\Controllers\Admin\ManageOrderController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\HomeController;
 use App\Http\Controllers\Customer\OrderController;
@@ -53,14 +54,14 @@ Route::middleware('customer')->group(function () {
     // Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
     // Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
     // Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
-    // Route::get('/checkout', [CartController::class, 'CheckoutToko'])->name('checkout');
     // Route::post('/cart/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
 
     Route::controller(CartController::class)->group(function () {
         Route::get('/add_to_cart/{id}', 'AddToCart')->name('add_to_cart');
         Route::post('/cart/update-quantity', 'UpdateCartQuantity')->name('cart.updateQuantity');
         Route::post('/cart/remove', 'CartRemove')->name('cart.remove');
-        Route::get('/checkout', 'CheckoutView')->name('customer.checkout.view_checkout');
+        Route::get('/checkout', 'CheckoutProduk')->name('customer.checkout.view_checkout');
+        
 
     });
 
@@ -101,8 +102,8 @@ Route::middleware('admin')->group(function () {
     });
     
     Route::controller(ManageOrderController::class)->group(function(){
-        Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
-        Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');        
+        Route::get('/order/order/list', [ManageOrderController::class, 'orderList'])->name('user.orders');
+        Route::get('/order/{id}', [ManageOrderController::class, 'show'])->name('user.order.details');        
 
     });
 
