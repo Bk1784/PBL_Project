@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ManageController;
+use App\Http\Controllers\Admin\ManageOrderController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\HomeController;
 use Illuminate\Support\Facades\Auth;
@@ -96,7 +97,7 @@ Route::middleware('admin')->group(function () {
     });
     
     Route::controller(ManageOrderController::class)->group(function(){
-        Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
+        Route::get('/order/order/list', [ManageOrderController::class, 'orderList'])->name('user.orders');
         Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');        
 
     });

@@ -93,10 +93,25 @@
             border-top: 1px solid #e5e7eb;
             z-index: 30;
         }
+<<<<<<< HEAD
 
         .right-bar-content {
             max-height: 200px;
             overflow-y: auto;
+=======
+        
+        .cart-item {
+            transition: all 0.3s ease;
+        }
+        
+        .cart-item-removed {
+            opacity: 0;
+            transform: translateX(-100%);
+            height: 0;
+            padding: 0;
+            margin: 0;
+            border: none;
+>>>>>>> d43b998 (sudah bisa cart tapi masih banyak bug)
         }
     }
 
@@ -196,7 +211,6 @@
                     </div>
                 </div>
 
-                <!-- Konten yang akan berubah -->
                 @yield('content')
 
                 <!-- Footer -->
@@ -318,7 +332,7 @@
                         </ul>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 

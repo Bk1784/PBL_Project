@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\Customer;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -100,9 +102,33 @@ class CartController extends Controller
         ], 404);
     }
 
-    public function CheckoutView(){
-        return view('customer.checkout.view_checkout');
+    public function CheckoutProduk(){
+        if(Auth::check()){
+            $cart = session()->get('cart', []);
+            $totalAmount = 0;
+            foreach($cart as $car){
+                $totalAmount += $car['price'];
+            }
+            if ($totalAmount > 0) {
+                return view('customer.checkout.view_checkout', compact('cart'));
+            } else {
+                $notification = array(
+                    'message' => 'Setidaknya membeli 1 produk',
+                    'alert-type' => 'error'
+                );
+        
+                return redirect()->to('/')->with($notification);
+        
+            }
+            
+        }else{
+            $notification = array(
+                'message' => 'Please Login First',
+                'alert-type' => 'success'
+            );
+    
+            return redirect()->route('login')->with($notification);
+    
+        }
     }
-
-
 }
