@@ -1,5 +1,5 @@
 @extends('dashboard')
- 
+
 @section('content')
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -7,41 +7,40 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
 @php
-    $id = Auth::user()->id;
-    $profileData = App\Models\User::find($id);
+$id = Auth::user()->id;
+$profileData = App\Models\User::find($id);
 @endphp
 
 <!-- Script untuk menampilkan Toastr -->
 <script>
-    @if(Session::has('message'))
-        var type = "{{ Session::get('alert-type', 'info') }}";
-        switch(type){
-            case 'info':
-                toastr.info("{{ Session::get('message') }}");
-                break;
-            
-            case 'warning':
-                toastr.warning("{{ Session::get('message') }}");
-                break;
-            
-            case 'success':
-                toastr.success("{{ Session::get('message') }}");
-                break;
-            
-            case 'error':
-                toastr.error("{{ Session::get('message') }}");
-                break;
-        }
-    @endif
+@if(Session::has('message'))
+var type = "{{ Session::get('alert-type', 'info') }}";
+switch (type) {
+    case 'info':
+        toastr.info("{{ Session::get('message') }}");
+        break;
+
+    case 'warning':
+        toastr.warning("{{ Session::get('message') }}");
+        break;
+
+    case 'success':
+        toastr.success("{{ Session::get('message') }}");
+        break;
+
+    case 'error':
+        toastr.error("{{ Session::get('message') }}");
+        break;
+}
+@endif
 </script>
- 
+
 <div class="bg-white text-gray-800 p-6 flex justify-between text-sm rounded-lg shadow-md mt-6 border border-gray-300">
     <div class="flex items-center gap-6">
         <!-- Foto Profil -->
         <div class="w-1/4 flex justify-center">
-            <img src="{{ (!empty($profileData->photo)) ? url('upload/user_images/'.$profileData->photo) : url('upload/no_image.jpg') }}" 
-                 alt="Profile Picture"
-                 class="rounded-full w-40 h-40 object-cover shadow-md">
+            <img src="{{ (!empty($profileData->photo)) ? url('upload/user_images/'.$profileData->photo) : url('upload/no_image.jpg') }}"
+                alt="Profile Picture" class="rounded-full w-40 h-40 object-cover shadow-md">
         </div>
 
         <!-- Informasi Client (Grid) -->
@@ -53,7 +52,7 @@
                 <strong>Username:</strong> {{ $profileData->name }}
             </div>
             <div class="border p-3 rounded-md">
-                <strong>Email:</strong>  {{ $profileData->email }}
+                <strong>Email:</strong> {{ $profileData->email }}
             </div>
             <div class="border p-3 rounded-md">
                 <strong>Contact:</strong> {{ $profileData->phone }}
@@ -73,7 +72,7 @@
 
         <!-- Tombol Change Password -->
         <div class="w-1/4 flex justify-end">
-            <a href=""
+            <a href="{{ route('customer.change_password') }}"
                 class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 transition text-center whitespace-nowrap">
                 CHANGE PASSWORD
             </a>
