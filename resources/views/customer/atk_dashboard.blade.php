@@ -89,7 +89,7 @@
                         <span>Total Harga:</span>
                         <span class="font-bold" id="total-price">Rp{{ $total }}</span>
                     </div>
-                    <a href="{{ route('checkout') }}">
+                    <a href="{{ route('customer.checkout.view_checkout') }}">
                         <button class="w-full bg-blue-500 text-white py-2 rounded-lg mt-2 hover:bg-blue-600 transition-colors">
                             Checkout
                         </button>
