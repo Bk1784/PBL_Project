@@ -14,9 +14,10 @@ use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 
 
- //// CUSTOMER GUEST: Hanya bisa diakses jika belum login
- Route::get('/', [CustomerController::class, 'Index'])->name('index');
- Route::prefix('customer')->middleware('customer.guest')->group(function () {
+//// CUSTOMER GUEST: Hanya bisa diakses jika belum login
+//CUSTOMER
+Route::get('/', [CustomerController::class, 'Index'])->name('index');
+Route::prefix('customer')->middleware('customer.guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])->name('customer.register');
     Route::post('register', [RegisteredUserController::class, 'store']);
 
@@ -31,7 +32,7 @@ use Illuminate\Support\Facades\Route;
 });
 
 // CUSTOMER AUTH: Hanya bisa diakses jika sudah login
-Route::middleware('customer')->group(function(){
+Route::middleware('customer')->group(function () {
     Route::get('/atk_dashboard', [CustomerController::class, 'Atk'])->name('atk_dashboard');
     Route::get('/customer/logout', [CustomerController::class, 'CustomerLogout'])->name('customer.logout');
     Route::get('/dashboard', function () {
@@ -42,6 +43,8 @@ Route::middleware('customer')->group(function(){
     Route::get('/customer/profile', [CustomerController::class, 'CustomerProfile'])->name('customer.profile');
     Route::get('/customer/edit/profile', [CustomerController::class, 'CustomerEditProfile'])->name('customer.edit_profile');
     Route::post('/profile/store', [CustomerController::class, 'ProfileStore'])->name('profile.store');
+    Route::get('/change-password', [CustomerController::class, 'CustomerChangePassword'])->name('customer.change_password');
+    Route::post('/update-password', [CustomerController::class, 'CustomerUpdatePassword'])->name('customer.update_password');
 
     // ----------------------------------------------- RUTE UNTUK CART ---------------------------------------------------//
     Route::get('/customer/product/{id}', [CustomerController::class, 'CustomerDetailProduct']);
@@ -52,16 +55,16 @@ Route::middleware('customer')->group(function(){
     Route::get('/checkout', [CartController::class, 'CheckoutToko'])->name('checkout');
     Route::post('/cart/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
 
-    Route::controller(CartController::class)->group(function(){
+    Route::controller(CartController::class)->group(function () {
         Route::get('/add_to_cart/{id}', 'AddToCart')->name('add_to_cart');
+        Route::post('/cart/update-quantity', 'UpdateCartQuantity')->name('cart.updateQuantity');
+        Route::post('/cart/remove', 'CartRemove')->name('cart.remove');
     });
 
-    Route::controller(HomeController::class)->group(function(){
+    Route::controller(HomeController::class)->group(function () {
         Route::get('/produk/details/{id}', 'DetailProduk')->name('detail_products');
     });
 });
-
-
 
 require __DIR__ . '/auth.php';
 
@@ -84,7 +87,7 @@ Route::middleware('admin')->group(function () {
         Route::put('/admin/update/product', 'AdminUpdateProduct')->name('admin.update.product');
         Route::get('/admin/delete/product/{id}', 'AdminDeleteProduct')->name('admin.delete.product');
     });
-    Route::controller(ManageController::class)->group(function(){
+    Route::controller(ManageController::class)->group(function () {
         Route::get('/pending/toko', 'PendingToko')->name('pending.toko');
         Route::get('/clientchangeStatus', 'ClientChangeStatus');
         Route::get('/approve/toko', 'ApproveToko')->name('approve.toko');
@@ -109,9 +112,14 @@ Route::middleware('admin.guest')->group(function () {
 });
 
 //CLIENT
-    Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->name('client.dashboard');
-    
-Route::middleware(['status','client'])->group(function () {
+Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->name('client.dashboard');
+
+Route::middleware(['status', 'client'])->group(function () {
+    Route::get('/client/pesanan', [ClientController::class, 'ClientPesanan'])->name('client.pesanan');
+    Route::get('/client/pesanan/executed', [ClientController::class, 'executedOrders'])->name('client.pesanan.executed');
+    Route::post('/client/pesanan/execute/{id}', [ClientController::class, 'executeOrder'])->name('client.pesanan.execute');
+    Route::get('/client/pesanan/{id}', [ClientController::class, 'orderDetails'])->name('client.pesanan.details');
+    Route::get('/client/laporan', [ClientController::class, 'ClientLaporan'])->name('client.laporan');
     Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');
     Route::get('/client/profile', [ClientController::class, 'profile'])->name('client.profile');
     Route::get('/client/profile/edit', [ClientController::class, 'editProfile'])->name('client.edit.profile');
