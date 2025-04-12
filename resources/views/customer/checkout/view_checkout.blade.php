@@ -12,45 +12,48 @@
                      <p class="mb-4 text-black">{{ count((array) session('cart')) }} ITEMS</p>
 
                     <!-- --------------------------------///////////--------------------------- -->
-                    @php $total = 0 @endphp
+                    <div class="mb-6 space-y-3 border-b pb-4">
+                        <h3 class="font-semibold text-lg mb-2 flex items-center gap-2">
+                            Pesanan Anda <span id="cart-count">{{ count((array) session('cart')) }}</span> Item
+                        </h3>
 
-                    @if (session('cart'))
-                        @foreach (session('cart') as $id => $details)
-                        @php
-                            $total += $details['price'] * $details['quantity']
-                        @endphp
-
-                    <!-- Item 1 -->
-                        <div class="py-4 flex justify-between items-center">
-                            <div class="flex items-center space-x-4">
-                                <img src="https://via.placeholder.com/80" alt="Product" class="w-16 h-16 rounded-md object-cover border border-gray-200">
-                                <div>
-                                    <h3 class="font-medium text-gray-800">{{ $details['name'] }}</h3>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-4">
-                                <div class="flex items-center border border-gray-300 rounded-md">
-                                    <!-- Icon Minus -->
-                                    <button class="px-3 py-1 text-gray-600 hover:bg-gray-100" data-id="{{ $id }}">-</button> 
-                                    <!-- jumlah barang yang dibeli -->
-                                    <input class="count-number-input" type="text" value="{{ $details['quantity'] }}" readonly="">
-                                    <!-- Icon Plus -->
-                                    <button class="px-3 py-1 text-gray-600 hover:bg-gray-100" data-id="{{ $id }}" >+</button>
-                                </div>
-                                <!------------------------- untuk harga -------------------------->
-                                <p class="font-medium w-24 text-right">Rp{{ $details['price'] * $details['quantity'] }}</p>
-                                     <!------------------------- /// -------------------------->
-                                <button class="text-red-500 hover:text-red-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </button>
-                            </div>
+                        <div id="cart-items">
+                            @php $total = 0; $totalItems = 0; @endphp
+                            @if(session('cart'))
+                                @foreach(session('cart') as $id => $details)
+                                    @php
+                                        $total += $details['price'] * $details['qty'];
+                                        $totalItems += $details['qty'];
+                                    @endphp
+                                    <div class="cart-item flex justify-between items-center py-2" id="cart-item-{{ $id }}">
+                                        <div class="flex items-center gap-4">
+                                            <img src="{{ asset($details['image']) }}" alt="{{ $details['name'] }}" width="50" height="50" class="object-cover">
+                                            <div>
+                                                <h3 class="font-semibold">{{ $details['name'] }}</h3>
+                                                <div class="flex items-center gap-2 mt-1">
+                                                    <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded dec" data-id="{{ $id }}">
+                                                        -
+                                                    </button>
+                                                    <span class="quantity w-6 text-center">{{ $details['qty'] }}</span>
+                                                    <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded inc" data-id="{{ $id }}">
+                                                        +
+                                                    </button>
+                                                    <button class="text-red-500 hover:text-red-700 ml-2 remove-item" data-id="{{ $id }}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span class="font-semibold" id="item-price-{{ $id }}">Rp{{ $details['price'] * $details['qty'] }}</span>
+                                    </div>
+                                @endforeach
+                            @else
+                                <p class="text-gray-500">Keranjang Anda kosong</p>
+                            @endif
                         </div>
-                        
-                        @endforeach
-                    
-                    @endif
+                    </div>
 
                     </div>
                 </div>
@@ -82,15 +85,7 @@
                                 <textarea class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:outline-none transition-all duration-300" rows="3">{{ $profileData->address }}</textarea>
                             </div>
                             
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Kurir Pengiriman</label>
-                                <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:outline-none transition-all duration-300">
-                                    <option>JNE Reguler</option>
-                                    <option>J&T Express</option>
-                                    <option>SiCepat</option>
-                                    <option>POS Indonesia</option>
-                                </select>
-                            </div>
+                          
                         </div>
                     </div>
                     
@@ -99,20 +94,14 @@
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Ringkasan Pembayaran</h2>
                         
                         <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Subtotal</span>
-                                <span class="font-medium">Rp70.000</span>
-                            </div>
                             
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Ongkos Kirim</span>
-                                <span class="font-medium">Rp15.000</span>
-                            </div>
+                            
+                            
                             
                             <div class="border-t border-gray-200 pt-3 mt-3">
                                 <div class="flex justify-between font-bold text-lg">
                                     <span>Total Pembayaran</span>
-                                    <span>Rp85.000</span>
+                                    <span>Rp{{ $details['price'] * $details['qty'] }}</span>
                                 </div>
                             </div>
                             
