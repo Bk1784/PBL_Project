@@ -99,4 +99,10 @@ class CartController extends Controller
             'message' => 'Item tidak ditemukan'
         ], 404);
     }
+
+    public function CheckoutView(){
+        return view('customer.checkout.view_checkout');
+    }
+
+
 }

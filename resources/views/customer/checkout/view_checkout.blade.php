@@ -1,45 +1,9 @@
-@extends('dashboard')
+@extends('dashboard') 
 @section('content')
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <div class="mt-6 space-y-6">
-    <!-- Cart Items -->
-    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-300">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Keranjang Belanja</h2>
-        <div class="divide-y divide-gray-200">
-            <p class="mb-4 text-black">{{ count((array) session('cart')) }} Items</p>
-
-            @php $total = 0 @endphp
-            @if (session('cart'))
-                @foreach (session('cart') as $id => $details)
-                    @php $total += $details['price'] * $details['quantity'] @endphp
-
-                    <div class="py-4 flex justify-between items-center">
-                        <div class="flex items-center space-x-4">
-                            <img src="https://via.placeholder.com/80" alt="Product" class="w-16 h-16 rounded-md object-cover border border-gray-200">
-                            <div>
-                                <h3 class="font-medium text-gray-800">{{ $details['name'] }}</h3>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <div class="flex items-center border border-gray-300 rounded-md">
-                                <button class="px-3 py-1 text-gray-600 hover:bg-gray-100 dec" data-id="{{ $id }}">-</button> 
-                                <input class="count-number-input quantity-input-{{ $id }}" type="text" value="{{ $details['quantity'] }}" readonly>
-                                <button type="button" class="px-3 py-1 text-gray-600 hover:bg-gray-100 inc" data-id="{{ $id }}">+</button>
-                            </div>
-                            <p class="font-medium w-24 text-right">Rp{{ $details['price'] * $details['quantity'] }}</p>
-                            <button class="text-red-500 hover:text-red-700 remove" data-id="{{ $id }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                @endforeach
-            @endif
-        </div>
-    </div>
 
     <!-- Shipping and Payment -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -50,6 +14,7 @@
             @php
                 $id = Auth::user()->id;
                 $profileData = App\Models\User::find($id);          
+                $total = 0;
             @endphp
             
             <div class="space-y-4">
@@ -85,13 +50,23 @@
             <h2 class="text-xl font-bold text-gray-800 mb-4">Ringkasan Pembayaran</h2>
             
             @php
+                $id = Auth::user()->id;
+                $profileData = App\Models\User::find($id);          
+
+                $total = 0;
+                if(session('cart')) {
+                    foreach(session('cart') as $id => $details) {
+                        $total += $details['price'] * $details['qty'];
+                    }
+                }
+
                 $ongkir = 15000;
                 $grandTotal = $total + $ongkir;
             @endphp
 
             <div class="space-y-3">
                 <div class="flex justify-between">
-                    <span class="text-gray-600">Subtotal</span>
+                    <span class="text-gray-600">Total Harga</span>
                     <span class="font-medium" id="subtotal">Rp{{ number_format($total, 0, ',', '.') }}</span>
                 </div>
                 
@@ -133,18 +108,8 @@
     </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
 $(document).ready(function () {
-
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 500,
-        timerProgressBar: true
-    });
-
     function getShippingCost(courier) {
         switch (courier) {
             case 'jne': return 15000;
@@ -164,46 +129,6 @@ $(document).ready(function () {
         $('.shipping-cost').text('Rp' + shipping.toLocaleString('id-ID'));
         $('.grand-total').text('Rp' + grandTotal.toLocaleString('id-ID'));
     });
-
-    $(document).on('click', '.inc', function () {
-        let id = $(this).data('id');
-        let input = $(this).siblings('input');
-        let newQty = parseInt(input.val()) + 1;
-        updateQuantity(id, newQty);
-    });
-
-    $(document).on('click', '.dec', function () {
-        let id = $(this).data('id');
-        let input = $(this).siblings('input');
-        let newQty = parseInt(input.val()) - 1;
-        if (newQty >= 1) updateQuantity(id, newQty);
-    });
-
-    $(document).on('click', '.remove', function () {
-        let id = $(this).data('id');
-        removeFromCart(id);
-    });
-
-    function updateQuantity(id, quantity) {
-        $.post('{{ route("cart.updateQuantity") }}', {
-            _token: '{{ csrf_token() }}',
-            id: id,
-            quantity: quantity
-        }, function () {
-            Toast.fire({ icon: 'success', title: 'Quantity Updated' })
-                .then(() => location.reload());
-        });
-    }
-
-    function removeFromCart(id) {
-        $.post('{{ route("cart.remove") }}', {
-            _token: '{{ csrf_token() }}',
-            id: id
-        }, function () {
-            Toast.fire({ icon: 'success', title: 'Item Removed' })
-                .then(() => location.reload());
-        });
-    }
 });
 </script>
 

@@ -159,7 +159,7 @@
                     <span>🛒</span> <a href="#">Keranjang</a>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>💳</span> <a href="#">Checkout</a>
+                    <span>💳</span> <a href="{{ route ('customer.checkout.view_checkout') }}">Checkout</a>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>👤</span> <a href="{{ route('customer.profile') }}">Profile</a>
@@ -187,7 +187,7 @@
                             <a href="{{ route('customer.profile') }}" class="block">
                                 @php
                                 $user = Auth::guard('admin')->user();
-                                $photo = $user && $admin->photo ? 'storage/' . $user->photo :
+                                $photo = $user && $user->photo ? 'storage/' . $user->photo :
                                 'profile_photos/default.jpg';
                                 @endphp
                                 <img src="{{ asset($photo) }}" alt="Profile" class="w-full h-full object-cover">
@@ -291,10 +291,12 @@
                                 <span>Total Harga:</span>
                                 <span class="font-bold" id="total-price">Rp{{ $total }}</span>
                             </div>
+                            <a href="{{ route('customer.checkout.view_checkout') }}">
                             <button
                                 class="w-full bg-blue-500 text-white py-2 rounded-lg mt-2 hover:bg-blue-600 transition-colors">
                                 Lihat Keranjang
                             </button>
+                            </a>
                         </div>
                     </div>
 
