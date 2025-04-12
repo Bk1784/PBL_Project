@@ -1,3 +1,7 @@
+@extends('dashboard')
+
+@section('content')
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,34 +15,13 @@
 </head>
 <body class="bg-gray-100">
     <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <div class="w-64 bg-white p-5 fixed h-full shadow-md">
-            <h2 class="text-xl font-bold mb-5">Galaxy Store</h2>
-            <a href="{{ route('admin.dashboard') }}" class="block py-2 px-4 text-gray-700 hover:bg-blue-100 rounded mb-2">
-                <i class="fa fa-home mr-2"></i>Dashboard
-            </a>
-            <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-blue-100 rounded mb-2">
-                <i class="fa fa-wallet mr-2"></i>Pembayaran
-            </a>
-            <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-blue-100 rounded mb-2">
-                <i class="fa fa-box mr-2"></i>Produk
-            </a>
-            <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-blue-100 rounded mb-2">
-                <i class="fa fa-paint-brush mr-2"></i>Dekorasi
-            </a>
-            <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-blue-100 rounded mb-2">
-                <i class="fa fa-cog mr-2"></i>Pengaturan
-            </a>
-            <a href="{{ route('admin.logout') }}" class="block py-2 px-4 text-red-500 hover:bg-red-100 rounded">
-                <i class="fa fa-sign-out-alt mr-2"></i>Logout
-            </a>
-        </div>
 
         <!-- Content -->
         <div class="ml-64 p-6 w-full">
             <div class="container mx-auto">
-                <div class="bg-white shadow-md rounded-lg p-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">Edit Profil Admin</h3>
+            <div class="bg-white text-gray-800 p-6 text-sm rounded-lg shadow-md mt-6 border border-gray-300 w-full max-w-5xl mx-auto">
+
+                    <h3 class="text-xl font-bold text-gray-800\ mb-4">Edit Profil Admin</h3>
 
                     @if (session('success'))
                         <div class="bg-green-100 text-green-700 p-4 rounded mb-4">
@@ -49,12 +32,13 @@
                     <form id="edit-profile-form" action="{{ route('admin.update.profile') }}" method="POST" enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="text-center">
+
+                           <div class="flex flex-col md:flex-row gap-6">
+                            <div class="w-full md:w-1/3 text-center">
                                 <img src="{{ asset('storage/' . $admin->photo) }}" alt="Profile Picture" class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300">
                                 <input type="file" name="photo" class="mt-4 block w-full text-sm text-gray-600 border border-gray-300 rounded p-2">
                             </div>
-                            <div class="col-span-2">
+                            <div class="w-full md:w-2/3">
                                 <div class="mb-4">
                                     <label class="block text-gray-700 font-medium">Name</label>
                                     <input type="text" name="name" class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300" value="{{ $admin->name }}" required>
@@ -102,3 +86,6 @@
     </script>
 </body>
 </html>
+
+@endsection
+
