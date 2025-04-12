@@ -65,7 +65,7 @@ Route::middleware('customer')->group(function () {
 
     });
 
-    Route::controller(OrderController::class)->group(function () {
+    Route::controller(HomeController::class)->group(function () {
         Route::get('/produk/details/{id}', 'DetailProduk')->name('detail_products');
     });
 
