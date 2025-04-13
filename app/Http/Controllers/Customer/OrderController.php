@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Customer;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,4 +61,3 @@ class OrderController extends Controller
         return $pdf->download('invoice_'.$order->invoice_no.'.pdf');
     }
 }
-

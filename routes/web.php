@@ -64,7 +64,6 @@ Route::middleware('customer')->group(function () {
 
     Route::controller(OrderController::class)->group(function () {
         Route::get('/orders', 'index')->name('customer.orders.all_orders');
-
         Route::post('/cash_order', 'CashOrder')->name('cash_order');
     });
 });
@@ -98,23 +97,17 @@ Route::middleware('admin')->group(function () {
     });
 
 
+
     Route::controller(ManageOrderController::class)->group(function () {
         Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
         Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');
-
-    
-    Route::controller(ManageOrderController::class)->group(function(){
-        Route::get('/order/order/list', [ManageOrderController::class, 'orderList'])->name('user.orders');
-        Route::get('/order/{id}', [ManageOrderController::class, 'show'])->name('user.order.details');        
-
 
         Route::get('/orders/pending', 'PendingOrders')->name('admin.pending.orders');
         Route::get('/orders/confirm', 'ConfirmOrders')->name('admin.confirm.orders');
         Route::get('/orders/processing', 'ProcessingOrders')->name('admin.processing.orders');
         Route::get('/orders/delivered', 'DeliveredOrders')->name('admin.delivered.orders');
         Route::get('/orders/details/{id}', 'OrderDetails')->name('admin.order.details');
-    });
-});
+    });    
 
 //ADMIN GUEST
 Route::middleware('admin.guest')->group(function () {
@@ -153,9 +146,6 @@ Route::middleware('client.guest')->group(function () {
     Route::get('client/reset-password/{token}/{email}', [ClientController::class, 'ClientResetPassword']);
     Route::post('/client/reset_password_submit', [ClientController::class, 'ClientResetPasswordSubmit'])->name('client.reset_password_submit');
 });
-
-
-
 
 // UNTUK SEMUA PENGGUNA
 Route::get('/changeStatus', [ManageController::class, 'ChangeStatus']);
