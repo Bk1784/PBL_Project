@@ -93,11 +93,11 @@
             border-top: 1px solid #e5e7eb;
             z-index: 30;
         }
-        
+
         .cart-item {
             transition: all 0.3s ease;
         }
-        
+
         .cart-item-removed {
             opacity: 0;
             transform: translateX(-100%);
@@ -214,11 +214,9 @@
                         <div class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden shrink-0">
                             <a href="{{ route('customer.profile') }}" class="block">
                                 @php
-<<<<<<< HEAD
+                                HEAD
                                 $user = Auth::guard('customer')->user();
-=======
                                 $user = Auth::guard('admin')->user();
->>>>>>> 54f8835e0daa3c33b3ac5b3711778088801a8a57
                                 $photo = $user && $user->photo ? 'storage/' . $user->photo :
                                 'profile_photos/default.jpg';
                                 @endphp
@@ -249,161 +247,163 @@
                 </div>
             </div>
 
-           
-    </div>
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        </div>
 
-    <script>
-    @if(Session::has('message'))
-    var type = "{{ Session::get('alert-type','info') }}"
-    switch (type) {
-        case 'info':
-            toastr.info(" {{ Session::get('message') }} ");
-            break;
-        case 'success':
-            toastr.success(" {{ Session::get('message') }} ");
-            break;
-        case 'warning':
-            toastr.warning(" {{ Session::get('message') }} ");
-            break;
-        case 'error':
-            toastr.error(" {{ Session::get('message') }} ");
-            break;
-    }
-    @endif
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js">
+        </script>
 
-    // Mobile menu toggle
-    $(document).ready(function() {
-        $('.mobile-menu-button').click(function() {
-            $('.sidebar').addClass('active');
-            $('.overlay').addClass('active');
+        <script>
+        @if(Session::has('message'))
+        var type = "{{ Session::get('alert-type','info') }}"
+        switch (type) {
+            case 'info':
+                toastr.info(" {{ Session::get('message') }} ");
+                break;
+            case 'success':
+                toastr.success(" {{ Session::get('message') }} ");
+                break;
+            case 'warning':
+                toastr.warning(" {{ Session::get('message') }} ");
+                break;
+            case 'error':
+                toastr.error(" {{ Session::get('message') }} ");
+                break;
+        }
+        @endif
+
+        // Mobile menu toggle
+        $(document).ready(function() {
+            $('.mobile-menu-button').click(function() {
+                $('.sidebar').addClass('active');
+                $('.overlay').addClass('active');
+            });
+
+            $('.close-sidebar, .overlay').click(function() {
+                $('.sidebar').removeClass('active');
+                $('.overlay').removeClass('active');
+            });
         });
+        </script>
 
-        $('.close-sidebar, .overlay').click(function() {
-            $('.sidebar').removeClass('active');
-            $('.overlay').removeClass('active');
-        });
-    });
-    </script>
+        <script>
+        $(document).ready(function() {
+            // Setup CSRF token for all AJAX requests
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
 
-    <script>
-    $(document).ready(function() {
-        // Setup CSRF token for all AJAX requests
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        // Increment quantity
-        $(document).on('click', '.inc', function(e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            var quantityElement = $(this).siblings('.quantity');
-            var currentQuantity = parseInt(quantityElement.text());
-            var newQuantity = currentQuantity + 1;
-            quantityElement.text(newQuantity);
-            updateCart(id, newQuantity);
-        });
-
-        // Decrement quantity
-        $(document).on('click', '.dec', function(e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            var quantityElement = $(this).siblings('.quantity');
-            var currentQuantity = parseInt(quantityElement.text());
-            if (currentQuantity > 1) {
-                var newQuantity = currentQuantity - 1;
+            // Increment quantity
+            $(document).on('click', '.inc', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var quantityElement = $(this).siblings('.quantity');
+                var currentQuantity = parseInt(quantityElement.text());
+                var newQuantity = currentQuantity + 1;
                 quantityElement.text(newQuantity);
                 updateCart(id, newQuantity);
-            }
-        });
+            });
 
-        // Remove item
-        $(document).on('click', '.remove-item', function(e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
-                removeItem(id);
-            }
-        });
+            // Decrement quantity
+            $(document).on('click', '.dec', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var quantityElement = $(this).siblings('.quantity');
+                var currentQuantity = parseInt(quantityElement.text());
+                if (currentQuantity > 1) {
+                    var newQuantity = currentQuantity - 1;
+                    quantityElement.text(newQuantity);
+                    updateCart(id, newQuantity);
+                }
+            });
 
-        function updateCart(id, quantity) {
-    $.ajax({
-        url: '{{ route("cart.updateQuantity") }}',
-        method: 'POST',
-        data: {
-            id: id,
-            quantity: quantity,
-            _token: '{{ csrf_token() }}'
-        },
-        success: function(response) {
-            // Update price display
-            $('#item-price-' + id).text('Rp' + (response.price * quantity));
+            // Remove item
+            $(document).on('click', '.remove-item', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
+                    removeItem(id);
+                }
+            });
 
-            // Update totals
-            $('#total-items').text(response.totalItems);
-            $('#total-price').text('Rp' + response.grandTotal);
-            $('#cart-count').text(Object.keys(response.cart).length);
-
-            toastr.success('Keranjang berhasil diperbarui');
-        },
-        error: function(xhr) {
-            toastr.error('Gagal memperbarui keranjang');
-            console.error(xhr.responseText);
-            location.reload();
-        }
-    });
-}
-
-        function removeItem(id) {
-            $.ajax({
-                url: '{{ route("cart.remove") }}',
-                method: 'POST',
-                data: {
-                    id: id,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    // Animate removal
-                    $('#cart-item-' + id).addClass('cart-item-removed');
-
-                    // Remove after animation
-                    setTimeout(function() {
-                        $('#cart-item-' + id).remove();
+            function updateCart(id, quantity) {
+                $.ajax({
+                    url: '{{ route("cart.updateQuantity") }}',
+                    method: 'POST',
+                    data: {
+                        id: id,
+                        quantity: quantity,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        // Update price display
+                        $('#item-price-' + id).text('Rp' + (response.price * quantity));
 
                         // Update totals
                         $('#total-items').text(response.totalItems);
                         $('#total-price').text('Rp' + response.grandTotal);
                         $('#cart-count').text(Object.keys(response.cart).length);
 
-                        // If cart is empty, show empty cart message
-                        if (response.cartCount === 0) {
-                            $('#cart-items').html(
-                                '<p class="text-gray-500">Keranjang Anda kosong</p>');
-                        }
+                        toastr.success('Keranjang berhasil diperbarui');
+                    },
+                    error: function(xhr) {
+                        toastr.error('Gagal memperbarui keranjang');
+                        console.error(xhr.responseText);
+                        location.reload();
+                    }
+                });
+            }
 
-                        toastr.success('Item berhasil dihapus');
-                    }, 300);
-                },
-                error: function(xhr) {
-                    toastr.error('Gagal menghapus item');
-                    location.reload(); // Fallback
-                }
-            });
-        }
-    });
-    </script>
+            function removeItem(id) {
+                $.ajax({
+                    url: '{{ route("cart.remove") }}',
+                    method: 'POST',
+                    data: {
+                        id: id,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        // Animate removal
+                        $('#cart-item-' + id).addClass('cart-item-removed');
 
-    <script>
-    $(document).ready(function() {
-        $('#customerOrdersToggle').on('click', function() {
-            $('#customerOrdersSubmenu').slideToggle();
-            $(this).parent().parent().toggleClass('active');
+                        // Remove after animation
+                        setTimeout(function() {
+                            $('#cart-item-' + id).remove();
+
+                            // Update totals
+                            $('#total-items').text(response.totalItems);
+                            $('#total-price').text('Rp' + response.grandTotal);
+                            $('#cart-count').text(Object.keys(response.cart).length);
+
+                            // If cart is empty, show empty cart message
+                            if (response.cartCount === 0) {
+                                $('#cart-items').html(
+                                    '<p class="text-gray-500">Keranjang Anda kosong</p>'
+                                );
+                            }
+
+                            toastr.success('Item berhasil dihapus');
+                        }, 300);
+                    },
+                    error: function(xhr) {
+                        toastr.error('Gagal menghapus item');
+                        location.reload(); // Fallback
+                    }
+                });
+            }
         });
-    });
-    </script>
+        </script>
+
+        <script>
+        $(document).ready(function() {
+            $('#customerOrdersToggle').on('click', function() {
+                $('#customerOrdersSubmenu').slideToggle();
+                $(this).parent().parent().toggleClass('active');
+            });
+        });
+        </script>
 </body>
 
 </html>
