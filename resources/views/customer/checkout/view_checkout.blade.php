@@ -26,7 +26,7 @@
                             <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded dec" data-id="{{ $id }}">
                                 -
                             </button>
-                            <span class="quantity w-6 text-center">{{ $details['qty'] }}</span>
+                            <span class="quantity w-6 text-center" data-id="{{ $id }}">{{ $details['qty'] }}</span>
                             <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded inc" data-id="{{ $id }}">
                                 +
                             </button>
@@ -159,27 +159,34 @@ $(document).ready(function () {
     }
 
     $('#courier').on('change', function () {
-        let courier = $(this).val();
-        let shipping = getShippingCost(courier);
-        let subtotal = {{ $total }};
-        let grandTotal = subtotal + shipping;
+    let courier = $(this).val();
+    let shipping = getShippingCost(courier);
 
-        $('.shipping-cost').text('Rp' + shipping.toLocaleString('id-ID'));
-        $('.grand-total').text('Rp' + grandTotal.toLocaleString('id-ID'));
-    });
+    let subtotalText = $('#subtotal').text().replace(/[^\d]/g, '');
+    let subtotal = parseInt(subtotalText); // ambil dari DOM
+
+    let grandTotal = subtotal + shipping;
+
+    $('.shipping-cost').text('Rp' + shipping.toLocaleString('id-ID'));
+    $('.grand-total').text('Rp' + grandTotal.toLocaleString('id-ID'));
+});
+
 
     $(document).on('click', '.inc', function () {
         let id = $(this).data('id');
-        let input = $(this).siblings('input');
-        let newQty = parseInt(input.val()) + 1;
+        let spanQty = $(this).siblings('.quantity');
+let currentQty = parseInt(spanQty.text());
+let newQty = currentQty + 1;
         updateQuantity(id, newQty);
     });
 
     $(document).on('click', '.dec', function () {
         let id = $(this).data('id');
-        let input = $(this).siblings('input');
-        let newQty = parseInt(input.val()) - 1;
-        if (newQty >= 1) updateQuantity(id, newQty);
+        let spanQty = $(this).siblings('.quantity');
+let currentQty = parseInt(spanQty.text());
+let newQty = currentQty - 1;
+if (newQty >= 1) updateQuantity(id, newQty);
+
     });
 
     $(document).on('click', '.remove', function () {
@@ -188,15 +195,28 @@ $(document).ready(function () {
     });
 
     function updateQuantity(id, quantity) {
-        $.post('{{ route("cart.updateQuantity") }}', {
-            _token: '{{ csrf_token() }}',
-            id: id,
-            quantity: quantity
-        }, function () {
-            Toast.fire({ icon: 'success', title: 'Quantity Updated' })
-                .then(() => location.reload());
-        });
-    }
+    $.post('{{ route("cart.updateQuantity") }}', {
+        _token: '{{ csrf_token() }}',
+        id: id,
+        quantity: quantity
+    }, function (response) {
+        // Update kuantitas di tampilan
+        let itemRow = $('[data-id="' + id + '"]').closest('.py-4');
+        itemRow.find('.quantity').text(quantity);
+
+        // Update harga item
+        let itemTotal = response.item_total;
+        itemRow.find('p.font-medium').text('Rp' + itemTotal.toLocaleString('id-ID'));
+
+        // Update subtotal & total
+        $('.shipping-cost').text('Rp' + response.shipping_cost.toLocaleString('id-ID'));
+        $('#subtotal').text('Rp' + response.subtotal.toLocaleString('id-ID'));
+        $('.grand-total').text('Rp' + response.grand_total.toLocaleString('id-ID'));
+
+        Toast.fire({ icon: 'success', title: 'Quantity Updated' });
+    });
+}
+
 
     function removeFromCart(id) {
         $.post('{{ route("cart.remove") }}', {

@@ -38,38 +38,31 @@ class CartController extends Controller
     }
 
     public function UpdateCartQuantity(Request $request) {
-        $cart = session()->get('cart', []);
-        $grandTotal = 0;
-        $totalItems = 0;
-    
-        if(isset($cart[$request->id])) {
-            // Update quantity
-            $cart[$request->id]['qty'] = $request->quantity;
-            
-            // Hitung ulang total
-            foreach($cart as $item) {
-                $grandTotal += $item['price'] * $item['qty'];
-                $totalItems += $item['qty'];
-            }
-            
-            session()->put('cart', $cart);
-            session()->save();
-    
-            // Return JSON response
-            return response()->json([
-                'success' => true,
-                'price' => (float)$cart[$request->id]['price'],
-                'grandTotal' => (float)$grandTotal,
-                'totalItems' => (int)$totalItems,
-                'cart' => $cart,
-                'message' => 'Cart Updated Successfully'
-            ]);
-        }
-    
-        return response()->json([
-            'success' => false,
-            'message' => 'Item not found in cart'
-        ], 404);
+        $cart = session()->get('cart');
+    $id = $request->id;
+    $qty = $request->quantity;
+
+    if (isset($cart[$id])) {
+        $cart[$id]['qty'] = $qty;
+        session()->put('cart', $cart);
+    }
+
+    // Hitung ulang total
+    $subtotal = 0;
+    foreach ($cart as $item) {
+        $subtotal += $item['qty'] * $item['price'];
+    }
+
+    $itemTotal = $cart[$id]['qty'] * $cart[$id]['price'];
+    $shippingCost = 15000; // default ongkir
+    $grandTotal = $subtotal + $shippingCost;
+
+    return response()->json([
+        'item_total' => $itemTotal,
+        'subtotal' => $subtotal,
+        'shipping_cost' => $shippingCost,
+        'grand_total' => $grandTotal
+    ]);
     }
 
     public function CartRemove(Request $request)
