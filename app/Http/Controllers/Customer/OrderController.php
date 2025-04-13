@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -62,3 +63,19 @@ class OrderController extends Controller
         return $pdf->download('invoice_'.$order->invoice_no.'.pdf');
     }
 }
+=======
+use Illuminate\Support\Facades\Auth; 
+ use App\Models\Product;
+ use Illuminate\Support\Facades\Session; 
+ use App\Models\Order;
+ use App\Models\OrderItem;
+
+class OrderController extends Controller
+{
+    
+    public function CashOrder(){
+        
+        
+    }
+}
+>>>>>>> 54f8835e0daa3c33b3ac5b3711778088801a8a57

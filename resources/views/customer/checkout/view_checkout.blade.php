@@ -12,28 +12,31 @@
             @php $total = 0 @endphp
             @if (session('cart'))
                 @foreach (session('cart') as $id => $details)
-                    @php $total += $details['price'] * $details['quantity'] @endphp
+                    @php $total += $details['price'] * $details['qty'] @endphp
 
                     <div class="py-4 flex justify-between items-center">
                         <div class="flex items-center space-x-4">
-                            <img src="https://via.placeholder.com/80" alt="Product" class="w-16 h-16 rounded-md object-cover border border-gray-200">
+                            <img src="{{ $details['image'] }}" alt="Product" class="w-16 h-16 rounded-md object-cover border border-gray-200">
                             <div>
                                 <h3 class="font-medium text-gray-800">{{ $details['name'] }}</h3>
                             </div>
                         </div>
                         <div class="flex items-center space-x-4">
-                            <div class="flex items-center border border-gray-300 rounded-md">
-                                <button class="px-3 py-1 text-gray-600 hover:bg-gray-100 dec" data-id="{{ $id }}">-</button> 
-                                <input class="count-number-input quantity-input-{{ $id }}" type="text" value="{{ $details['quantity'] }}" readonly>
-                                <button type="button" class="px-3 py-1 text-gray-600 hover:bg-gray-100 inc" data-id="{{ $id }}">+</button>
-                            </div>
-                            <p class="font-medium w-24 text-right">Rp{{ $details['price'] * $details['quantity'] }}</p>
-                            <button class="text-red-500 hover:text-red-700 remove" data-id="{{ $id }}">
+                        <div class="flex items-center gap-2 mt-1">
+                            <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded dec" data-id="{{ $id }}">
+                                -
+                            </button>
+                            <span class="quantity w-6 text-center">{{ $details['qty'] }}</span>
+                            <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded inc" data-id="{{ $id }}">
+                                +
+                            </button>
+                            <button class="text-red-500 hover:text-red-700 ml-2 remove-item" data-id="{{ $id }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
                             </button>
+                        </div>
+                            <p class="font-medium w-24 text-right">Rp{{ $details['price'] * $details['qty'] }}</p>
                         </div>
                     </div>
                 @endforeach
@@ -206,5 +209,6 @@ $(document).ready(function () {
     }
 });
 </script>
+
 
 @endsection

@@ -50,17 +50,12 @@ Route::middleware('customer')->group(function () {
 
     // ----------------------------------------------- RUTE UNTUK CART ---------------------------------------------------//
     Route::get('/customer/product/{id}', [CustomerController::class, 'CustomerDetailProduct']);
-
-    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-    Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
-    Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
-    Route::get('/checkout', [CartController::class, 'CheckoutToko'])->name('checkout');
-    Route::post('/cart/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
-
     Route::controller(CartController::class)->group(function () {
         Route::get('/add_to_cart/{id}', 'AddToCart')->name('add_to_cart');
         Route::post('/cart/update-quantity', 'UpdateCartQuantity')->name('cart.updateQuantity');
         Route::post('/cart/remove', 'CartRemove')->name('cart.remove');
+        Route::get('/checkout', 'CheckoutProduk')->name('customer.checkout.view_checkout');
+        Route::post('/cart/sync', [CartController::class, 'sync'])->name('cart.sync');
     });
 
     Route::controller(HomeController::class)->group(function () {
@@ -68,7 +63,11 @@ Route::middleware('customer')->group(function () {
     });
 
     Route::controller(OrderController::class)->group(function () {
+<<<<<<< HEAD
         Route::get('/orders', 'index')->name('customer.orders.all_orders');
+=======
+        Route::post('/cash_order', 'CashOrder')->name('cash_order');
+>>>>>>> 54f8835e0daa3c33b3ac5b3711778088801a8a57
     });
 });
 
@@ -98,10 +97,17 @@ Route::middleware('admin')->group(function () {
         Route::get('/clientchangeStatus', 'ClientChangeStatus');
         Route::get('/approve/toko', 'ApproveToko')->name('approve.toko');
     });
+<<<<<<< HEAD
 
     Route::controller(ManageOrderController::class)->group(function () {
         Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
         Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');
+=======
+    
+    Route::controller(ManageOrderController::class)->group(function(){
+        Route::get('/order/order/list', [ManageOrderController::class, 'orderList'])->name('user.orders');
+        Route::get('/order/{id}', [ManageOrderController::class, 'show'])->name('user.order.details');        
+>>>>>>> 54f8835e0daa3c33b3ac5b3711778088801a8a57
 
         Route::get('/orders/pending', 'PendingOrders')->name('admin.pending.orders');
         Route::get('/orders/confirm', 'ConfirmOrders')->name('admin.confirm.orders');
