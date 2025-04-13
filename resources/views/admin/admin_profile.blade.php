@@ -4,12 +4,12 @@
 
 <div class="p-6 w-full">
     <div class="container mx-auto">
-        <div class="p-8 bg-white rounded-lg shadow-md border border-gray-300 flex flex-col md:flex-row items-center gap-8">
+        <div
+            class="p-8 bg-white rounded-lg shadow-md border border-gray-300 flex flex-col md:flex-row items-center gap-8">
             <!-- Profile Picture -->
             <div>
-                <img src="{{ $admin->photo ? asset('storage/' . $admin->photo) : asset('default-profile.png') }}" 
-                    alt="Profile Picture" 
-                    class="rounded-full w-32 h-32 object-cover shadow-md border">
+                <img src="{{ $admin->photo ? asset('storage/' . $admin->photo) : asset('default-profile.png') }}"
+                    alt="Profile Picture" class="rounded-full w-32 h-32 object-cover shadow-md border">
             </div>
 
             <!-- Admin Info dalam Card -->
@@ -37,11 +37,11 @@
 
             <!-- Edit Button -->
             <div class="flex flex-col gap-2">
-                <a href="{{ route('admin.edit.profile') }}" 
+                <a href="{{ route('admin.edit.profile') }}"
                     class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition text-center">
                     EDIT
                 </a>
-                <a href="{{ route('admin.change.password') }}" 
+                <a href="{{ route('admin.change.password') }}"
                     class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition text-center">
                     CHANGE PASSWORD
                 </a>

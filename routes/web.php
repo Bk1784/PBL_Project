@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\ManageController;
+use App\Http\Controllers\Admin\ManageOrderController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\HomeController;
+use App\Http\Controllers\Customer\OrderController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -64,6 +66,10 @@ Route::middleware('customer')->group(function () {
     Route::controller(HomeController::class)->group(function () {
         Route::get('/produk/details/{id}', 'DetailProduk')->name('detail_products');
     });
+
+    Route::controller(OrderController::class)->group(function () {
+        Route::get('/orders', 'index')->name('customer.orders.all_orders');
+    });
 });
 
 require __DIR__ . '/auth.php';
@@ -92,15 +98,19 @@ Route::middleware('admin')->group(function () {
         Route::get('/clientchangeStatus', 'ClientChangeStatus');
         Route::get('/approve/toko', 'ApproveToko')->name('approve.toko');
     });
-    
-    Route::controller(ManageOrderController::class)->group(function(){
+
+    Route::controller(ManageOrderController::class)->group(function () {
         Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
-        Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');        
+        Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');
 
+        Route::get('/orders/pending', 'PendingOrders')->name('admin.pending.orders');
+        Route::get('/orders/confirm', 'ConfirmOrders')->name('admin.confirm.orders');
+        Route::get('/orders/processing', 'ProcessingOrders')->name('admin.processing.orders');
+        Route::get('/orders/delivered', 'DeliveredOrders')->name('admin.delivered.orders');
+        Route::get('/orders/details/{id}', 'OrderDetails')->name('admin.order.details');
     });
-
-
 });
+
 //ADMIN GUEST
 Route::middleware('admin.guest')->group(function () {
     Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');

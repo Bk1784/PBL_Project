@@ -152,6 +152,26 @@
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>🎨</span> <span>Dekorasi</span>
                 </li>
+                <li class="relative group">
+                    <a href="javascript:void(0);"
+                        class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 transition-all w-full justify-between"
+                        id="customerOrdersToggle">
+                        <div class="flex items-center gap-3">
+                            <span>📦</span>
+                            <span>Pesanan Saya</span>
+                        </div>
+                        <svg class="w-4 h-4 transition-transform duration-300 group-[.expanded]:rotate-90" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                    <ul id="customerOrdersSubmenu" class="hidden ml-8 mt-2 space-y-1">
+                        <li>
+                            <a href="{{ route('customer.orders.all_orders') }}"
+                                class="block p-2 rounded hover:bg-gray-100 transition-all">Semua</a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>⚙️</span> <span>Pengaturan</span>
                 </li>
@@ -186,8 +206,8 @@
                         <div class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden shrink-0">
                             <a href="{{ route('customer.profile') }}" class="block">
                                 @php
-                                $user = Auth::guard('admin')->user();
-                                $photo = $user && $admin->photo ? 'storage/' . $user->photo :
+                                $user = Auth::guard('customer')->user();
+                                $photo = $user && $user->photo ? 'storage/' . $user->photo :
                                 'profile_photos/default.jpg';
                                 @endphp
                                 <img src="{{ asset($photo) }}" alt="Profile" class="w-full h-full object-cover">
@@ -460,6 +480,15 @@
                 }
             });
         }
+    });
+    </script>
+
+    <script>
+    $(document).ready(function() {
+        $('#customerOrdersToggle').on('click', function() {
+            $('#customerOrdersSubmenu').slideToggle();
+            $(this).parent().parent().toggleClass('active');
+        });
     });
     </script>
 </body>
