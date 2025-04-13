@@ -7,7 +7,7 @@
 
 <!-- All Orders Table -->
 <div class="bg-white p-6 rounded-lg shadow-lg">
-    <h3 class="text-2xl font-bold mb-4">Pesanan Saya</h3>
+    <h3 class="text-2xl font-bold mb-4">Semua Pesanan</h3>
 
     <div class="overflow-x-auto">
         <table class="w-full border-collapse">

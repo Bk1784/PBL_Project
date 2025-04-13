@@ -160,20 +160,17 @@
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>🎨</span> <span>Dekorasi</span>
                 </li>
-                <li class="relative group">
-                    <a href="javascript:void(0);"
-                        class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 transition-all w-full justify-between"
-                        id="customerOrdersToggle">
-                        <div class="flex items-center gap-3">
-                            <span>📦</span>
-                            <span>Pesanan Saya</span>
-                        </div>
-                        <svg class="w-4 h-4 transition-transform duration-300 group-[.expanded]:rotate-90" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
+                <li class="relative">
+                    <button id="customerOrdersToggle"
+                        class="flex items-center gap-3 w-full text-left hover:text-gray-500 transition-all cursor-pointer">
+                        <span>📦</span>
+                        <span>Pesanan Saya</span>
+                        <svg id="customerOrdersArrow" class="ml-auto w-4 h-4 transition-transform duration-300"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
-                    </a>
-                    <ul id="customerOrdersSubmenu" class="hidden ml-8 mt-2 space-y-1">
+                    </button>
+                    <ul id="customerOrdersSubmenu" class="hidden mt-2 ml-6 space-y-1">
                         <li>
                             <a href="{{ route('customer.orders.all_orders') }}"
                                 class="block p-2 rounded hover:bg-gray-100 transition-all">Semua</a>
@@ -215,7 +212,6 @@
                             <a href="{{ route('customer.profile') }}" class="block">
                                 @php
                                 $user = Auth::guard('customer')->user();
-                                $user = Auth::guard('admin')->user();
                                 $photo = $user && $user->photo ? 'storage/' . $user->photo :
                                 'profile_photos/default.jpg';
                                 @endphp
@@ -396,10 +392,14 @@
         </script>
 
         <script>
-        $(document).ready(function() {
-            $('#customerOrdersToggle').on('click', function() {
-                $('#customerOrdersSubmenu').slideToggle();
-                $(this).parent().parent().toggleClass('active');
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('customerOrdersToggle');
+            const submenu = document.getElementById('customerOrdersSubmenu');
+            const arrow = document.getElementById('customerOrdersArrow');
+
+            toggleBtn.addEventListener('click', function() {
+                submenu.classList.toggle('hidden');
+                arrow.classList.toggle('rotate-90');
             });
         });
         </script>

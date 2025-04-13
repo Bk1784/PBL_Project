@@ -62,9 +62,13 @@ Route::middleware('customer')->group(function () {
         Route::get('/produk/details/{id}', 'DetailProduk')->name('detail_products');
     });
 
+    //MANAGE ORDER CUSTOMER
     Route::controller(OrderController::class)->group(function () {
         Route::get('/orders', 'index')->name('customer.orders.all_orders');
-        Route::post('/cash_order', 'CashOrder')->name('cash_order');
+        Route::get('/orders/{id}/details', 'OrderDetails')->name('customer.orders.details');
+        Route::post('/orders/{id}/cancel', 'CancelOrder')->name('customer.orders.cancel');
+        Route::post('/orders/{id}/received', 'ConfirmReceived')->name('customer.orders.received');
+        Route::get('/orders/{id}/invoice', 'downloadInvoice')->name('customer.orders.invoice');
     });
 });
 

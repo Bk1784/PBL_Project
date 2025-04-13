@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Customer;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,7 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
-    public function AllOrders()
+    public function index()
     {
         $orders = Order::where('user_id', Auth::id())->latest()->get();
         return view('customer.orders.all_orders', compact('orders'));
@@ -22,7 +23,6 @@ class OrderController extends Controller
         return view('customer.orders.order_details', compact('order'));
     }
 
-    // Batalkan pesanan (jika masih dalam status tertentu)
     public function CancelOrder($id)
     {
         $order = Order::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
@@ -43,10 +43,10 @@ class OrderController extends Controller
         if ($order->status == 'delivered') {
             $order->status = 'received';
             $order->save();
-            return redirect()->back()->with('success', 'Pesanan berhasil konfirmasi diterima.');
+            return redirect()->back()->with('success', 'Pesanan berhasil dikonfirmasi.');
         }
 
-        return redirect()->back()->with('error', 'Pesanan belum bisa konfirmasi diterima.');
+        return redirect()->back()->with('error', 'Pesanan belum bisa dikonfirmasi.');
     }
 
     public function downloadInvoice($order_id)
@@ -58,6 +58,6 @@ class OrderController extends Controller
         $pdf = PDF::loadView('customer.invoice', compact('order', 'orderItem', 'totalPrice'))
                   ->setPaper('A4');
 
-        return $pdf->download('invoice_'.$order->invoice_no.'.pdf');
+        return $pdf->download('invoice_' . $order->invoice_no . '.pdf');
     }
 }
