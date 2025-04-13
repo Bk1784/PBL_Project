@@ -214,7 +214,6 @@
                         <div class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden shrink-0">
                             <a href="{{ route('customer.profile') }}" class="block">
                                 @php
-                                HEAD
                                 $user = Auth::guard('customer')->user();
                                 $user = Auth::guard('admin')->user();
                                 $photo = $user && $user->photo ? 'storage/' . $user->photo :

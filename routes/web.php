@@ -63,11 +63,9 @@ Route::middleware('customer')->group(function () {
     });
 
     Route::controller(OrderController::class)->group(function () {
-<<<<<<< HEAD
         Route::get('/orders', 'index')->name('customer.orders.all_orders');
-=======
+
         Route::post('/cash_order', 'CashOrder')->name('cash_order');
->>>>>>> 54f8835e0daa3c33b3ac5b3711778088801a8a57
     });
 });
 
@@ -83,6 +81,7 @@ Route::middleware('admin')->group(function () {
     Route::put('/admin/profile/update', [AdminController::class, 'AdminUpdateProfile'])->name('admin.update.profile');
     Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
     Route::post('/admin/update/password', [AdminController::class, 'AdminUpdatePassword'])->name('admin.update.password');
+});
 
     Route::controller(ManageController::class)->group(function () {
         Route::get('/admin/all/product', 'AdminAllProduct')->name('admin.all.product');
@@ -97,17 +96,17 @@ Route::middleware('admin')->group(function () {
         Route::get('/clientchangeStatus', 'ClientChangeStatus');
         Route::get('/approve/toko', 'ApproveToko')->name('approve.toko');
     });
-<<<<<<< HEAD
+
 
     Route::controller(ManageOrderController::class)->group(function () {
         Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
         Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');
-=======
+
     
     Route::controller(ManageOrderController::class)->group(function(){
         Route::get('/order/order/list', [ManageOrderController::class, 'orderList'])->name('user.orders');
         Route::get('/order/{id}', [ManageOrderController::class, 'show'])->name('user.order.details');        
->>>>>>> 54f8835e0daa3c33b3ac5b3711778088801a8a57
+
 
         Route::get('/orders/pending', 'PendingOrders')->name('admin.pending.orders');
         Route::get('/orders/confirm', 'ConfirmOrders')->name('admin.confirm.orders');

@@ -116,7 +116,6 @@ class AdminController extends Controller
         $admin->email = $request->email;
         $admin->phone = $request->phone;
         $admin->address = $request->address;
-        $admin->photo = $request->photo;
     
         // Handle foto profil
         if ($request->hasFile('photo')) {

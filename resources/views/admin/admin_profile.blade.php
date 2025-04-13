@@ -8,7 +8,7 @@
             class="p-8 bg-white rounded-lg shadow-md border border-gray-300 flex flex-col md:flex-row items-center gap-8">
             <!-- Profile Picture -->
             <div>
-                <img src="{{ $admin->photo ? asset('storage/' . $admin->photo) : asset('default-profile.png') }}"
+                <img src="{{ asset('storage/' . $admin->photo) }}"
                     alt="Profile Picture" class="rounded-full w-32 h-32 object-cover shadow-md border">
             </div>
 
