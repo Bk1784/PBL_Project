@@ -127,6 +127,8 @@ Route::middleware('admin.guest')->group(function () {
 Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->name('client.dashboard');
 
 Route::middleware(['status', 'client'])->group(function () {
+    Route::get('/sales-report', [ClientController::class, 'ClientLaporan'])->name('sales.report');
+    Route::get('/product-details/{id}', [ClientController::class, 'getProductDetails'])->name('product.details');
     Route::get('/client/pesanan', [ClientController::class, 'ClientPesanan'])->name('client.pesanan');
     Route::get('/client/pesanan/executed', [ClientController::class, 'executedOrders'])->name('client.pesanan.executed');
     Route::post('/client/pesanan/execute/{id}', [ClientController::class, 'executeOrder'])->name('client.pesanan.execute');

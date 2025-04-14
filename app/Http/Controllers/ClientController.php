@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ClientMail;
 use App\Models\Client;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -210,9 +211,30 @@ class ClientController extends Controller
         return view('client.executed_pesanan', compact('orders'));
     }
 
-    public function ClientLaporan()
+    public function ClientLaporan(Request $request)
     {
-        return view('client.laporan');
+        $sort = $request->get('sort', 'most_sold');
+        
+        $products = Product::query()
+            ->when($sort === 'most_sold', function($query) {
+                return $query->frequentlySold();
+            })
+            ->when($sort === 'least_sold', function($query) {
+                return $query->frequentlySold()->orderBy('sold_count');
+            })
+            ->get();
+
+        return view('client.laporan', compact('products', 'sort'));
+    }
+
+    public function getProductDetails($id)
+    {
+        $product = Product::with('orderItems')->findOrFail($id);
+        return response()->json([
+            'description' => $product->description,
+            'total_sold' => $product->totalSold(),
+            'total_revenue' => $product->totalRevenue()
+        ]);
     }
 
     public function ClientChangePassword()
