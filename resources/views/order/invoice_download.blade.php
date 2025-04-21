@@ -92,7 +92,7 @@ Jl. Teknologi No. 88, Bandung
       </tr>
     </thead>
     <tbody>
-      @foreach ($orderItem as $item)
+      @foreach ($orderItems as $item)
       <tr class="font">
         <td align="center">
           <img src="{{ public_path($item->product->image) }}" height="60px" width="60px" alt="">
@@ -100,7 +100,7 @@ Jl. Teknologi No. 88, Bandung
         <td align="center">{{ $item->product->name }}</td>
         <td align="center">{{ $item->product->code }}</td>
         <td align="center">{{ $item->qty }}</td>
-        <td align="center">{{ $item->product->client->name }}</td>
+        <td align="center">{{ $item->user->name }}</td>
         <td align="center">{{ $item->price }}</td>
       </tr>
       @endforeach

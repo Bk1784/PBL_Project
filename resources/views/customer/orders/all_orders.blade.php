@@ -30,23 +30,23 @@
                         {{ \Carbon\Carbon::parse($order->order_date)->format('d F Y') }}
                     </td>
                     <td class="p-3 border-b border-gray-200">{{ $order->invoice_no }}</td>
-                    <td class="p-3 border-b border-gray-200">Rp {{ number_format($order->amount, 0, ',', '.') }}</td>
+                    <td class="p-3 border-b border-gray-200">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
                     <td class="p-3 border-b border-gray-200">{{ $order->payment_method }}</td>
                     <td class="p-3 border-b border-gray-200">
                         <span class="bg-green-500 text-white py-1 px-3 rounded-full text-sm">{{ $order->status }}</span>
                     </td>
                     <td class="p-3 border-b border-gray-200 space-x-1">
-                        <a href="{{ route('customer.order.details', $order->id) }}"
+                        <a href="#"
                             class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded" title="View"><i
                                 class="fas fa-eye"></i></a>
 
                         @if(in_array($order->status, ['pending', 'confirmed']))
-                        <a href="{{ route('customer.cancel.order', $order->id) }}"
+                        <a href="#"
                             class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded" title="Cancel"><i
                                 class="fas fa-times"></i></a>
                         @endif
 
-                        <a href="{{ route('customer.download.invoice', $order->id) }}"
+                        <a href="{{route('customer.orders.invoice', $order->id)}}"
                             class="bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded" title="Invoice"><i
                                 class="fas fa-file-invoice"></i></a>
                     </td>

@@ -65,6 +65,7 @@ Route::middleware('customer')->group(function () {
     //MANAGE ORDER CUSTOMER
     Route::controller(OrderController::class)->group(function () {
         Route::get('/orders', 'index')->name('customer.orders.all_orders');
+        Route::post('/cash/order', 'CashOrder')->name('customer.orders.cash_order');
         Route::get('/orders/{id}/details', 'OrderDetails')->name('customer.orders.details');
         Route::post('/orders/{id}/cancel', 'CancelOrder')->name('customer.orders.cancel');
         Route::post('/orders/{id}/received', 'ConfirmReceived')->name('customer.orders.received');
