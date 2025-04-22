@@ -19,6 +19,7 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<<<<<<< HEAD
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
     <style>
@@ -61,6 +62,30 @@
     }
 
     @media (min-width: 768px) {
+=======
+    <!-- jQuery Validate -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+    <style>
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #10B981;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #10B981;
+        }
+
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        .sidebar-hidden {
+            transform: translateX(-100%);
+        }
+        .sidebar-visible {
+            transform: translateX(0);
+        }
+>>>>>>> 03cfb67 (Manage report)
         .overlay {
             display: none !important;
         }
@@ -80,10 +105,10 @@
         </button>
     </div>
 
-    <!-- Overlay for mobile menu -->
+    <!-- Overlay -->
     <div id="overlay" class="overlay"></div>
 
-    <!-- Layout Utama -->
+    <!-- Main Layout -->
     <div class="flex min-h-screen">
         <!-- Sidebar -->
         <div id="sidebar"
@@ -180,14 +205,29 @@
                     class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
                     <span>👤</span> <a href="{{ route('admin.profile') }}" class="w-full">Profile</a>
                 </li>
+<<<<<<< HEAD
                 <li
                     class="flex items-center gap-3 text-red-500 hover:text-red-400 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
+=======
+                <li>
+                    <button id="toggleReports" class="w-full text-left py-2 px-4 text-gray-700 hover:bg-blue-100 rounded mb-2 flex justify-between items-center">
+                        <span><i class="fa fa-briefcase mr-2"></i>Manage Reports</span>
+                        <i class="fas fa-chevron-down text-sm"></i>
+                    </button>
+                    <div id="reportsSubmenu" class="ml-6 hidden">
+                        <a href="{{ route('admin.all.reports') }}" class="block py-1 px-4 text-gray-600 hover:bg-blue-50 rounded text-sm mb-2">
+                            <i class="fa fa-file-alt mr-1"></i>All Reports
+                        </a>
+                    </div>
+                </li>
+                <li class="flex items-center gap-3 text-red-500 hover:text-red-400 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
+>>>>>>> 03cfb67 (Manage report)
                     <span>🚪</span> <a href="{{ route('admin.logout') }}" class="w-full">Log Out</a>
                 </li>
             </ul>
         </div>
 
-        <!-- Konten Utama -->
+        <!-- Main Content -->
         <div class="flex-1 max-w-6xl mx-auto mt-10 p-4 md:p-6 md:ml-0">
             <!-- Header -->
             <div
@@ -200,8 +240,7 @@
                         <a href="{{ route('admin.profile') }}" class="block">
                             @php
                             $admin = Auth::guard('admin')->user();
-                            $photo = $admin && $admin->photo ? 'storage/' . $admin->photo :
-                            'profile_photos/default.jpg';
+                            $photo = $admin && $admin->photo ? 'storage/' . $admin->photo : 'profile_photos/default.jpg';
                             @endphp
                             <img src="{{ asset($photo) }}" alt="Profile" class="w-full h-full object-cover">
                         </a>
@@ -209,7 +248,7 @@
                 </div>
             </div>
 
-            <!-- Konten yang akan berubah -->
+            <!-- Dynamic Content -->
             @yield('content')
 
             <!-- Footer -->
@@ -232,7 +271,9 @@
         </div>
     </div>
 
+    <!-- Sidebar Script -->
     <script>
+<<<<<<< HEAD
     // Toggle submenu
     document.getElementById('manageProductToggle').addEventListener('click', function() {
         const submenu = document.getElementById('manageProductSubmenu');
@@ -302,3 +343,29 @@
 </body>
 
 </html>
+=======
+        document.getElementById('mobileMenuButton').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.remove('sidebar-hidden');
+            document.getElementById('overlay').classList.add('overlay-visible');
+        });
+
+        document.getElementById('closeSidebar').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.add('sidebar-hidden');
+            document.getElementById('overlay').classList.remove('overlay-visible');
+        });
+
+        function toggleManageStore() {
+            document.getElementById('manageStoreSubmenu').classList.toggle('hidden');
+        }
+
+        document.getElementById('manageProductToggle').addEventListener('click', function () {
+            document.getElementById('manageProductSubmenu').classList.toggle('hidden');
+        });
+
+        document.getElementById('toggleReports').addEventListener('click', function () {
+            document.getElementById('reportsSubmenu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
+>>>>>>> 03cfb67 (Manage report)
