@@ -178,7 +178,7 @@
                     </ul>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>⚙️</span> <span>Pengaturan</span>
+                    <span>⚙</span> <span>Pengaturan</span>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>🛒</span> <a href="#">Keranjang</a>
@@ -292,25 +292,25 @@
 
             // Increment quantity
             $(document).on('click', '.inc', function(e) {
-                e.preventDefault();
-                var id = $(this).data('id');
-                var quantityElement = $(this).siblings('.quantity');
-                var currentQuantity = parseInt(quantityElement.text());
-                var newQuantity = currentQuantity + 1;
-                quantityElement.text(newQuantity);
-                updateCart(id, newQuantity);
-            });
-
-            // Decrement quantity
-            $(document).on('click', '.dec', function(e) {
-                e.preventDefault();
-                var id = $(this).data('id');
-                var quantityElement = $(this).siblings('.quantity');
-                var currentQuantity = parseInt(quantityElement.text());
-                if (currentQuantity > 1) {
-                    var newQuantity = currentQuantity - 1;
-                    quantityElement.text(newQuantity);
-                    updateCart(id, newQuantity);
+                 e.preventDefault();
+                 var id = $(this).data('id');
+                 var quantityElement = $(this).siblings('.quantity');
+                 var currentQuantity = parseInt(quantityElement.text());
+                 var newQuantity = currentQuantity + 1;
+                 quantityElement.text(newQuantity);
+                 updateCart(id, newQuantity);
+             });
+ 
+             // Decrement quantity
+             $(document).on('click', '.dec', function(e) {
+                 e.preventDefault();
+                 var id = $(this).data('id');
+                 var quantityElement = $(this).siblings('.quantity');
+                 var currentQuantity = parseInt(quantityElement.text());
+                 if (currentQuantity > 1) {
+                     var newQuantity = currentQuantity - 1;
+                     quantityElement.text(newQuantity);
+                     updateCart(id, newQuantity);
                 }
             });
 
