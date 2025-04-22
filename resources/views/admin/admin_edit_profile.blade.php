@@ -29,11 +29,8 @@
             <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-blue-100 rounded mb-2">
                 <i class="fa fa-cog mr-2"></i>Pengaturan
             </a>
-            <a href="{{ route('admin.logout') }}" class="block py-2 px-4 text-red-500 hover:bg-red-100 rounded">
-                <i class="fa fa-sign-out-alt mr-2"></i>Logout
-            </a>
-        </div>
 
+            
         <!-- Content -->
         <div class="ml-64 p-6 w-full">
             <div class="container mx-auto">
@@ -71,7 +68,7 @@
                                     <label class="block text-gray-700 font-medium">Address</label>
                                     <input type="text" name="address" class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300" value="{{ $admin->address }}">
                                 </div>
-                                <!-- Tambahkan ID pada tombol -->
+                                <!-- Tombol Simpan -->
                                 <button type="button" id="save-button" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Simpan Perubahan</button>
                             </div>
                         </div>
@@ -81,7 +78,7 @@
         </div>
     </div>
 
-    <!-- Tambahkan JavaScript -->
+    <!-- Script Konfirmasi SweetAlert -->
     <script>
         document.getElementById('save-button').addEventListener('click', function() {
             Swal.fire({

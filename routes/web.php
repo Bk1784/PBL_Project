@@ -12,7 +12,9 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\Admin\ProductReportController;
 
 //// CUSTOMER GUEST: Hanya bisa diakses jika belum login
 //CUSTOMER
@@ -57,7 +59,7 @@ Route::middleware('customer')->group(function () {
 
     Route::controller(CartController::class)->group(function () {
         Route::get('/add_to_cart/{id}', 'AddToCart')->name('add_to_cart');
-        Route::post('/cart/update-quantity', 'UpdateCartQuantity')->name('cart.updateQuantity');
+        Route::post('/cart/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
         Route::post('/cart/remove', 'CartRemove')->name('cart.remove');
     });
 
@@ -78,6 +80,7 @@ Route::middleware('admin')->group(function () {
     Route::put('/admin/profile/update', [AdminController::class, 'AdminUpdateProfile'])->name('admin.update.profile');
     Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
     Route::post('/admin/update/password', [AdminController::class, 'AdminUpdatePassword'])->name('admin.update.password');
+    
 
     Route::controller(ManageController::class)->group(function () {
         Route::get('/admin/all/product', 'AdminAllProduct')->name('admin.all.product');
@@ -86,6 +89,7 @@ Route::middleware('admin')->group(function () {
         Route::get('/admin/edit/product/{id}', 'AdminEditProduct')->name('admin.edit.product');
         Route::put('/admin/update/product', 'AdminUpdateProduct')->name('admin.update.product');
         Route::get('/admin/delete/product/{id}', 'AdminDeleteProduct')->name('admin.delete.product');
+        Route::get('/admin/product-report', [ProductReportController::class, 'index'])->name('admin.product.report');
     });
     Route::controller(ManageController::class)->group(function () {
         Route::get('/pending/toko', 'PendingToko')->name('pending.toko');
@@ -96,10 +100,14 @@ Route::middleware('admin')->group(function () {
     Route::controller(ManageOrderController::class)->group(function(){
         Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
         Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');        
-
     });
 
-
+    Route::controller(ReportController::class)->group(function(){
+        Route::get('/admin/all/reports', 'AdminAllReports')->name('admin.all.reports'); 
+        Route::post('/admin/search/bydate', 'AdminSearchByDate')->name('admin.search.bydate');
+        Route::post('/admin/search/bymonth', [ReportController::class, 'AdminSearchByMonth'])->name('admin.search.bymonth');
+        Route::post('/admin/search/byyear', 'AdminSearchByYear')->name('admin.search.byyear');
+    });
 });
 //ADMIN GUEST
 Route::middleware('admin.guest')->group(function () {
@@ -140,7 +148,3 @@ Route::middleware('client.guest')->group(function () {
 });
 
 
-
-
-// UNTUK SEMUA PENGGUNA
-Route::get('/changeStatus', [ManageController::class, 'ChangeStatus']);
