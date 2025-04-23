@@ -27,7 +27,7 @@
                 <tr class="hover:bg-gray-100">
                     <td class="p-3 border-b border-gray-200">{{ $key + 1 }}</td>
                     <td class="p-3 border-b border-gray-200">
-                        {{ \Carbon\Carbon::parse($order->order_date)->format('d F Y') }}
+                        {{ \Carbon\Carbon::parse($order->created_at)->format('d F Y') }}
                     </td>
                     <td class="p-3 border-b border-gray-200">{{ $order->invoice_no }}</td>
                     <td class="p-3 border-b border-gray-200">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>

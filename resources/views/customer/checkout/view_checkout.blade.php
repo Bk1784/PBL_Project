@@ -135,6 +135,7 @@
                 @csrf 
                 <input type="hidden" name="courier_selected" id="courier_selected">
                 <input type="hidden" name="payment_selected" id="payment_selected">
+                <!-- <input type="text" name="payment_selected" id="payment_selected"> -->
                 <button type="submit" class="mt-6 w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-md transition duration-300">
                     Konfirmasi Pembayaran
                 </button>

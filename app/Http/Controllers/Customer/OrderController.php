@@ -66,53 +66,69 @@ class OrderController extends Controller
     }
 
 
-    public function CashOrder (Request $request) {
-        $validateData = $request->validate([
-            'courier_selected'=>'required',
-            'payment_selected'=>'required',
-        ]);
+    public function CashOrder(Request $request)
+{
+    // Ambil isi keranjang
+    $cartItems = session()->get('cart', []);
+    $totalAmount = 0;
 
-        $cart = session()->get('cart',[]);
-        $totalAmount = 0;
-
-        foreach($cart as $cart) {
-            $totalAmount += ($cart['price'] * $cart['qty']);
-        }
-
-        $order_id = Order::insertGetId([
-            'user_id' => Auth::id(),
-            'client_id' => Auth::id(),
-            'product_id' => $cart ['id'],
-            'quantity' =>  $cart ['qty'],
-            'status' =>'pending',
-            'total_price' => $totalAmount,
-            'payment_method' => $request->payment_selected,
-            'courier' => $request->courier_selected,
-            'invoice_no' => 'Galaxy Store' .mt_rand(10000000,99999999),
-            'notes' => null,
-            'created_at' => Carbon::now(),
-        ]);
-
-        $carts = session()->get('cart',[]);
-        foreach ($carts as $cart) {
-            OrderItem::insert([
-                'order_id' => $order_id,
-                'client_id' => Auth::id(),
-                'product_id' => $cart['id'],
-                'qty' => $cart['qty'],
-                'price' => $cart['price']
-            ]);
-        }
-
-        if (Session::has('cart')) {
-            Session::forget('cart');
-        }
-
-        $notification = array(
-            'message' => 'Order Successfully',
-            'alert-type' => 'success'
-        );
-
-        return view('customer.checkout.thanks')->with($notification);
+    // Hitung total harga dari semua item di keranjang
+    foreach ($cartItems as $item) {
+        $totalAmount += ($item['price'] * $item['qty']);
     }
+
+    // Daftar harga pengiriman berdasarkan nama kurir
+    $shippingCosts = [
+        'JNE Reguler' => 15000,
+        'J&T Express' => 17000,
+        'SiCepat' => 13000,
+        'POS Indonesia' => 14000,
+    ];
+
+    // Ambil nama kurir dan cari biaya kirim
+    $courierName = $request->courier_selected;
+    $shippingFee = $shippingCosts[$courierName] ?? 15000;
+
+    // Total keseluruhan termasuk ongkir
+    $grandTotal = $totalAmount + $shippingFee;
+
+    // Simpan data ke tabel orders
+    $order_id = Order::insertGetId([
+        'user_id' => Auth::id(),
+        'client_id' => Auth::id(),
+        'product_id' => $item['id'],
+        'status' => 'pending',
+        'total_price' => $grandTotal,
+        'payment_method' => $request->payment_selected,
+        'courier' => $courierName,
+        'invoice_no' => 'Galaxy Store' . mt_rand(10000000, 99999999),
+        'notes' => null,
+        'created_at' => Carbon::now(),
+    ]);
+
+
+    foreach ($cartItems as $item) {
+        OrderItem::insert([
+            'order_id' => $order_id,
+            'client_id' => Auth::id(),
+            'product_id' => $item['id'],
+            'qty' => $item['qty'],
+            'price' => $item['price'],
+        ]);
+    }
+
+    
+
+    // Hapus isi keranjang setelah order berhasil
+    session()->forget('cart');
+
+    $notification = array(
+        'message' => 'Order Successfully',
+        'alert-type' => 'success'
+    );
+
+    // Redirect dengan notifikasi
+    return view('customer.checkout.thanks')->with($notification);
+}
+
 }
