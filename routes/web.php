@@ -85,7 +85,7 @@ Route::middleware('admin')->group(function () {
     Route::put('/admin/profile/update', [AdminController::class, 'AdminUpdateProfile'])->name('admin.update.profile');
     Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
     Route::post('/admin/update/password', [AdminController::class, 'AdminUpdatePassword'])->name('admin.update.password');
-});
+
 
     Route::controller(ManageController::class)->group(function () {
         Route::get('/admin/all/product', 'AdminAllProduct')->name('admin.all.product');
@@ -101,9 +101,6 @@ Route::middleware('admin')->group(function () {
         Route::get('/clientchangeStatus', 'ClientChangeStatus');
         Route::get('/approve/toko', 'ApproveToko')->name('approve.toko');
     });
-
-
-
     Route::controller(ManageOrderController::class)->group(function () {
         Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
         Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');
@@ -114,6 +111,7 @@ Route::middleware('admin')->group(function () {
         Route::get('/orders/delivered', 'DeliveredOrders')->name('admin.delivered.orders');
         Route::get('/orders/details/{id}', 'OrderDetails')->name('admin.order.details');
     });    
+});
 
 //ADMIN GUEST
 Route::middleware('admin.guest')->group(function () {
