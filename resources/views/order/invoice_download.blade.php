@@ -27,7 +27,7 @@
     }
     .authority h5 {
       margin-top: -10px;
-      color: #4F46E5; /* Indigo */
+      color: #4F46E5; 
       margin-left: 35px;
     }
     .thanks p {
@@ -48,10 +48,9 @@
       </td>
       <td align="right">
         <pre class="font">
-Galaxy Store Head Office
-Email: support@galaxystore.com
-Phone: +62 812-3456-7890
-Jl. Teknologi No. 88, Bandung
+            Email: @galaxystore.com
+            Phone: +62 812-3456-7890
+            Adress: Srono, Banyuwangi
         </pre>
       </td>
     </tr>
@@ -60,22 +59,21 @@ Jl. Teknologi No. 88, Bandung
   <table width="100%" style="background:white; padding:2px;"></table>
 
   <table width="100%" style="background: #F7F7F7; padding: 5px;" class="font">
-    <tr>
-      <td>
-        <p class="font" style="margin-left: 20px;">
-          <strong>Name:</strong> {{ $order->name }} <br>
-          <strong>Email:</strong> {{ $order->email }} <br>
-          <strong>Phone:</strong> {{ $order->phone }} <br>
-          <strong>Address:</strong> {{ $order->address }}
-        </p>
-      </td>
-      <td>
-        <h3 style="color: #4F46E5;">Invoice: #{{ $order->invoice_no }}</h3>
-        Order Date: {{ $order->order_date }} <br>
-        Payment Method: {{ $order->payment_method }}
-      </td>
-    </tr>
-  </table>
+  <tr>
+    <td>
+      <p class="font" style="margin-left: 20px;">
+        <strong>Name:</strong> {{ $order->user->name }}<br>
+        <strong>Email:</strong> {{ $order->user->email }}<br>
+        <strong>Phone:</strong> {{ $order->user->phone }}<br>
+        <strong>Address:</strong> {{ $order->user->address }}<br>
+        <strong>Invoice:</strong> #{{ $order->invoice_no }}<br>
+        <strong>Order Date:</strong> {{ $order->created_at }}<br>
+        <strong>Payment Method:</strong> {{ $order->payment_method }}
+      </p>
+    </td>
+  </tr>
+</table>
+
 
   <br>
   <h3 style="color: #4F46E5;">Products</h3>
@@ -87,12 +85,11 @@ Jl. Teknologi No. 88, Bandung
         <th>Product Name</th>
         <th>Code</th>
         <th>Quantity</th>
-        <th>Category</th>
-        <th>Total</th>
+        <th>Harga</th>
       </tr>
     </thead>
     <tbody>
-      @foreach ($orderItems as $item)
+      @foreach ($orderItem as $item)
       <tr class="font">
         <td align="center">
           <img src="{{ public_path($item->product->image) }}" height="60px" width="60px" alt="">
@@ -100,7 +97,6 @@ Jl. Teknologi No. 88, Bandung
         <td align="center">{{ $item->product->name }}</td>
         <td align="center">{{ $item->product->code }}</td>
         <td align="center">{{ $item->qty }}</td>
-        <td align="center">{{ $item->user->name }}</td>
         <td align="center">{{ $item->price }}</td>
       </tr>
       @endforeach
@@ -111,8 +107,9 @@ Jl. Teknologi No. 88, Bandung
   <table width="100%" style="padding: 0 10px;">
     <tr>
       <td align="right">
-        <h2><span style="color: #4F46E5;">Subtotal:</span> Subtotal</h2>
-        <h2><span style="color: #4F46E5;">Total:</span> {{ $totalPrice }}</h2>
+        <h2><span style="color: #4F46E5;">Subtotal:</span>{{ $Price }}</h2>
+        <h2><span style="color: #4F46E5;">Ongkos Kirim:</span>{{ $shippingFee }}</h2>
+        <h2><span style="color: #4F46E5;">Total:</span> {{ $totalAmount }}</h2>
       </td>
     </tr>
   </table>

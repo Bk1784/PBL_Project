@@ -56,10 +56,26 @@ class OrderController extends Controller
     public function downloadInvoice($order_id)
     {
         $order = Order::where('id', $order_id)->where('user_id', Auth::id())->firstOrFail();
-        $orderItem = OrderItem::where('order_id', $order_id)->get();
-        $totalPrice = $orderItem->sum(fn($item) => $item->price * $item->qty);
+        $orderItem = OrderItem::with(['product', 'order.user'])->where('order_id', $order_id)->get();
+       
+        
+        $shippingCosts = [
+            'JNE Reguler' => 15000,
+            'J&T Express' => 17000,
+            'SiCepat' => 13000,
+            'POS Indonesia' => 14000,
+        ];
+    
+        // Ambil nama kurir dan cari biaya kirim
+       
+        $courierName = $order->courier;
+        $shippingFee = $shippingCosts[$courierName] ?? 15000;
 
-        $pdf = PDF::loadView('order.invoice_download', compact('order', 'orderItem', 'totalPrice'))
+        $Price = $orderItem->sum(fn($item) => $item->price * $item->qty);
+
+        $totalAmount = $Price + $shippingFee;
+
+        $pdf = PDF::loadView('order.invoice_download', compact('order', 'orderItem', 'totalAmount', 'Price', 'shippingFee'))
                   ->setPaper('A4');
 
         return $pdf->download('invoice_' . $order->invoice_no . '.pdf');
