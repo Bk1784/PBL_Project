@@ -16,7 +16,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::where('client_id', Auth::id())->latest()->get();
+        $orders = Order::where('user_id', Auth::id())->latest()->get();
         return view('customer.orders.all_orders', compact('orders'));
         
     }
@@ -111,7 +111,6 @@ class OrderController extends Controller
     // Simpan data ke tabel orders
     $order_id = Order::insertGetId([
         'user_id' => Auth::id(),
-        'client_id' => Auth::id(),
         'product_id' => $item['id'],
         'status' => 'pending',
         'total_price' => $grandTotal,
@@ -126,7 +125,6 @@ class OrderController extends Controller
     foreach ($cartItems as $item) {
         OrderItem::insert([
             'order_id' => $order_id,
-            'client_id' => Auth::id(),
             'product_id' => $item['id'],
             'qty' => $item['qty'],
             'price' => $item['price'],

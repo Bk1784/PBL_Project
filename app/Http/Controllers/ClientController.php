@@ -172,11 +172,10 @@ class ClientController extends Controller
         return redirect()->route('client.profile')->with('info', 'Tidak ada perubahan pada profil.');
     }
 
-    public function ClientPesanan()
+    public function ClientPesanan()//
     {
         $client = Auth::guard('client')->user();
         $orders = Order::with('product')
-            ->where('client_id', $client->id)
             ->where('status', '!=', 'completed')
             ->orderBy('created_at', 'desc')
             ->get();
