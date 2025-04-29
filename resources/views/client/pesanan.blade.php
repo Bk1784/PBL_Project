@@ -22,6 +22,9 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
                         @foreach($orders as $order)
                         <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('client.pesanan.details', $order->id) }}'">
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -49,6 +52,18 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ $order->created_at }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                @if($order->status != 'completed')
+                                <form method="POST" action="{{ route('client.pesanan.execute', $order->id) }}">
+                                    @csrf
+                                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">
+                                        Eksekusi
+                                    </button>
+                                </form>
+                                @else
+                                <span class="text-green-600 font-semibold">Selesai</span>
+                                @endif
                             </td>
                         </tr>
                         @endforeach
