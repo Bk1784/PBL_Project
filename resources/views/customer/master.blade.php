@@ -22,10 +22,13 @@
                 <div class="flex items-center gap-3">
                     <input type="text" placeholder="🔍 Pencarian Produk"
                         class="px-4 py-2 w-72 rounded-full bg-white text-gray-700 border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:outline-none transition-all duration-300 shadow-sm">
-                    <div class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden">
-                    <a href="#" class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden block">
-                        <img src="{{ asset('images/logo.jpg') }}" alt="Logo">
-                    </a>
+                    <br>
+                    <div class="flex items-center space-x-4">
+                        <button type="submit"
+                        class="inline-block mt-2 text-lg font-medium text-black hover:text-blue-800 hover:bg-blue-50 py-1 px-4 rounded-md transition-all duration-200 border border-blue-200"><a href="{{ route('customer.register') }}">Daftar</a></button>
+                    <h1>|</h1>
+                        <button type="submit"
+                        class="inline-block mt-2 text-lg font-medium text-black hover:text-blue-800 hover:bg-blue-50 py-1 px-4 rounded-md transition-all duration-200 border border-blue-200"><a href="{{ route('customer.login') }}">Masuk</a></button>
                     </div>
                 </div>
             </div>

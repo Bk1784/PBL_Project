@@ -1,28 +1,35 @@
 @extends('client.client_dashboard')
 @section('content')
-<div class="container">
-    <h1>Laporan Penjualan</h1>
-    <form method="GET" action="{{ route('sales.report') }}">
-        <select name="sort" onchange="this.form.submit()">
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Laporan Penjualan</h1>
+    <form method="GET" action="{{ route('sales.report') }}" class="mb-4">
+        <select name="sort" onchange="this.form.submit()" class="border border-gray-300 rounded-md p-2">
             <option value="most_sold" {{ request('sort') == 'most_sold' ? 'selected' : '' }}>Paling Banyak Dipesan</option>
             <option value="least_sold" {{ request('sort') == 'least_sold' ? 'selected' : '' }}>Paling Sedikit Dipesan</option>
         </select>
     </form>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover table-bordered">
-            <thead class="thead-dark">
+    <div class="bg-white rounded-lg shadow overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
                 <tr>
-                    <th class="text-center">Nama Produk</th>
-                    <th class="text-center">Jumlah Terjual </th>
-                    <th class="text-center">Total Pendapatan</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Produk</th>
+                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Terjual</th>
+                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pendapatan</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($products as $product)
-                <tr>
-                    <td class="align-middle"><a href="#" class="product-details" data-id="{{ $product->id }}">{{ $product->name }}</a></td>
-                    <td class="text-center align-middle">{{ $product->totalSold() }}</td>
-                    <td class="text-center align-middle">{{ $product->totalRevenue() }}</td>
+                <tr class="hover:bg-gray-50 cursor-pointer">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <a href="#" class="product-details" data-id="{{ $product->id }}">{{ $product->name }}</a>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
+                        {{ $product->totalSold() }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
+                        {{ $product->totalRevenue() }}
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -43,4 +50,5 @@
         });
     });
 </script>
+
 @endsection
