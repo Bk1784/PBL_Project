@@ -192,6 +192,17 @@ class ClientController extends Controller
         return redirect()->back()->with('success', 'Pesanan berhasil dieksekusi');
     }
 
+    public function cancelOrder($id)
+    {
+        $order = Order::findOrFail($id);
+        if ($order->status == 'completed') {
+            $order->status = 'cancelled';
+            $order->save();
+            return redirect()->back()->with('success', 'Pesanan berhasil dibatalkan');
+        }
+        return redirect()->back()->with('error', 'Pesanan tidak dapat dibatalkan');
+    }
+
     public function orderDetails($id)
     {
         $order = Order::with('product')->findOrFail($id);

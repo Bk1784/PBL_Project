@@ -61,6 +61,13 @@
                                         Eksekusi
                                     </button>
                                 </form>
+                                @elseif($order->status == 'completed')
+                                <form method="POST" action="{{ route('client.pesanan.cancel', $order->id) }}">
+                                    @csrf
+                                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded">
+                                        Batalkan
+                                    </button>
+                                </form>
                                 @else
                                 <span class="text-green-600 font-semibold">Selesai</span>
                                 @endif
