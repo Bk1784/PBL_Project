@@ -51,7 +51,7 @@ class CartController extends Controller
                 $grandTotal += $item['price'] * $item['qty'];
                 $totalItems += $item['qty'];
             }
-            
+            //
             session()->put('cart', $cart);
     
             // Return JSON response
@@ -131,5 +131,5 @@ class CartController extends Controller
             return redirect()->route('login')->with($notification);
     
         }
-    }
+    }//
 }
