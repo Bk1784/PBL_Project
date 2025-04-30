@@ -182,7 +182,7 @@ class ClientController extends Controller
     {
         $client = Auth::guard('client')->user();
         $orders = Order::with('product')
-            ->where('client_id', $client->id)
+            ->where('user_id', $client->id)
             ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -194,7 +194,7 @@ class ClientController extends Controller
     {
         $client = Auth::guard('client')->user();
         $orders = Order::with('product')
-            ->where('client_id', $client->id)
+            ->where('user_id', $client->id)
             ->where('status', 'confirmed')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -206,7 +206,7 @@ class ClientController extends Controller
     {
         $client = Auth::guard('client')->user();
         $orders = Order::with('product')
-            ->where('client_id', $client->id)
+            ->where('user_id', $client->id)
             ->where('status', 'processing')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -218,7 +218,7 @@ class ClientController extends Controller
     {
         $client = Auth::guard('client')->user();
         $orders = Order::with('product')
-            ->where('client_id', $client->id)
+            ->where('user_id', $client->id)
             ->where('status', 'delivered')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -258,7 +258,7 @@ class ClientController extends Controller
     {
         $client = Auth::guard('client')->user();
         $orders = Order::with('product')
-            ->where('client_id', $client->id)
+            ->where('user_id', $client->id)
             ->where('status', 'completed')
             ->orderBy('created_at', 'desc')
             ->get();
