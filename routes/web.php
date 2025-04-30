@@ -129,11 +129,19 @@ Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->n
 Route::middleware(['status', 'client'])->group(function () {
     Route::get('/sales-report', [ClientController::class, 'ClientLaporan'])->name('sales.report');
     Route::get('/product-details/{id}', [ClientController::class, 'getProductDetails'])->name('product.details');
+
     Route::get('/client/pesanan', [ClientController::class, 'ClientPesanan'])->name('client.pesanan');
-    Route::get('/client/pesanan/executed', [ClientController::class, 'executedOrders'])->name('client.pesanan.executed');
-    Route::post('/client/pesanan/execute/{id}', [ClientController::class, 'executeOrder'])->name('client.pesanan.execute');
+    Route::get('/client/pesanan/pending', [ClientController::class, 'pendingOrders'])->name('client.pending.orders');
+    Route::get('/client/pesanan/confirm', [ClientController::class, 'confirmOrders'])->name('client.confirm.orders');
+    Route::get('/client/pesanan/processing', [ClientController::class, 'processingOrders'])->name('client.processing.orders');
+    Route::get('/client/pesanan/delivered', [ClientController::class, 'deliveredOrders'])->name('client.delivered.orders');
+
+    Route::post('/client/pesanan/confirm-received/{id}', [ClientController::class, 'confirmReceived'])->name('client.pesanan.confirm_received');
     Route::post('/client/pesanan/cancel/{id}', [ClientController::class, 'cancelOrder'])->name('client.pesanan.cancel');
     Route::get('/client/pesanan/{id}', [ClientController::class, 'orderDetails'])->name('client.pesanan.details');
+
+    Route::get('/client/pesanan/executed', [ClientController::class, 'executedOrders'])->name('client.pesanan.executed');
+
     Route::get('/client/laporan', [ClientController::class, 'ClientLaporan'])->name('client.laporan');
     Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');
     Route::get('/client/profile', [ClientController::class, 'profile'])->name('client.profile');

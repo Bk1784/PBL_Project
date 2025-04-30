@@ -172,30 +172,75 @@ class ClientController extends Controller
         return redirect()->route('client.profile')->with('info', 'Tidak ada perubahan pada profil.');
     }
 
-    public function ClientPesanan()//
+
+    public function ClientPesanan()
+    {
+        return redirect()->route('client.pending.orders');
+    }
+
+    public function pendingOrders()
     {
         $client = Auth::guard('client')->user();
         $orders = Order::with('product')
-            ->where('status', '!=', 'completed')
+            ->where('client_id', $client->id)
+            ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->get();
-            
-        return view('client.pesanan', compact('orders'));
+
+        return view('client.Order.pending_orders', compact('orders'));
     }
 
-    public function executeOrder($id)
+    public function confirmOrders()
+    {
+        $client = Auth::guard('client')->user();
+        $orders = Order::with('product')
+            ->where('client_id', $client->id)
+            ->where('status', 'confirmed')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('client.Order.confirm_orders', compact('orders'));
+    }
+
+    public function processingOrders()
+    {
+        $client = Auth::guard('client')->user();
+        $orders = Order::with('product')
+            ->where('client_id', $client->id)
+            ->where('status', 'processing')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('client.Order.processing_orders', compact('orders'));
+    }
+
+    public function deliveredOrders()
+    {
+        $client = Auth::guard('client')->user();
+        $orders = Order::with('product')
+            ->where('client_id', $client->id)
+            ->where('status', 'delivered')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('client.Order.delivered_orders', compact('orders'));
+    }
+
+    public function confirmReceived($id)
     {
         $order = Order::findOrFail($id);
-        $order->status = 'completed';
-        $order->save();
-
-        return redirect()->back()->with('success', 'Pesanan berhasil dieksekusi');
+        if ($order->status == 'delivered') {
+            $order->status = 'completed';
+            $order->save();
+            return redirect()->back()->with('success', 'Pesanan berhasil diterima');
+        }
+        return redirect()->back()->with('error', 'Pesanan tidak dapat diterima');
     }
 
     public function cancelOrder($id)
     {
         $order = Order::findOrFail($id);
-        if ($order->status == 'completed') {
+        if (in_array($order->status, ['pending', 'confirmed'])) {
             $order->status = 'cancelled';
             $order->save();
             return redirect()->back()->with('success', 'Pesanan berhasil dibatalkan');
@@ -217,7 +262,7 @@ class ClientController extends Controller
             ->where('status', 'completed')
             ->orderBy('created_at', 'desc')
             ->get();
-            
+
         return view('client.executed_pesanan', compact('orders'));
     }
 

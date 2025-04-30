@@ -40,13 +40,32 @@
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>🎨</span> <span>Dekorasi</span>
                 </li>
-                <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>🛒</span> <a href="{{ route('client.pesanan') }}">Pesanan</a>
+                <li class="flex flex-col gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
+                    <div class="flex items-center">
+                        <span>🛒</span>
+                        <a href="javascript:void(0);" class="has-arrow ml-3 w-full" id="manageOrdersToggle">
+                            <span>Manage Orders</span>
+                        </a>
+                    </div>
+                    <ul class="sub-menu hidden mt-2 ml-8 space-y-2 transition-all duration-300 ease-in-out" aria-expanded="false" id="manageOrdersSubmenu">
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('client.pending.orders') }}">Pending Orders</a>
+                        </li>
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('client.confirm.orders') }}">Confirm Orders</a>
+                        </li>
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('client.processing.orders') }}">Processing Orders</a>
+                        </li>
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('client.delivered.orders') }}">Delivered Orders</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>💳</span> <span>Pembayaran</span>
                 </li>
-                <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
+                <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
                     <span>📑</span> <a href="{{ route('client.laporan') }}">Laporan</a>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
@@ -117,6 +136,13 @@
             </div>
         </div>
     </div>
+    <script>
+    // Toggle submenu visibility for Pesanan menu
+    document.getElementById('manageOrdersToggle').addEventListener('click', function() {
+        const submenu = document.getElementById('manageOrdersSubmenu');
+        submenu.classList.toggle('hidden');
+    });
+    </script>
 </body>
 
 </html>
