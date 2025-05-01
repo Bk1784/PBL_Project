@@ -251,7 +251,7 @@ class ClientController extends Controller
     public function orderDetails($id)
     {
         $order = Order::with('product')->findOrFail($id);
-        return view('client.order_details', compact('order'));
+        return view('client.Order.order_details', compact('order'));
     }
 
     public function executedOrders()
