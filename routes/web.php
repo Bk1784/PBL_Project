@@ -145,6 +145,10 @@ Route::middleware(['status', 'client'])->group(function () {
 
     Route::post('/client/pesanan/confirm-received/{id}', [ClientController::class, 'confirmReceived'])->name('client.pesanan.confirm_received');
     Route::post('/client/pesanan/cancel/{id}', [ClientController::class, 'cancelOrder'])->name('client.pesanan.cancel');
+    Route::post('/client/pesanan/execute/{id}', [ClientController::class, 'executeOrder'])->name('client.pesanan.execute');
+    Route::post('/client/pesanan/confirm/{id}', [ClientController::class, 'confirmOrder'])->name('client.pesanan.confirm');
+    Route::post('/client/pesanan/process/{id}', [ClientController::class, 'processOrder'])->name('client.pesanan.process');
+    Route::post('/client/pesanan/complete/{id}', [ClientController::class, 'completeOrder'])->name('client.pesanan.complete');
     Route::get('/client/pesanan/{id}', [ClientController::class, 'orderDetails'])->name('client.pesanan.details');
 
     Route::get('/client/pesanan/executed', [ClientController::class, 'executedOrders'])->name('client.pesanan.executed');
