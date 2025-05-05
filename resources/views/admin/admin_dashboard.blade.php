@@ -148,6 +148,23 @@
                 <li
                     class="flex flex-col gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
                     <div class="flex items-center">
+                        <span>📦</span>
+                        <a href="javascript:void(0);" class="has-arrow ml-3 w-full" id="managePurchasesToggle">
+                            <span>Purchases Product</span>
+                        </a>
+                    </div>
+                    <ul class="sub-menu hidden mt-2 ml-8 space-y-2" aria-expanded="false" id="managePurchasesSubmenu">
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('admin.backend.purchases.all') }}">All Purchases</a>
+                        </li>
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('admin.backend.purchases.add') }}">Add Purchases</a>
+                        </li>
+                    </ul>
+                </li>
+                <li
+                    class="flex flex-col gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
+                    <div class="flex items-center">
                         <span>🛒</span>
                         <a href="javascript:void(0);" class="has-arrow ml-3 w-full" id="manageOrdersToggle">
                             <span>Manage Orders</span>
@@ -241,6 +258,15 @@
     // Toggle submenu
     document.getElementById('manageProductToggle').addEventListener('click', function() {
         const submenu = document.getElementById('manageProductSubmenu');
+        if (submenu.classList.contains('hidden')) {
+            submenu.classList.remove('hidden');
+        } else {
+            submenu.classList.add('hidden');
+        }
+    });
+
+    document.getElementById('managePurchasesToggle').addEventListener('click', function() {
+        const submenu = document.getElementById('managePurchasesSubmenu');
         if (submenu.classList.contains('hidden')) {
             submenu.classList.remove('hidden');
         } else {

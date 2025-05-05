@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ManageOrderController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\HomeController;
 use App\Http\Controllers\Customer\OrderController;
+use App\Http\Controllers\PurchasesController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -111,6 +112,12 @@ Route::middleware('admin')->group(function () {
         Route::get('/orders/delivered', 'DeliveredOrders')->name('admin.delivered.orders');
         Route::get('/orders/details/{id}', 'OrderDetails')->name('admin.order.details');
     });    
+    Route::controller(PurchasesController::class)->group(function(){
+        Route::get('/all/purchases', 'index')->name('admin.backend.purchases.all');
+        Route::get('/add/purchases', 'create')->name('admin.backend.purchases.add');
+        Route::post('/add/purchases/store',  'store')->name('admin.purchases.store');
+    });
+
 });
 
 //ADMIN GUEST
