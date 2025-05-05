@@ -237,6 +237,50 @@ class ClientController extends Controller
         return redirect()->back()->with('error', 'Pesanan tidak dapat diterima');
     }
 
+    public function executeOrder($id)
+    {
+        $order = Order::findOrFail($id);
+        if ($order->status == 'pending') {
+            $order->status = 'confirmed';
+            $order->save();
+            return redirect()->back()->with('success', 'Pesanan berhasil dieksekusi');
+        }
+        return redirect()->back()->with('error', 'Pesanan tidak dapat dieksekusi');
+    }
+
+    public function confirmOrder($id)
+    {
+        $order = Order::findOrFail($id);
+        if ($order->status == 'confirmed') {
+            $order->status = 'processing';
+            $order->save();
+            return redirect()->back()->with('success', 'Pesanan berhasil dikonfirmasi');
+        }
+        return redirect()->back()->with('error', 'Pesanan tidak dapat dikonfirmasi');
+    }
+
+    public function processOrder($id)
+    {
+        $order = Order::findOrFail($id);
+        if ($order->status == 'processing') {
+            $order->status = 'delivered';
+            $order->save();
+            return redirect()->back()->with('success', 'Pesanan sedang diproses');
+        }
+        return redirect()->back()->with('error', 'Pesanan tidak dapat diproses');
+    }
+
+    public function completeOrder($id)
+    {
+        $order = Order::findOrFail($id);
+        if ($order->status == 'delivered') {
+            $order->status = 'completed';
+            $order->save();
+            return redirect()->back()->with('success', 'Pesanan selesai');
+        }
+        return redirect()->back()->with('error', 'Pesanan tidak dapat diselesaikan');
+    }
+
     public function cancelOrder($id)
     {
         $order = Order::findOrFail($id);

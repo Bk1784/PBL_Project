@@ -36,10 +36,12 @@
                             class="bg-purple-500 text-white py-1 px-3 rounded-full text-sm">{{ ucfirst($order->status) }}</span>
                     </td>
                     <td class="p-3 border-b border-gray-200">
-                        <a href="{{ route('client.pesanan.details', $order->id) }}"
-                            class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded">
-                            <i class="fas fa-eye"></i>
-                        </a>
+                        <form action="{{ route('client.pesanan.execute', $order->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mengeksekusi pesanan ini?');">
+                            @csrf
+                            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded">
+                                Eksekusi
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 @endforeach
