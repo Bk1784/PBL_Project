@@ -5,6 +5,32 @@
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Sukses',
+        text: '{{ session('success') }}',
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false
+    });
+</script>
+@endif
+
+@if(session('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: '{{ session('error') }}',
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false
+    });
+</script>
+@endif
+
 <!-- Delivered Orders Table -->
 <div class="bg-white p-6 rounded-lg shadow-lg">
     <h3 class="text-2xl font-bold mb-4">Delivered Orders</h3>
