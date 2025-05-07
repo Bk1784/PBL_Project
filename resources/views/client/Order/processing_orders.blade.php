@@ -5,32 +5,6 @@
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-@if(session('success'))
-<script>
-    Swal.fire({
-        icon: 'success',
-        title: 'Sukses',
-        text: '{{ session('success') }}',
-        timer: 3000,
-        timerProgressBar: true,
-        showConfirmButton: false
-    });
-</script>
-@endif
-
-@if(session('error'))
-<script>
-    Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: '{{ session('error') }}',
-        timer: 3000,
-        timerProgressBar: true,
-        showConfirmButton: false
-    });
-</script>
-@endif
-
 <!-- Processing Orders Table -->
 <div class="bg-white p-6 rounded-lg shadow-lg">
     <h3 class="text-2xl font-bold mb-4">Processing Orders</h3>
@@ -62,7 +36,7 @@
                             class="bg-purple-500 text-white py-1 px-3 rounded-full text-sm">{{ ucfirst($order->status) }}</span>
                     </td>
                     <td class="p-3 border-b border-gray-200">
-                        <form action="{{ route('client.pesanan.process', $order->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin memproses pesanan ini?');">
+                        <form action="{{ route('client.pesanan.process', $order->id) }}" method="POST" class="process-order-form">
                             @csrf
                             <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-white py-1 px-3 rounded">
                                 Proses
@@ -75,5 +49,62 @@
         </table>
     </div>
 </div>
+
+<script>
+    document.querySelectorAll('.process-order-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Konfirmasi',
+                text: "Apakah Anda yakin ingin memproses pesanan ini?",
+                showCancelButton: true,
+                confirmButtonColor: '#10B981',
+                cancelButtonColor: '#EF4444',
+                confirmButtonText: 'Ya, Proses!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Sukses',
+        text: '{{ session('success') }}',
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        background: '#ffffff',
+        backdrop: `
+            rgba(16, 185, 129, 0.1)
+            url("/images/checkmark.gif")
+            center top
+            no-repeat
+        `
+    });
+</script>
+@endif
+
+@if(session('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: '{{ session('error') }}',
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        background: '#ffffff'
+    });
+</script>
+@endif
 
 @endsection
