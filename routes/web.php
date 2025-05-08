@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ManageOrderController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\HomeController;
 use App\Http\Controllers\Customer\OrderController;
+use App\Http\Controllers\PurchasesController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -87,7 +88,12 @@ Route::middleware('admin')->group(function () {
     Route::put('/admin/profile/update', [AdminController::class, 'AdminUpdateProfile'])->name('admin.update.profile');
     Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
     Route::post('/admin/update/password', [AdminController::class, 'AdminUpdatePassword'])->name('admin.update.password');
+<<<<<<< HEAD
     
+=======
+
+
+>>>>>>> 54da1c908276b32719a33e777eec789f05f71469
     Route::controller(ManageController::class)->group(function () {
         Route::get('/admin/all/product', 'AdminAllProduct')->name('admin.all.product');
         Route::get('/admin/add/product', 'AdminAddProduct')->name('admin.add.product');
@@ -102,17 +108,36 @@ Route::middleware('admin')->group(function () {
         Route::get('/clientchangeStatus', 'ClientChangeStatus');
         Route::get('/approve/toko', 'ApproveToko')->name('approve.toko');
     });
+<<<<<<< HEAD
 
+=======
+>>>>>>> 54da1c908276b32719a33e777eec789f05f71469
     Route::controller(ManageOrderController::class)->group(function () {
         Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
         Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');        
     });
 
+<<<<<<< HEAD
     Route::controller(ReportController::class)->group(function () {
         Route::get('/admin/all-reports', [AdminController::class, 'allReports'])->name('admin.all.reports');
         Route::post('/admin/search-by-date', [AdminController::class, 'searchByDate'])->name('admin.search.bydate');
         Route::post('/admin/search-by-month', [AdminController::class, 'searchByMonth'])->name('admin.search.bymonth');
         Route::post('/admin/search-by-year', [AdminController::class, 'searchByYear'])->name('admin.search.byyear');
+=======
+        Route::get('/orders/pending', 'PendingOrders')->name('admin.pending.orders');
+        Route::get('/orders/confirm', 'ConfirmOrders')->name('admin.confirm.orders');
+        Route::get('/orders/processing', 'ProcessingOrders')->name('admin.processing.orders');
+        Route::get('/orders/delivered', 'DeliveredOrders')->name('admin.delivered.orders');
+        Route::get('/orders/details/{id}', 'OrderDetails')->name('admin.order.details');
+    });    
+    Route::controller(PurchasesController::class)->group(function(){
+        Route::get('/all/purchases', 'index')->name('admin.backend.purchases.all');
+        Route::get('/add/purchases', 'create')->name('admin.backend.purchases.add');
+        Route::post('/add/purchases/store',  'store')->name('admin.purchases.store');
+    });
+
+});
+>>>>>>> 54da1c908276b32719a33e777eec789f05f71469
 
     });
 });
@@ -132,10 +157,23 @@ Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->n
 Route::middleware(['status', 'client'])->group(function () {
     Route::get('/sales-report', [ClientController::class, 'ClientLaporan'])->name('sales.report');
     Route::get('/product-details/{id}', [ClientController::class, 'getProductDetails'])->name('product.details');
+
     Route::get('/client/pesanan', [ClientController::class, 'ClientPesanan'])->name('client.pesanan');
-    Route::get('/client/pesanan/executed', [ClientController::class, 'executedOrders'])->name('client.pesanan.executed');
+    Route::get('/client/pesanan/pending', [ClientController::class, 'pendingOrders'])->name('client.pending.orders');
+    Route::get('/client/pesanan/confirm', [ClientController::class, 'confirmOrders'])->name('client.confirm.orders');
+    Route::get('/client/pesanan/processing', [ClientController::class, 'processingOrders'])->name('client.processing.orders');
+    Route::get('/client/pesanan/delivered', [ClientController::class, 'deliveredOrders'])->name('client.delivered.orders');
+
+    Route::post('/client/pesanan/confirm-received/{id}', [ClientController::class, 'confirmReceived'])->name('client.pesanan.confirm_received');
+    Route::post('/client/pesanan/cancel/{id}', [ClientController::class, 'cancelOrder'])->name('client.pesanan.cancel');
     Route::post('/client/pesanan/execute/{id}', [ClientController::class, 'executeOrder'])->name('client.pesanan.execute');
+    Route::post('/client/pesanan/confirm/{id}', [ClientController::class, 'confirmOrder'])->name('client.pesanan.confirm');
+    Route::post('/client/pesanan/process/{id}', [ClientController::class, 'processOrder'])->name('client.pesanan.process');
+    Route::post('/client/pesanan/complete/{id}', [ClientController::class, 'completeOrder'])->name('client.pesanan.complete');
     Route::get('/client/pesanan/{id}', [ClientController::class, 'orderDetails'])->name('client.pesanan.details');
+
+    Route::get('/client/pesanan/executed', [ClientController::class, 'executedOrders'])->name('client.pesanan.executed');
+
     Route::get('/client/laporan', [ClientController::class, 'ClientLaporan'])->name('client.laporan');
     Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');
     Route::get('/client/profile', [ClientController::class, 'profile'])->name('client.profile');

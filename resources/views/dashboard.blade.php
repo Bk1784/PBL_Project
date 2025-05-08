@@ -292,25 +292,25 @@
 
             // Increment quantity
             $(document).on('click', '.inc', function(e) {
-                e.preventDefault();
-                var id = $(this).data('id');
-                var quantityElement = $(this).siblings('.quantity');
-                var currentQuantity = parseInt(quantityElement.text());
-                var newQuantity = currentQuantity + 1;
-                quantityElement.text(newQuantity);
-                updateCart(id, newQuantity);
-            });
-
-            // Decrement quantity
-            $(document).on('click', '.dec', function(e) {
-                e.preventDefault();
-                var id = $(this).data('id');
-                var quantityElement = $(this).siblings('.quantity');
-                var currentQuantity = parseInt(quantityElement.text());
-                if (currentQuantity > 1) {
-                    var newQuantity = currentQuantity - 1;
-                    quantityElement.text(newQuantity);
-                    updateCart(id, newQuantity);
+                 e.preventDefault();
+                 var id = $(this).data('id');
+                 var quantityElement = $(this).siblings('.quantity');
+                 var currentQuantity = parseInt(quantityElement.text());
+                 var newQuantity = currentQuantity + 1;
+                 quantityElement.text(newQuantity);
+                 updateCart(id, newQuantity);
+             });
+ 
+             // Decrement quantity
+             $(document).on('click', '.dec', function(e) {
+                 e.preventDefault();
+                 var id = $(this).data('id');
+                 var quantityElement = $(this).siblings('.quantity');
+                 var currentQuantity = parseInt(quantityElement.text());
+                 if (currentQuantity > 1) {
+                     var newQuantity = currentQuantity - 1;
+                     quantityElement.text(newQuantity);
+                     updateCart(id, newQuantity);
                 }
             });
 

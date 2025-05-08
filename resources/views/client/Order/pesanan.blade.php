@@ -22,6 +22,9 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
                         @foreach($orders as $order)
                         <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('client.pesanan.details', $order->id) }}'">
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -41,14 +44,44 @@
                                 Rp {{ number_format($order->total_price, 0, ',', '.') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    {{ $order->status == 'completed' ? 'bg-green-100 text-green-800' : 
-                                       ($order->status == 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                                @php
+                                    $statusClasses = [
+                                        'pending' => 'bg-yellow-100 text-yellow-800',
+                                        'confirmed' => 'bg-blue-100 text-blue-800',
+                                        'processing' => 'bg-indigo-100 text-indigo-800',
+                                        'delivered' => 'bg-purple-100 text-purple-800',
+                                        'completed' => 'bg-green-100 text-green-800',
+                                        'cancelled' => 'bg-red-100 text-red-800',
+                                    ];
+                                    $statusClass = $statusClasses[$order->status] ?? 'bg-gray-100 text-gray-800';
+                                @endphp
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClass }}">
                                     {{ ucfirst($order->status) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $order->created_at->format('d M Y') }}
+                                {{ $order->created_at }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                @if(in_array($order->status, ['pending', 'confirmed']))
+                                <form method="POST" action="{{ route('client.pesanan.cancel', $order->id) }}">
+                                    @csrf
+                                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded">
+                                        Batalkan
+                                    </button>
+                                </form>
+                                @elseif($order->status == 'delivered')
+                                <form method="POST" action="{{ route('client.pesanan.execute', $order->id) }}">
+                                    @csrf
+                                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">
+                                        Terima
+                                    </button>
+                                </form>
+                                @elseif($order->status == 'completed')
+                                <span class="text-green-600 font-semibold">Selesai</span>
+                                @else
+                                <span class="text-gray-600 font-semibold">-</span>
+                                @endif
                             </td>
                         </tr>
                         @endforeach

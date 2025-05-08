@@ -6,14 +6,18 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Galaxy Store</title>
 
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+
 
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -21,6 +25,7 @@
     <!-- jQuery Validate -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
 
     <style>
         .toggle-checkbox:checked {
@@ -124,19 +129,49 @@
                         </li>
                     </ul>
                 </li>
-                <li>
-  <button id="toggleReports" type="button" class="w-full text-left py-2 px-4 text-gray-700 hover:bg-blue-100 rounded mb-2 flex justify-between items-center">
-    <span><i class="fa fa-briefcase mr-2"></i>Manage Reports</span>
-    <i class="fas fa-chevron-down text-sm"></i>
-  </button>
-  <div id="reportsSubmenu" class="ml-6 hidden">
-    <a href="{{ route('admin.all.reports') }}" class="block py-1 px-4 text-gray-600 hover:bg-blue-50 rounded text-sm mb-2">
-      <i class="fa fa-file-alt mr-1"></i>All Reports
-    </a>
-  </div>
-</li>
-              
-                <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
+                <li
+                    class="flex flex-col gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
+                    <div class="flex items-center">
+                        <span>📦</span>
+                        <a href="javascript:void(0);" class="has-arrow ml-3 w-full" id="managePurchasesToggle">
+                            <span>Purchases Product</span>
+                        </a>
+                    </div>
+                    <ul class="sub-menu hidden mt-2 ml-8 space-y-2" aria-expanded="false" id="managePurchasesSubmenu">
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('admin.backend.purchases.all') }}">All Purchases</a>
+                        </li>
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('admin.backend.purchases.add') }}">Add Purchases</a>
+                        </li>
+                    </ul>
+                </li>
+                <li
+                    class="flex flex-col gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
+                    <div class="flex items-center">
+                        <span>🛒</span>
+                        <a href="javascript:void(0);" class="has-arrow ml-3 w-full" id="manageOrdersToggle">
+                            <span>Manage Orders</span>
+                        </a>
+                    </div>
+                    <ul class="sub-menu hidden mt-2 ml-8 space-y-2 transition-all duration-300 ease-in-out"
+                        aria-expanded="false" id="manageOrdersSubmenu">
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('admin.pending.orders') }}">Pending Orders</a>
+                        </li>
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('admin.confirm.orders') }}">Confirm Orders</a>
+                        </li>
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('admin.processing.orders') }}">Processing Orders</a>
+                        </li>
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('admin.delivered.orders') }}">Delivered Orders</a>
+                        </li>
+                    </ul>
+                </li>
+                <li
+                    class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
                     <span>🎨</span> <span>Dekorasi</span>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
@@ -272,3 +307,71 @@
  </html>
  </html>
 
+    document.getElementById('managePurchasesToggle').addEventListener('click', function() {
+        const submenu = document.getElementById('managePurchasesSubmenu');
+        if (submenu.classList.contains('hidden')) {
+            submenu.classList.remove('hidden');
+        } else {
+            submenu.classList.add('hidden');
+        }
+    });
+
+    // Toggle submenu visibility
+    document.getElementById('manageOrdersToggle').addEventListener('click', function() {
+        const submenu = document.getElementById('manageOrdersSubmenu');
+        submenu.classList.toggle('hidden');
+    });
+
+
+    // Mobile menu toggle
+    document.getElementById('mobileMenuButton').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('sidebar-hidden');
+        document.getElementById('sidebar').classList.add('sidebar-visible');
+        document.getElementById('overlay').classList.add('overlay-visible');
+    });
+
+    document.getElementById('closeSidebar').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('sidebar-visible');
+        document.getElementById('sidebar').classList.add('sidebar-hidden');
+        document.getElementById('overlay').classList.remove('overlay-visible');
+    });
+
+    document.getElementById('overlay').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('sidebar-visible');
+        document.getElementById('sidebar').classList.add('sidebar-hidden');
+        document.getElementById('overlay').classList.remove('overlay-visible');
+    });
+
+    // Close sidebar when clicking on a link (for mobile)
+    document.querySelectorAll('#sidebar a').forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.remove('sidebar-visible');
+                document.getElementById('sidebar').classList.add('sidebar-hidden');
+                document.getElementById('overlay').classList.remove('overlay-visible');
+            }
+        });
+    });
+    </script>
+
+    <script>
+    function toggleManageStore() {
+        const submenu = document.getElementById('manageStoreSubmenu');
+        const isExpanded = submenu.getAttribute('aria-expanded') === 'true';
+
+        submenu.classList.toggle('hidden');
+        submenu.setAttribute('aria-expanded', !isExpanded);
+    }
+
+    // Optional: Close submenu when clicking elsewhere
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.manageStoreToggle') && !event.target.closest('#manageStoreSubmenu')) {
+            const submenu = document.getElementById('manageStoreSubmenu');
+            submenu.classList.add('hidden');
+            submenu.setAttribute('aria-expanded', 'false');
+        }
+    });
+    </script>
+</body>
+
+</html>
