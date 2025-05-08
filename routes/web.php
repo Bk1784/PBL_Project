@@ -87,12 +87,7 @@ Route::middleware('admin')->group(function () {
     Route::put('/admin/profile/update', [AdminController::class, 'AdminUpdateProfile'])->name('admin.update.profile');
     Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
     Route::post('/admin/update/password', [AdminController::class, 'AdminUpdatePassword'])->name('admin.update.password');
-<<<<<<< HEAD
-});
-=======
     
->>>>>>> 03cfb67 (Manage report)
-
     Route::controller(ManageController::class)->group(function () {
         Route::get('/admin/all/product', 'AdminAllProduct')->name('admin.all.product');
         Route::get('/admin/add/product', 'AdminAddProduct')->name('admin.add.product');
@@ -100,11 +95,7 @@ Route::middleware('admin')->group(function () {
         Route::get('/admin/edit/product/{id}', 'AdminEditProduct')->name('admin.edit.product');
         Route::put('/admin/update/product', 'AdminUpdateProduct')->name('admin.update.product');
         Route::get('/admin/delete/product/{id}', 'AdminDeleteProduct')->name('admin.delete.product');
-<<<<<<< HEAD
-
-=======
         Route::get('/admin/product-report', [ProductReportController::class, 'index'])->name('admin.product.report');
->>>>>>> 03cfb67 (Manage report)
     });
     Route::controller(ManageController::class)->group(function () {
         Route::get('/pending/toko', 'PendingToko')->name('pending.toko');
@@ -112,32 +103,19 @@ Route::middleware('admin')->group(function () {
         Route::get('/approve/toko', 'ApproveToko')->name('approve.toko');
     });
 
-
-
     Route::controller(ManageOrderController::class)->group(function () {
         Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
-<<<<<<< HEAD
-        Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');
-
-        Route::get('/orders/pending', 'PendingOrders')->name('admin.pending.orders');
-        Route::get('/orders/confirm', 'ConfirmOrders')->name('admin.confirm.orders');
-        Route::get('/orders/processing', 'ProcessingOrders')->name('admin.processing.orders');
-        Route::get('/orders/delivered', 'DeliveredOrders')->name('admin.delivered.orders');
-        Route::get('/orders/details/{id}', 'OrderDetails')->name('admin.order.details');
-    });    
-
-=======
         Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');        
     });
 
-    Route::controller(ReportController::class)->group(function(){
-        Route::get('/admin/all/reports', 'AdminAllReports')->name('admin.all.reports'); 
-        Route::post('/admin/search/bydate', 'AdminSearchByDate')->name('admin.search.bydate');
-        Route::post('/admin/search/bymonth', [ReportController::class, 'AdminSearchByMonth'])->name('admin.search.bymonth');
-        Route::post('/admin/search/byyear', 'AdminSearchByYear')->name('admin.search.byyear');
+    Route::controller(ReportController::class)->group(function () {
+        Route::get('/admin/all-reports', [AdminController::class, 'allReports'])->name('admin.all.reports');
+        Route::post('/admin/search-by-date', [AdminController::class, 'searchByDate'])->name('admin.search.bydate');
+        Route::post('/admin/search-by-month', [AdminController::class, 'searchByMonth'])->name('admin.search.bymonth');
+        Route::post('/admin/search-by-year', [AdminController::class, 'searchByYear'])->name('admin.search.byyear');
+
     });
 });
->>>>>>> 03cfb67 (Manage report)
 //ADMIN GUEST
 Route::middleware('admin.guest')->group(function () {
     Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
@@ -178,9 +156,5 @@ Route::middleware('client.guest')->group(function () {
     Route::post('/client/reset_password_submit', [ClientController::class, 'ClientResetPasswordSubmit'])->name('client.reset_password_submit');
 });
 
-<<<<<<< HEAD
 // UNTUK SEMUA PENGGUNA
 Route::get('/changeStatus', [ManageController::class, 'ChangeStatus']);
-=======
-
->>>>>>> 03cfb67 (Manage report)

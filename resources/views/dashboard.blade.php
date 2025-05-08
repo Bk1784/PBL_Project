@@ -178,7 +178,7 @@
                     </ul>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>⚙️</span> <span>Pengaturan</span>
+                    <span>⚙</span> <span>Pengaturan</span>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>🛒</span> <a href="#">Keranjang</a>
@@ -189,11 +189,11 @@
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>👤</span> <a href="{{ route('customer.profile') }}">Profile</a>
                 </li>
-                <div>
-    <a href="{{ route('admin.logout') }}" class="block py-2 px-4 text-red-500 hover:bg-red-100 rounded">
-        <i class="fa fa-sign-out-alt mr-2"></i>Logout
-    </a>
-</div>
+                <li class="flex items-center gap-3 text-red-500 hover:text-red-400 transition-all cursor-pointer">
+                    <span>🚪</span> <a href="{{ route('customer.logout') }}">Log Out</a>
+                </li>
+            </ul>
+        </div>
 
         <!-- Konten Utama dan Right Bar Container -->
         <div class="main-content-container w-full">

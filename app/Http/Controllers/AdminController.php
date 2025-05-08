@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\Websitemail;
 use App\Models\Admin;
+use App\Models\Order;
 // use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +38,38 @@ class AdminController extends Controller
             return redirect()->route('admin.login')->with('error', 'Invalid Credentials');
 
         }
+    }
+
+    public function allReports()
+    {
+        $orders = Order::all(); // ambil semua orders dari tabel orders
+        return view('admin.manage_report', compact('orders'));
+    }
+
+    public function searchByDate(Request $request)
+    {
+        $date = $request->date;
+        $orders = Order::whereDate('created_at', $date)->get();
+        return view('admin.manage_report', compact('orders'));
+    }
+
+    public function searchByMonth(Request $request)
+    {
+        $month = $request->month;
+        $year = $request->year_name;
+
+        $orders = Order::whereYear('created_at', $year)
+            ->whereMonth('created_at', date('m', strtotime($month)))
+            ->get();
+
+        return view('admin.manage_report', compact('orders'));
+    }
+
+    public function searchByYear(Request $request)
+    {
+        $year = $request->year;
+        $orders = Order::whereYear('created_at', $year)->get();
+        return view('admin.manage_report', compact('orders'));
     }
 
     public function AdminLogout(){

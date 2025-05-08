@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-@extends('admin.admin_dashboard')
-
-@section('content')
-<div class="bg-white text-gray-800 p-6 text-sm rounded-lg shadow-md mt-6 border border-gray-300 w-full">
-=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,42 +36,10 @@
             <div class="container mx-auto">
                 <div class="bg-white shadow-md rounded-lg p-6">
                     <h3 class="text-xl font-bold text-gray-800 mb-4">Edit Profil Admin</h3>
->>>>>>> 03cfb67 (Manage report)
 
     <h3 class="text-xl font-bold text-gray-800 mb-4">Edit Profil Admin
     </h3>
 
-<<<<<<< HEAD
-    <form id="edit-profile-form" action="{{ route('admin.update.profile') }}" method="POST" enctype="multipart/form-data">
-        @method('PUT')
-        @csrf
-
-        @if (session('success'))
-            <div class="bg-green-100 text-green-700 p-4 rounded mb-4">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <div class="flex flex-col md:flex-row gap-6">
-            <!-- Bagian Foto Profil -->
-            <div class="w-full md:w-1/3 text-center">
-                <img id="profilePreview" src="{{ asset('storage/' . $admin->photo)}}"
-                    alt="Profile Picture"
-                    class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300">
-
-                <input type="file" name="photo" id="photoInput"
-                    class="mt-4 block w-full text-sm text-gray-600 border border-gray-300 rounded p-2" value="{{($admin->photo)}}"
-                    onchange="previewImage(event)">
-            </div>
-
-            <!-- Bagian Form -->
-            <div class="w-full md:w-2/3">
-                <div class="mb-4">
-                    <label class="block text-gray-700 font-medium">Username</label>
-                    <input type="text" name="name"
-                        class="block w-full border border-gray-300 rounded p-2 focus:ring focus:ring-blue-300"
-                        value="{{ old('name', $admin->name) }}" required>
-=======
                     <form id="edit-profile-form" action="{{ route('admin.update.profile') }}" method="POST" enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
@@ -108,7 +70,6 @@
                             </div>
                         </div>
                     </form>
->>>>>>> 03cfb67 (Manage report)
                 </div>
                 <div class="mb-4">
                     <label class="block text-gray-700 font-medium">Email</label>
@@ -137,10 +98,7 @@
         </div>
     </form>
 
-<<<<<<< HEAD
-=======
     <!-- Script Konfirmasi SweetAlert -->
->>>>>>> 03cfb67 (Manage report)
     <script>
         function previewImage(event) {
             const image = document.getElementById('profilePreview');
@@ -170,14 +128,5 @@
             });
         });
     </script>
-<<<<<<< HEAD
-</div>
-
-
-
-@endsection
-
-=======
 </body>
 </html>
->>>>>>> 03cfb67 (Manage report)

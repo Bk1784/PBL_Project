@@ -20,7 +20,7 @@ class ReportController extends Controller
     }
 
     // Method untuk pencarian laporan berdasarkan tanggal (Admin)
-    public function searchByDate(Request $request)
+    public function AdminSearchByDate(Request $request) 
     {
         // Validasi tanggal
         $request->validate([
