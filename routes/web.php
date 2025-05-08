@@ -88,12 +88,8 @@ Route::middleware('admin')->group(function () {
     Route::put('/admin/profile/update', [AdminController::class, 'AdminUpdateProfile'])->name('admin.update.profile');
     Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
     Route::post('/admin/update/password', [AdminController::class, 'AdminUpdatePassword'])->name('admin.update.password');
-<<<<<<< HEAD
-    
-=======
 
 
->>>>>>> 54da1c908276b32719a33e777eec789f05f71469
     Route::controller(ManageController::class)->group(function () {
         Route::get('/admin/all/product', 'AdminAllProduct')->name('admin.all.product');
         Route::get('/admin/add/product', 'AdminAddProduct')->name('admin.add.product');
@@ -108,22 +104,11 @@ Route::middleware('admin')->group(function () {
         Route::get('/clientchangeStatus', 'ClientChangeStatus');
         Route::get('/approve/toko', 'ApproveToko')->name('approve.toko');
     });
-<<<<<<< HEAD
-
-=======
->>>>>>> 54da1c908276b32719a33e777eec789f05f71469
     Route::controller(ManageOrderController::class)->group(function () {
         Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
         Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');        
     });
 
-<<<<<<< HEAD
-    Route::controller(ReportController::class)->group(function () {
-        Route::get('/admin/all-reports', [AdminController::class, 'allReports'])->name('admin.all.reports');
-        Route::post('/admin/search-by-date', [AdminController::class, 'searchByDate'])->name('admin.search.bydate');
-        Route::post('/admin/search-by-month', [AdminController::class, 'searchByMonth'])->name('admin.search.bymonth');
-        Route::post('/admin/search-by-year', [AdminController::class, 'searchByYear'])->name('admin.search.byyear');
-=======
         Route::get('/orders/pending', 'PendingOrders')->name('admin.pending.orders');
         Route::get('/orders/confirm', 'ConfirmOrders')->name('admin.confirm.orders');
         Route::get('/orders/processing', 'ProcessingOrders')->name('admin.processing.orders');
@@ -136,11 +121,13 @@ Route::middleware('admin')->group(function () {
         Route::post('/add/purchases/store',  'store')->name('admin.purchases.store');
     });
 
+Route::controller(ReportController::class)->group(function () {
+    Route::get('/admin/all-reports', [AdminController::class, 'allReports'])->name('admin.all.reports');
+    Route::post('/admin/search-by-date', [AdminController::class, 'searchByDate'])->name('admin.search.bydate');
+    Route::post('/admin/search-by-month', [AdminController::class, 'searchByMonth'])->name('admin.search.bymonth');
+    Route::post('/admin/search-by-year', [AdminController::class, 'searchByYear'])->name('admin.search.byyear');
 });
->>>>>>> 54da1c908276b32719a33e777eec789f05f71469
 
-    });
-});
 //ADMIN GUEST
 Route::middleware('admin.guest')->group(function () {
     Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
