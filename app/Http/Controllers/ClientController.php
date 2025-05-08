@@ -331,6 +331,7 @@ class ClientController extends Controller
         $product = Product::with('orderItems')->findOrFail($id);
         return response()->json([
             'description' => $product->description,
+            'price' => $product->price,
             'total_sold' => $product->totalSold(),
             'total_revenue' => $product->totalRevenue()
         ]);

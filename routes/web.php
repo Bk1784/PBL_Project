@@ -15,9 +15,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\ReportController;
-use App\Http\Controllers\LaporanController;
-use App\Http\Controllers\Admin\ProductReportController;
+
 
 //// CUSTOMER GUEST: Hanya bisa diakses jika belum login
 //CUSTOMER
@@ -55,7 +53,7 @@ Route::middleware('customer')->group(function () {
     Route::get('/customer/product/{id}', [CustomerController::class, 'CustomerDetailProduct']);
     Route::controller(CartController::class)->group(function () {
         Route::get('/add_to_cart/{id}', 'AddToCart')->name('add_to_cart');
-        Route::post('/cart/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
+        Route::post('/cart/update-quantity', 'UpdateCartQuantity')->name('cart.updateQuantity');
         Route::post('/cart/remove', 'CartRemove')->name('cart.remove');
         Route::get('/checkout', 'CheckoutProduk')->name('customer.checkout.view_checkout');
         Route::post('/cart/sync', [CartController::class, 'sync'])->name('cart.sync');
@@ -97,7 +95,7 @@ Route::middleware('admin')->group(function () {
         Route::get('/admin/edit/product/{id}', 'AdminEditProduct')->name('admin.edit.product');
         Route::put('/admin/update/product', 'AdminUpdateProduct')->name('admin.update.product');
         Route::get('/admin/delete/product/{id}', 'AdminDeleteProduct')->name('admin.delete.product');
-        Route::get('/admin/product-report', [ProductReportController::class, 'index'])->name('admin.product.report');
+
     });
     Route::controller(ManageController::class)->group(function () {
         Route::get('/pending/toko', 'PendingToko')->name('pending.toko');
@@ -106,8 +104,7 @@ Route::middleware('admin')->group(function () {
     });
     Route::controller(ManageOrderController::class)->group(function () {
         Route::get('/order/order/list', [OrderController::class, 'orderList'])->name('user.orders');
-        Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');        
-    });
+        Route::get('/order/{id}', [OrderController::class, 'show'])->name('user.order.details');
 
         Route::get('/orders/pending', 'PendingOrders')->name('admin.pending.orders');
         Route::get('/orders/confirm', 'ConfirmOrders')->name('admin.confirm.orders');
@@ -121,11 +118,6 @@ Route::middleware('admin')->group(function () {
         Route::post('/add/purchases/store',  'store')->name('admin.purchases.store');
     });
 
-Route::controller(ReportController::class)->group(function () {
-    Route::get('/admin/all-reports', [AdminController::class, 'allReports'])->name('admin.all.reports');
-    Route::post('/admin/search-by-date', [AdminController::class, 'searchByDate'])->name('admin.search.bydate');
-    Route::post('/admin/search-by-month', [AdminController::class, 'searchByMonth'])->name('admin.search.bymonth');
-    Route::post('/admin/search-by-year', [AdminController::class, 'searchByYear'])->name('admin.search.byyear');
 });
 
 //ADMIN GUEST
