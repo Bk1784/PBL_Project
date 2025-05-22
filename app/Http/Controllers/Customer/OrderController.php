@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -18,7 +16,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::where('user_id', Auth::id())->latest()->get();
+        $orders = Order::where('client_id', Auth::id())->latest()->get();
         return view('customer.orders.all_orders', compact('orders'));
         
     }
@@ -85,88 +83,68 @@ class OrderController extends Controller
 
 
     public function CashOrder(Request $request)
-    {
-        DB::beginTransaction();
-    
-        try {
-            $cartItems = session()->get('cart', []);
-            $totalAmount = 0;
-    
-            // 1. Validasi keranjang tidak kosong
-            if (empty($cartItems)) {
-                throw new \Exception('Keranjang belanja kosong');
-            }
-    
-            // 2. Hitung total amount dan validasi stok
-            foreach ($cartItems as $item) {
-                $product = Product::find($item['id']);
-                
-                if (!$product) {
-                    throw new \Exception("Produk ID {$item['id']} tidak ditemukan");
-                }
-                
-                if ($product->qty < $item['qty']) {
-                    throw new \Exception("Stok {$product->name} tidak mencukupi");
-                }
-                
-                $totalAmount += ($item['price'] * $item['qty']);
-            }
-    
-            // 3. Hitung ongkir
-            $shippingFee = [
-                'JNE Reguler' => 15000,
-                'J&T Express' => 17000,
-                'SiCepat' => 13000,
-                'POS Indonesia' => 14000,
-            ][$request->courier_selected] ?? 15000;
-    
-            $grandTotal = $totalAmount + $shippingFee;
-    
-            // 4. Simpan order
-            $order_id = Order::insertGetId([
-                'user_id' => Auth::id(),
-                'product_id' => $cartItems[array_key_first($cartItems)]['id'], // Ambil product_id pertama
-                'status' => 'pending',
-                'total_price' => $grandTotal,
-                'payment_method' => $request->payment_selected,
-                'courier' => $request->courier_selected,
-                'invoice_no' => 'GS-' . time(),
-                'notes' => null,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-    
-            // 5. Simpan order items dan KURANGI STOK
-            foreach ($cartItems as $item) {
-                OrderItem::insert([
-                    'order_id' => $order_id,
-                    'product_id' => $item['id'],
-                    'qty' => $item['qty'],
-                    'price' => $item['price'],
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
-    
-                // INI BAGIAN PENGURANGAN STOK
-                Product::where('id', $item['id'])->decrement('qty', $item['qty']);
-            }
-    
-            // 6. Bersihkan keranjang
-            session()->forget('cart');
-            DB::commit();
-    
-            return view('customer.checkout.thanks')->with([
-                'message' => 'Order berhasil. Stok produk telah dikurangi.',
-                'alert-type' => 'success'
-            ]);
-    
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with([
-                'message' => 'Order gagal: ' . $e->getMessage(),
-                'alert-type' => 'error'
-            ]);
-        }
+{
+    // Ambil isi keranjang
+    $cartItems = session()->get('cart', []);
+    $totalAmount = 0;
+
+    // Hitung total harga dari semua item di keranjang
+    foreach ($cartItems as $item) {
+        $totalAmount += ($item['price'] * $item['qty']);
     }
+
+    // Daftar harga pengiriman berdasarkan nama kurir
+    $shippingCosts = [
+        'JNE Reguler' => 15000,
+        'J&T Express' => 17000,
+        'SiCepat' => 13000,
+        'POS Indonesia' => 14000,
+    ];
+
+    // Ambil nama kurir dan cari biaya kirim
+    $courierName = $request->courier_selected;
+    $shippingFee = $shippingCosts[$courierName] ?? 15000;
+
+    // Total keseluruhan termasuk ongkir
+    $grandTotal = $totalAmount + $shippingFee;
+
+    // Simpan data ke tabel orders
+    $order_id = Order::insertGetId([
+        'user_id' => Auth::id(),
+        'client_id' => Auth::id(),
+        'product_id' => $item['id'],
+        'status' => 'pending',
+        'total_price' => $grandTotal,
+        'payment_method' => $request->payment_selected,
+        'courier' => $courierName,
+        'invoice_no' => 'Galaxy Store' . mt_rand(10000000, 99999999),
+        'notes' => null,
+        'created_at' => Carbon::now(),
+    ]);
+
+
+    foreach ($cartItems as $item) {
+        OrderItem::insert([
+            'order_id' => $order_id,
+            'client_id' => Auth::id(),
+            'product_id' => $item['id'],
+            'qty' => $item['qty'],
+            'price' => $item['price'],
+        ]);
+    }
+
+    
+
+    // Hapus isi keranjang setelah order berhasil
+    session()->forget('cart');
+
+    $notification = array(
+        'message' => 'Order Successfully',
+        'alert-type' => 'success'
+    );
+
+    // Redirect dengan notifikasi
+    return view('customer.checkout.thanks')->with($notification);
+}
 
 }
