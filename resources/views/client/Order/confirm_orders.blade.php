@@ -23,6 +23,11 @@
                 </tr>
             </thead>
             <tbody>
+                @if($orders->isEmpty())
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-gray-500">Tidak ada pesanan dikonfirmasi.</td>
+                </tr>
+                @else
                 @foreach($orders as $key => $order)
                 <tr class="hover:bg-gray-100">
                     <td class="p-3 border-b border-gray-200">{{ $key + 1 }}</td>
@@ -45,6 +50,7 @@
                     </td>
                 </tr>
                 @endforeach
+                @endif
             </tbody>
         </table>
     </div>

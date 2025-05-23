@@ -180,9 +180,7 @@ class ClientController extends Controller
 
     public function pendingOrders()
     {
-        $client = Auth::guard('client')->user();
         $orders = Order::with('product')
-            ->where('user_id', $client->id)
             ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -192,9 +190,7 @@ class ClientController extends Controller
 
     public function confirmOrders()
     {
-        $client = Auth::guard('client')->user();
         $orders = Order::with('product')
-            ->where('user_id', $client->id)
             ->where('status', 'confirmed')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -204,9 +200,7 @@ class ClientController extends Controller
 
     public function processingOrders()
     {
-        $client = Auth::guard('client')->user();
         $orders = Order::with('product')
-            ->where('user_id', $client->id)
             ->where('status', 'processing')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -216,9 +210,7 @@ class ClientController extends Controller
 
     public function deliveredOrders()
     {
-        $client = Auth::guard('client')->user();
         $orders = Order::with('product')
-            ->where('user_id', $client->id)
             ->where('status', 'delivered')
             ->orderBy('created_at', 'desc')
             ->get();
