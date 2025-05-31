@@ -23,28 +23,34 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($orders as $key => $order)
-                <tr class="hover:bg-gray-100">
-                    <td class="p-3 border-b border-gray-200">{{ $key + 1 }}</td>
-                    <td class="p-3 border-b border-gray-200">
-                        {{ \Carbon\Carbon::parse($order->created_at)->format('d F Y') }}</td>
-                    <td class="p-3 border-b border-gray-200">{{ $order->invoice_no }}</td>
-                    <td class="p-3 border-b border-gray-200">{{ $order->total_price }}</td>
-                    <td class="p-3 border-b border-gray-200">{{ $order->payment_method ?? '-' }}</td>
-                    <td class="p-3 border-b border-gray-200">
-                        <span
-                            class="bg-purple-500 text-white py-1 px-3 rounded-full text-sm">{{ ucfirst($order->status) }}</span>
-                    </td>
-                    <td class="p-3 border-b border-gray-200">
-                        <form action="{{ route('client.pesanan.complete', $order->id) }}" method="POST" class="complete-order-form">
-                            @csrf
-                            <button type="submit" class="bg-green-700 hover:bg-green-800 text-white py-1 px-3 rounded">
-                                Selesai
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
+                @if($orders->isEmpty())
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-gray-500">Tidak ada pesanan dikirim.</td>
+                    </tr>
+                @else
+                    @foreach($orders as $key => $order)
+                    <tr class="hover:bg-gray-100">
+                        <td class="p-3 border-b border-gray-200">{{ $key + 1 }}</td>
+                        <td class="p-3 border-b border-gray-200">
+                            {{ \Carbon\Carbon::parse($order->created_at)->format('d F Y') }}</td>
+                        <td class="p-3 border-b border-gray-200">{{ $order->invoice_no }}</td>
+                        <td class="p-3 border-b border-gray-200">{{ $order->total_price }}</td>
+                        <td class="p-3 border-b border-gray-200">{{ $order->payment_method ?? '-' }}</td>
+                        <td class="p-3 border-b border-gray-200">
+                            <span
+                                class="bg-purple-500 text-white py-1 px-3 rounded-full text-sm">{{ ucfirst($order->status) }}</span>
+                        </td>
+                        <td class="p-3 border-b border-gray-200">
+                            <form action="{{ route('client.pesanan.complete', $order->id) }}" method="POST" class="complete-order-form">
+                                @csrf
+                                <button type="submit" class="bg-green-700 hover:bg-green-800 text-white py-1 px-3 rounded">
+                                    Selesai
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
     </div>

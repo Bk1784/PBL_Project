@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -85,10 +85,9 @@ class OrderController extends Controller
 
 
     public function CashOrder(Request $request)
-    {
-        DB::beginTransaction();
-    
-        try {
+{
+    DB::beginTransaction();
+     try {
             $cartItems = session()->get('cart', []);
             $totalAmount = 0;
     
@@ -168,5 +167,4 @@ class OrderController extends Controller
             ]);
         }
     }
-
 }
