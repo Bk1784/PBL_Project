@@ -30,7 +30,7 @@ class ReportController extends Controller
         // Ambil input tanggal
         $date = $request->input('date');
         
-        // Ambil data pesanan berdasarkan tanggal
+        // Ambil data pesanan berdasarkan tanggal (gunakan whereDate supaya cocok format)
         $orders = Order::whereDate('created_at', $date)->get();
 
         // Cek jika data tidak ditemukan
@@ -47,16 +47,26 @@ class ReportController extends Controller
     {
         // Validasi bulan dan tahun
         $request->validate([
-            'month' => 'required|integer|min:1|max:12',
+            'month' => 'required|string',
             'year_name' => 'required|integer|min:1900|max:' . date('Y'),
         ]);
 
-        $month = $request->month;
+        $monthName = $request->month;
         $year = $request->year_name;
 
+        // Konversi nama bulan ke angka
+        $months = [
+            'January' => 1, 'February' => 2, 'March' => 3, 'April' => 4,
+            'May' => 5, 'June' => 6, 'July' => 7, 'August' => 8,
+            'September' => 9, 'October' => 10, 'November' => 11, 'December' => 12
+        ];
+        
+        $month = $months[$monthName] ?? 1;
+
         // Ambil data pesanan berdasarkan bulan dan tahun
-        $orders = Order::where('order_month', $month)
-            ->where('order_year', $year)
+        // *Asumsi kolom order_date ada di tabel orders dan formatnya tanggal penuh
+        $orders = Order::whereYear('order_date', $year)
+            ->whereMonth('order_date', $month)
             ->latest()
             ->get();
 
@@ -74,7 +84,8 @@ class ReportController extends Controller
         $year = $request->year;
 
         // Ambil data pesanan berdasarkan tahun
-        $orders = Order::where('order_year', $year)
+        // *Asumsi order_date adalah tanggal di tabel orders
+        $orders = Order::whereYear('order_date', $year)
             ->latest()
             ->get();
 
@@ -89,16 +100,15 @@ class ReportController extends Controller
             'date' => 'required|date',
         ]);
 
-        // Formatkan tanggal
-        $date = new DateTime($request->date);
-        $formatDate = $date->format('d F Y');
+        // Formatkan tanggal ke Y-m-d supaya cocok dengan penyimpanan database
+        $formatDate = Carbon::parse($request->date)->format('Y-m-d');
 
         // Ambil ID client yang sedang login
         $cid = Auth::guard('client')->id();
 
         // Ambil data pesanan berdasarkan tanggal
-        $orders = Order::where('order_date', $formatDate)
-            ->whereHas('OrderItems', function ($query) use ($cid) {
+        $orders = Order::whereDate('order_date', $formatDate)
+            ->whereHas('orderItems', function ($query) use ($cid) {
                 $query->where('client_id', $cid);
             })
             ->latest()
@@ -115,39 +125,26 @@ class ReportController extends Controller
         return view('client.backend.report.search_by_date', compact('orderItemGroupData', 'formatDate'));
     }
 
-    // Method untuk laporan berdasarkan bulan (Client)
-    public function ClientSearchByMonth(Request $request)
+    // Method untuk pencarian laporan berdasarkan bulan (Admin) berdasarkan OrderItem
+    public function AdminSearchByMonth_OrderItem(Request $request)
     {
-        // Validasi bulan dan tahun
         $request->validate([
-            'month' => 'required|integer|min:1|max:12',
-            'year_name' => 'required|integer|min:1900|max:' . date('Y'),
+            'month' => 'required|integer|between:1,12',
+            'year' => 'required|integer|min:2000|max:' . date('Y'),
         ]);
 
         $month = $request->month;
-        $year = $request->year_name;
+        $year = $request->year;
 
-        // Ambil ID client yang sedang login
-        $cid = Auth::guard('client')->id();
-
-        // Ambil data pesanan berdasarkan bulan dan tahun
-        $orders = Order::where('order_month', $month)
-            ->where('order_year', $year)
-            ->whereHas('OrderItems', function ($query) use ($cid) {
-                $query->where('client_id', $cid);
+        $orderItemGroupData = OrderItem::with('order')
+            ->whereHas('order', function ($query) use ($month, $year) {
+                $query->whereYear('order_date', $year)
+                      ->whereMonth('order_date', $month);
             })
-            ->latest()
+            ->orderBy('order_id', 'ASC')
             ->get();
 
-        // Ambil data item pesanan
-        $orderItemGroupData = OrderItem::with(['order', 'product'])
-            ->whereIn('order_id', $orders->pluck('id'))
-            ->where('client_id', $cid)
-            ->orderBy('order_id', 'desc')
-            ->get()
-            ->groupBy('order_id');
-
-        return view('client.backend.report.search_by_month', compact('orderItemGroupData', 'month', 'year'));
+        return view('admin.backend.report.search_by_month', compact('orderItemGroupData', 'month', 'year'));
     }
 
     // Method untuk laporan berdasarkan tahun (Client)
@@ -164,8 +161,8 @@ class ReportController extends Controller
         $cid = Auth::guard('client')->id();
 
         // Ambil data pesanan berdasarkan tahun
-        $orders = Order::where('order_year', $year)
-            ->whereHas('OrderItems', function ($query) use ($cid) {
+        $orders = Order::whereYear('order_date', $year)
+            ->whereHas('orderItems', function ($query) use ($cid) {
                 $query->where('client_id', $cid);
             })
             ->latest()

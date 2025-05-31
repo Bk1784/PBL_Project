@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ManageController;
 use App\Http\Controllers\Admin\ManageOrderController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\HomeController;
 use App\Http\Controllers\Customer\OrderController;
@@ -97,6 +98,14 @@ Route::middleware('admin')->group(function () {
         Route::get('/admin/delete/product/{id}', 'AdminDeleteProduct')->name('admin.delete.product');
 
     });
+
+    Route::controller(ReportController::class)->group(function () {
+        Route::get('/all-reports', [ReportController::class, 'AdminAllReports'])->name('all.reports');
+        Route::post('/admin/search-by-date', 'AdminSearchByDate')->name('admin.search.bydate');
+        Route::post('/admin/search-by-month', 'AdminSearchByMonth')->name('admin.search.bymonth');
+        Route::post('/admin/search-by-year', 'AdminSearchByYear')->name('admin.search.byyear');
+    });
+    
     Route::controller(ManageController::class)->group(function () {
         Route::get('/pending/toko', 'PendingToko')->name('pending.toko');
         Route::get('/clientchangeStatus', 'ClientChangeStatus');
@@ -161,6 +170,7 @@ Route::middleware(['status', 'client'])->group(function () {
     Route::get('/client/change-password', [ClientController::class, 'ClientChangePassword'])->name('client.change.password');
     Route::post('/client/update-password', [ClientController::class, 'ClientUpdatePassword'])->name('client.update.password');
 });
+
 //CLIENT GUEST
 Route::middleware('client.guest')->group(function () {
     Route::get('/client/login', [ClientController::class, 'ClientLogin'])->name('client.login');

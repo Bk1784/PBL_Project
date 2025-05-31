@@ -26,7 +26,7 @@
                 <div class="card">
                      
                     <div class="card-body">
-        <h3 class="text-danger">Search By Year {{ $years }}</h3>
+        <h3 class="text-danger">Search By Year {{ $year }}</h3>
         <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
             <thead>
             <tr>
@@ -40,31 +40,30 @@
             </tr>
             </thead>
 
+        <tbody>
+            @php $key = 1; @endphp
+            @foreach ($orderItemGroupData as $orderId => $items)
+                @php $firstItem = $items->first(); @endphp
+                @if ($firstItem && $firstItem->order)
+                <tr>
+                    <td>{{ $key++ }}</td>
+                    <td>{{ $firstItem->order->order_date }}</td>
+                    <td>{{ $firstItem->order->invoice_no }}</td>
+                    <td>{{ $firstItem->order->amount }}</td>
+                    <td>{{ $firstItem->order->payment_method }}</td>
+                    <td><span class="badge bg-primary">{{ $firstItem->order->status }}</span></td>
+                    <td>
+                        <a href="{{ route('client.order.details', $firstItem->order_id) }}" class="btn btn-info waves-effect waves-light">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                @endif
+            @endforeach
+        </tbody>
 
-            <tbody>
-                @php $key = 1; @endphp
-           @foreach ($orderItemGroupData as $orderGroup) 
-           @foreach ($orderGroup as $item) 
-            <tr>
-                <td>{{ $key+1 }}</td>
-                <td>{{ $item->order->order_date }}</td>
-                <td>{{ $item->order->invoice_no }}</td>
-                <td>{{ $item->order->amount }}</td>
-                <td>{{ $item->order->payment_method }}</td>
-                <td><span class="badge bg-primary">{{ $item->order->status }}</span></td>                
-               
-                
-        <td><a href="{{ route('client.order.details',$item->order_id) }}" class="btn btn-info waves-effect waves-light"> <i class="fas fa-eye"></i> </a> 
-
-                </td> 
-            </tr>
-            @break
-            @endforeach 
-            @endforeach    
-            
-            </tbody>
+        
         </table>
-
                     </div>
                 </div>
             </div> <!-- end col -->
@@ -73,9 +72,5 @@
          
     </div> <!-- container-fluid -->
 </div>
-
- 
-   
-
 
 @endsection

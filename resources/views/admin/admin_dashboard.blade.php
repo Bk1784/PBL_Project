@@ -186,6 +186,27 @@
                         </li>
                     </ul>
                 </li>
+
+                <div class="flex flex-col gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
+        <div class="flex items-center">
+            <span>📊</span>
+            <a href="javascript:void(0);" class="has-arrow ml-3 w-full" id="manageReportToggle">
+                <span>Manage Report</span>
+            </a>
+        </div>
+        <!-- Submenu -->
+        <div id="reportSubmenu" class="ml-8 hidden flex-col gap-2">
+            <a href="/all-reports" class="hover:text-gray-700 transition">All Reports</a>
+        </div>
+    </div>
+
+    <!-- Tambahkan JavaScript jika ingin membuat toggle submenu -->
+    <script>
+        document.getElementById("manageReportToggle").addEventListener("click", function () {
+            const submenu = document.getElementById("reportSubmenu");
+            submenu.classList.toggle("hidden");
+        });
+    </script>
                 <li
                     class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
                     <span>🎨</span> <span>Dekorasi</span>
