@@ -209,13 +209,20 @@
                         <input type="text" placeholder="🔍 Pencarian Produk"
                             class="px-4 py-2 w-full md:w-72 rounded-full bg-white text-gray-700 border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:outline-none transition-all duration-300 shadow-sm">
                         <div class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden shrink-0">
-                            <a href="{{ route('customer.profile') }}" class="block">
+                            @php
+                            $id = Auth::user()->id;
+                            $profileData = App\Models\User::find($id);
+                            @endphp
+
+                            <a href="{{ (!empty($profileData->photo)) ? url('upload/user_images/'.$profileData->photo) : url('upload/default.jpg') }}"
+                                class="block">
                                 @php
                                 $user = Auth::guard('customer')->user();
                                 $photo = $user && $user->photo ? 'storage/' . $user->photo :
                                 'profile_photos/default.jpg';
                                 @endphp
-                                <img src="{{ asset($photo) }}" alt="Profile" class="w-full h-full object-cover">
+                                <img src="{{ (!empty($profileData->photo)) ? url('upload/user_images/'.$profileData->photo) : url('upload/default.jpg') }}"
+                                    alt="Profile" class="w-full h-full object-cover">
                             </a>
                         </div>
                     </div>
