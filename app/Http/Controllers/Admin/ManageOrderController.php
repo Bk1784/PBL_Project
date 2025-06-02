@@ -40,10 +40,9 @@ class ManageOrderController extends Controller
 
     public function OrderDetails($id)
     {
-        $order = Order::with('user')->findOrFail($id);
-        $orderItems = OrderItem::where('order_id', $id)->get();
+        $order = Order::with(['user', 'client'])->findOrFail($id);
 
-        return view('admin.backend.orders.order_details', compact('order', 'orderItems'));
+        return view('admin.backend.orders.order_details', compact('order'));
     }
     
     public function downloadInvoice($order_id)

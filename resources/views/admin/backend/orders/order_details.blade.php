@@ -12,7 +12,7 @@
         </div>
         <div class="bg-gray-50 p-4 rounded-lg">
             <p class="text-gray-600 font-medium">Nama Customer:</p>
-            <p class="text-gray-800 font-semibold">{{ $order->name }}</p>
+            <p class="text-gray-800 font-semibold">{{ optional($order->user)->name ?? 'N/A' }}</p>
         </div>
     </div>
 
