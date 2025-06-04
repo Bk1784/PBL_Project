@@ -118,7 +118,7 @@ class CartController extends Controller
                     'alert-type' => 'error'
                 );
         
-                return redirect()->to('/')->with($notification);
+                return redirect()->to('/atk_dashboard')->with($notification);
         
             }
             
