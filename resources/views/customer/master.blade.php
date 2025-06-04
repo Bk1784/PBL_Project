@@ -25,10 +25,10 @@
                     <br>
                     <div class="flex items-center space-x-4">
                         <button type="submit"
-                        class="inline-block mt-2 text-lg font-medium text-black hover:text-blue-800 hover:bg-blue-50 py-1 px-4 rounded-md transition-all duration-200 border border-blue-200"><a href="{{ route('customer.register') }}">Daftar</a></button>
+                        class="inline-block mt-2 text-lg font-medium text-black hover:text-blue-800 hover:bg-blue-50 py-1 px-4 rounded-md transition-all duration-200 border border-blue-200"><a href="{{ route('register') }}">Daftar</a></button>
                     <h1>|</h1>
                         <button type="submit"
-                        class="inline-block mt-2 text-lg font-medium text-black hover:text-blue-800 hover:bg-blue-50 py-1 px-4 rounded-md transition-all duration-200 border border-blue-200"><a href="{{ route('customer.login') }}">Masuk</a></button>
+                        class="inline-block mt-2 text-lg font-medium text-black hover:text-blue-800 hover:bg-blue-50 py-1 px-4 rounded-md transition-all duration-200 border border-blue-200"><a href="{{ route('login') }}">Masuk</a></button>
                     </div>
                 </div>
             </div>
