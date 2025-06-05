@@ -34,7 +34,7 @@
                     <td class="p-3 border-b border-gray-200">
                         {{ \Carbon\Carbon::parse($order->order_date)->format('d F Y') }}</td>
                     <td class="p-3 border-b border-gray-200">{{ $order->invoice_no }}</td>
-                    <td class="p-3 border-b border-gray-200">{{ $order->amount }}</td>
+                    <td class="p-3 border-b border-gray-200">{{ $order->total_price }}</td>
                     <td class="p-3 border-b border-gray-200">{{ $order->payment_method }}</td>
                     <td class="p-3 border-b border-gray-200">
                         <span
