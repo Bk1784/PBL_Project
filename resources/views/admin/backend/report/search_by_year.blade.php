@@ -1,76 +1,57 @@
-@extends('client.client_dashboard')
-@section('client')
+@extends('admin.admin_dashboard')
 
-<div class="page-content">
-    <div class="container-fluid">
+@section('content')
 
-        <!-- start page title -->
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">All Search By Year Order</h4>
+<!-- Tambahkan script ini di bagian bawah sebelum </body> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                           
-                        </ol>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <!-- end page title -->
-
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                     
-                    <div class="card-body">
-        <h3 class="text-danger">Search By Year {{ $year }}</h3>
-        <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
-            <thead>
-            <tr>
-                <th>Sl</th>
-                <th>Date</th>
-                <th>Invoice</th>
-                <th>Amount</th>
-                <th>Payment</th> 
-                <th>Status</th>
-                <th>Action </th> 
+<!-- Customer Table -->
+<div class="bg-white p-6 rounded-lg shadow-lg">
+    <h3 class="text-2xl font-bold mb-4">Search Year {{ $year }}</h3>
+    <table class="w-full border-collapse">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="p-3 text-left">s1</th>
+                <th class="p-3 text-left">Date</th>
+                <th class="p-3 text-left">Invoice</th>
+                <th class="p-3 text-left">Amount</th>
+                <th class="p-3 text-left">Payment</th>
+                <th class="p-3 text-left">Status</th>
+                <th class="p-3 text-left">Action</th>
             </tr>
-            </thead>
-
+        </thead>
         <tbody>
-            @php $key = 1; @endphp
-            @foreach ($orderItemGroupData as $orderId => $items)
-                @php $firstItem = $items->first(); @endphp
-                @if ($firstItem && $firstItem->order)
-                <tr>
-                    <td>{{ $key++ }}</td>
-                    <td>{{ $firstItem->order->order_date }}</td>
-                    <td>{{ $firstItem->order->invoice_no }}</td>
-                    <td>{{ $firstItem->order->amount }}</td>
-                    <td>{{ $firstItem->order->payment_method }}</td>
-                    <td><span class="badge bg-primary">{{ $firstItem->order->status }}</span></td>
-                    <td>
-                        <a href="{{ route('client.order.details', $firstItem->order_id) }}" class="btn btn-info waves-effect waves-light">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                    </td>
-                </tr>
-                @endif
+            @foreach ($orderYears as $key => $item)
+            <tr class="hover:bg-gray-100">
+                <td class="p-3 border-b border-gray-200">{{ $key + 1 }}</td>
+                <td class="p-3 border-b border-gray-200">{{ $item->created_at }}</td>
+                <td class="p-3 border-b border-gray-200">{{ $item->invoice_no }}</td>
+                <td class="p-3 border-b border-gray-200">{{ $item->total_price }}</td>
+                <td class="p-3 border-b border-gray-200">{{ $item->payment_method }}</td>
+                <td class="p-3 border-b border-gray-200">
+                    @php
+                        $status = strtolower($item->status);
+                        $purpleStatuses = ['pending', 'confirm', 'processing', 'delivered'];
+                        $greenStatuses = ['selesai', 'completed'];
+                    @endphp
+
+                    @if(in_array($status, $purpleStatuses))
+                        <span class="inline-block px-3 py-1 rounded-full bg-purple-500 text-white text-sm">{{ $item->status }}</span>
+                    @elseif(in_array($status, $greenStatuses))
+                        <span class="inline-block px-3 py-1 rounded-full bg-green-500 text-white text-sm">{{ $item->status }}</span>
+                    @else
+                        <span class="inline-block px-3 py-1 rounded-full bg-gray-400 text-white text-sm">{{ $item->status }}</span>
+                    @endif
+                </td>
+                <td class="p-3 border-b border-gray-200 flex gap-2 items-center">
+                    <a href="{{ route('admin.order.details', $item->id) }}" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-200">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                </td>
+            </tr>
             @endforeach
         </tbody>
-
-        
-        </table>
-                    </div>
-                </div>
-            </div> <!-- end col -->
-        </div> <!-- end row --> 
-
-         
-    </div> <!-- container-fluid -->
+    </table>
 </div>
 
 @endsection

@@ -101,10 +101,13 @@ Route::middleware('admin')->group(function () {
     });
 
     Route::controller(ReportController::class)->group(function () {
-        Route::get('/all-reports', [ReportController::class, 'AdminAllReports'])->name('all.reports');
-        Route::post('/admin/search-by-date', 'AdminSearchByDate')->name('admin.search.bydate');
-        Route::post('/admin/search-by-month', 'AdminSearchByMonth')->name('admin.search.bymonth');
-        Route::post('/admin/search-by-year', 'AdminSearchByYear')->name('admin.search.byyear');
+        Route::get('/admin/all/reports', 'AdminAllReports')->name('admin.all.reports');
+        Route::post('/admin/search/bydate', 'AdminSearchByDate')->name('admin.search.bydate');
+        Route::get('/admin/search-by-date/result', 'AdminSearchByDateResult')->name('admin.search.bydate.result');
+        Route::post('/admin/search/bymonth', 'AdminSearchByMonth')->name('admin.search.bymonth');
+        Route::get('/admin/search-by-month/result', 'AdminSearchByMonthResult')->name('admin.search.bymonth.result');
+        Route::post('/admin/search/byyear', 'AdminSearchByYear')->name('admin.search.byyear');
+        Route::get('admin/search/byyear/result/{year}', 'AdminSearchByYearResult')->name('admin.search.byyear.result');
     });
     
     Route::controller(ManageController::class)->group(function () {

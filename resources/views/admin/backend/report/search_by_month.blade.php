@@ -1,92 +1,57 @@
-@extends('client.client_dashboard')
-@section('client')
+@extends('admin.admin_dashboard')
 
-<div class="page-content">
-    <div class="container-fluid">
+@section('content')
 
-        <!-- start page title -->
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">All Search By Month Order</h4>
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0"></ol>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- end page title -->
+<!-- Tambahkan script ini di bagian bawah sebelum </body> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
+<!-- Customer Table -->
+<div class="bg-white p-6 rounded-lg shadow-lg">
+    <h3 class="text-2xl font-bold mb-4">Search By Month: {{ $months }} and Year {{ $years }}</h3>
+    <table class="w-full border-collapse">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="p-3 text-left">s1</th>
+                <th class="p-3 text-left">Date</th>
+                <th class="p-3 text-left">Invoice</th>
+                <th class="p-3 text-left">Amount</th>
+                <th class="p-3 text-left">Payment</th>
+                <th class="p-3 text-left">Status</th>
+                <th class="p-3 text-left">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($orderMonth as $key => $item)
+            <tr class="hover:bg-gray-100">
+                <td class="p-3 border-b border-gray-200">{{ $key + 1 }}</td>
+                <td class="p-3 border-b border-gray-200">{{ $item->created_at }}</td>
+                <td class="p-3 border-b border-gray-200">{{ $item->invoice_no }}</td>
+                <td class="p-3 border-b border-gray-200">{{ $item->total_price }}</td>
+                <td class="p-3 border-b border-gray-200">{{ $item->payment_method }}</td>
+                <td class="p-3 border-b border-gray-200">
+                    @php
+                        $status = strtolower($item->status);
+                        $purpleStatuses = ['pending', 'confirm', 'processing', 'delivered'];
+                        $greenStatuses = ['selesai', 'completed'];
+                    @endphp
 
-                        <!-- Form Pencarian Bulan dan Tahun -->
-                        <form method="GET" action="{{ route('client.search.by.month') }}" class="row g-3 mb-4">
-                            <div class="col-md-4">
-                                <label for="month" class="form-label">Select Month</label>
-                                <select name="month" id="month" class="form-select" required>
-                                    <option value="" selected disabled>Choose Month</option>
-                                    @foreach ([
-                                        1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April',
-                                        5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August',
-                                        9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
-                                    ] as $key => $monthName)
-                                        <option value="{{ $key }}">{{ $monthName }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label for="year_name" class="form-label">Select Year</label>
-                                <select name="year_name" id="year_name" class="form-select" required>
-                                    <option value="" selected disabled>Choose Year</option>
-                                    @for ($i = date('Y'); $i >= 2000; $i--)
-                                        <option value="{{ $i }}">{{ $i }}</option>
-                                    @endfor
-                                </select>
-                            </div>
-
-                            <div class="col-md-4 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary w-100">Search</button>
-                            </div>
-                        </form>
-                        <!-- End Form -->
-
-                        <!-- Hasil Pencarian -->
-                        <h3 class="text-danger">Search By Month: {{ $month }} and Year {{ $year }}</h3> <!-- gunakan $year, bukan $years -->
-
-                    <tbody>
-                        @php $key = 1; @endphp
-                        @foreach ($orderItemGroupData as $orderGroup)
-                            @foreach ($orderGroup as $item)
-                                <tr>
-                                    <td>{{ $key++ }}</td> <!-- pakai $key++ agar bertambah -->
-                                    <td>{{ $item->order->order_date }}</td>
-                                    <td>{{ $item->order->invoice_no }}</td>
-                                    <td>{{ $item->order->amount }}</td>
-                                    <td>{{ $item->order->payment_method }}</td>
-                                    <td><span class="badge bg-primary">{{ $item->order->status }}</span></td>
-                                    <td>
-                                        <a href="{{ route('client.order.details',$item->order_id) }}" class="btn btn-info waves-effect waves-light">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                @break
-                            @endforeach
-                        @endforeach
-                    </tbody>
-
-                        </table>
-
-                    </div>
-                </div>
-            </div> <!-- end col -->
-        </div> <!-- end row -->
-
-    </div> <!-- container-fluid -->
+                    @if(in_array($status, $purpleStatuses))
+                        <span class="inline-block px-3 py-1 rounded-full bg-purple-500 text-white text-sm">{{ $item->status }}</span>
+                    @elseif(in_array($status, $greenStatuses))
+                        <span class="inline-block px-3 py-1 rounded-full bg-green-500 text-white text-sm">{{ $item->status }}</span>
+                    @else
+                        <span class="inline-block px-3 py-1 rounded-full bg-gray-400 text-white text-sm">{{ $item->status }}</span>
+                    @endif
+                </td>
+                <td class="p-3 border-b border-gray-200 flex gap-2 items-center">
+                    <a href="{{ route('admin.order.details', $item->id) }}" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-200">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 
 @endsection

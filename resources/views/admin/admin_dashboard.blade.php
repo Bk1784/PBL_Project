@@ -196,7 +196,7 @@
         </div>
         <!-- Submenu -->
         <div id="reportSubmenu" class="ml-8 hidden flex-col gap-2">
-            <a href="/all-reports" class="hover:text-gray-700 transition">All Reports</a>
+            <a href="{{ route('admin.all.reports') }}" class="hover:text-gray-700 transition">All Reports</a>
         </div>
     </div>
 
