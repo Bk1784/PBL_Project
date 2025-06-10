@@ -48,8 +48,6 @@ class CustomerController extends Controller
 
         return redirect()->route('customer.profile')->with($notification);
     }
-    // End Method 
-
     private function deleteOldImage(string $oldPhotoPath): void
     {
         $fullPath = public_path('upload/user_images/' . $oldPhotoPath);
@@ -57,7 +55,6 @@ class CustomerController extends Controller
             unlink($fullPath);
         }
     }
-    // End Private Method
 
     public function Atk()
     {

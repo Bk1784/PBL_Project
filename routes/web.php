@@ -124,7 +124,8 @@ Route::middleware('admin')->group(function () {
         Route::get('/orders/processing', 'ProcessingOrders')->name('admin.processing.orders');
         Route::get('/orders/delivered', 'DeliveredOrders')->name('admin.delivered.orders');
         Route::get('/orders/details/{id}', 'OrderDetails')->name('admin.order.details');
-    });    
+    });
+
     Route::controller(PurchasesController::class)->group(function(){
         Route::get('/all/purchases', 'index')->name('admin.backend.purchases.all');
         Route::get('/add/purchases', 'create')->name('admin.backend.purchases.add');

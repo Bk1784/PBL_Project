@@ -13,8 +13,6 @@ class Websitemail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $subject, $body;
-
     /**
      * Create a new message instance.
      */

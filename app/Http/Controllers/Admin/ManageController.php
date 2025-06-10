@@ -73,7 +73,6 @@ class ManageController extends Controller
 
         return redirect()->back()->with('error', 'Image file is required');
     }
-    // End Method 
 
     public function AdminEditProduct($id){
         $product = Product::find($id);
@@ -131,7 +130,6 @@ class ManageController extends Controller
     ];
     return redirect()->route('admin.all.product')->with($notification);
 }
-    // End Method 
 
     public function AdminDeleteProduct($id){
         $item = Product::find($id);
@@ -144,7 +142,6 @@ class ManageController extends Controller
         );
         return redirect()->back()->with($notification);
     }
-    // End Method 
 
     public function PendingToko() {
         $client = Client::where('status', 0)->get(); // atau Client::get()
@@ -153,7 +150,8 @@ class ManageController extends Controller
 
     public function ApproveToko(){
         $client = Client::where('status',1)->get();
-        return view('admin.backend.toko.approve_toko',compact('client')); 
+        return view('admin.backend.toko.approve_toko',compact('client'));
+        
     }
    
     public function ClientChangeStatus(Request $request){
@@ -162,6 +160,5 @@ class ManageController extends Controller
         $client->save();
         return response()->json(['success' => 'Status Change Successfully']);
     }
-     // End Method 
 
 }

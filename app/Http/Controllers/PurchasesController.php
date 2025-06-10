@@ -24,7 +24,7 @@ class PurchasesController extends Controller
         ]);
         
         // Simpan pembelian
-        $purchase = Purchases::create([
+        Purchases::create([
             'product_id' => $validated['product_id'],
             'qty' => $validated['qty'],
             'total_price' => $validated['total_price'],

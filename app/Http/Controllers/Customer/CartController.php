@@ -26,8 +26,6 @@ class CartController extends Controller
            ];
         }
         session()->put('cart',$cart);
-
-        // return response()->json($cart);
         $notification = array(
             'message' => 'Add to Cart Successfully',
             'alert-type' => 'success'

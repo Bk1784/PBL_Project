@@ -5,13 +5,11 @@ namespace App\Http\Controllers;
 use App\Mail\Websitemail;
 use App\Models\Admin;
 use App\Models\Order;
-// use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-// use Mail;
 
 class AdminController extends Controller
 {
