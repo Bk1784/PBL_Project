@@ -17,6 +17,23 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+       public function totalSold()
+    {
+        return $this->orderItems()->sum('qty');
+    }
+
+    public function totalRevenue()
+    {
+        return $this->orderItems()->sum(DB::raw('qty * price'));
+    }
+
+    public function scopeFrequentlySold($query)
+    {
+        return $query->withCount(['orderItems as sold_count' => function($query) {
+            $query->select(DB::raw('sum(qty)'));
+        }])->orderBy('sold_count', 'desc');
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class);
