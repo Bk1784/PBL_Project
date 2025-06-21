@@ -72,6 +72,9 @@ Route::middleware('customer')->group(function () {
         Route::post('/orders/{id}/cancel', 'CancelOrder')->name('customer.orders.cancel');
         Route::post('/orders/{id}/received', 'ConfirmReceived')->name('customer.orders.received');
         Route::get('/orders/{id}/invoice', 'downloadInvoice')->name('customer.orders.invoice');
+        Route::post('/get-midtrans-token', 'getMidtransToken')->name('customer.orders.get_midtrans_token');
+        Route::post('/midtrans/callback', 'callback');
+
     });
 });
 

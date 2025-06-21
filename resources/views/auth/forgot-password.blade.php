@@ -1,25 +1,48 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
-    </div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forget Password</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form method="POST" action="{{ route('password.email') }}">
+<!--  -->
+<body class="flex flex-col justify-center items-center h-screen bg-gray-200 m-0">
+    
+    <form action="{{ route('password.email') }}" method="post" class="w-full max-w-md flex justify-center">
         @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
+        <div class="flex bg-white rounded-2xl shadow-md overflow-hidden w-[600px] mt-8 items-center justify-center">
+            <div class="w-1/2 p-5 text-center">
+                <h2 class="text-xl font-bold mb-5">Forget Password</h2>
+                <!-- Menampilkan pesan error -->
+                @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                        <p class="text-red-500">{{ $error }}</p>
+                    @endforeach
+                @endif
+            
+                @if (Session::has('error'))
+                    <p class="text-red-500">{{ Session::get('error') }}</p>
+                @endif
+                @if (Session::has('success'))
+                    <p class="text-green-500">{{ Session::get('success') }}</p>
+                @endif
+                <div class="flex items-center border-b border-gray-300 p-2">
+                    <i class="fas fa-user text-gray-600 mr-3"></i>
+                    <input class="outline-none w-full p-2 bg-transparent" type="email" name="email" placeholder="Email" required>
+                </div>
+                <button type="submit" class="bg-gray-300 text-black font-bold py-3 px-6 rounded-full w-full mt-4 hover:bg-gray-400"> Reset Link </button>
+            </div>
+            <div class="w-1/2 flex justify-center items-center">
+                <img src="{{ asset('images/logo.jpg') }}" alt="Profile Image" class="w-36 h-auto rounded-2xl object-cover">
+            </div>
         </div>
     </form>
-</x-guest-layout>
+
+    <!-- END BODY -->
+
+     
+</body>
+</html>

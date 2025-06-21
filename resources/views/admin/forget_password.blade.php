@@ -8,7 +8,7 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 
-
+<!--  -->
 <body class="flex flex-col justify-center items-center h-screen bg-gray-200 m-0">
     
     <form action="{{ route('admin.password_submit') }}" method="post" class="w-full max-w-md flex justify-center">

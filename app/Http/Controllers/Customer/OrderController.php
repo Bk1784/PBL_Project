@@ -12,6 +12,9 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Midtrans\Snap;
+use App\Helpers\MidtransConfig;
+
 
 
 class OrderController extends Controller
@@ -84,87 +87,207 @@ class OrderController extends Controller
     }
 
 
-    public function CashOrder(Request $request)
+//     public function CashOrder(Request $request)
+// {
+//     DB::beginTransaction();
+//      try {
+//             $cartItems = session()->get('cart', []);
+//             $totalAmount = 0;
+    
+//             // 1. Validasi keranjang tidak kosong
+//             if (empty($cartItems)) {
+//                 throw new \Exception('Keranjang belanja kosong');
+//             }
+    
+//             // 2. Hitung total amount dan validasi stok
+//             foreach ($cartItems as $item) {
+//                 $product = Product::find($item['id']);
+                
+//                 if (!$product) {
+//                     throw new \Exception("Produk ID {$item['id']} tidak ditemukan");
+//                 }
+                
+//                 if ($product->qty < $item['qty']) {
+//                     throw new \Exception("Stok {$product->name} tidak mencukupi");
+//                 }
+                
+//                 $totalAmount += ($item['price'] * $item['qty']);
+//             }
+    
+//             // 3. Hitung ongkir
+//             $shippingFee = [
+//                 'JNE Reguler' => 15000,
+//                 'J&T Express' => 17000,
+//                 'SiCepat' => 13000,
+//                 'POS Indonesia' => 14000,
+//             ][$request->courier_selected] ?? 15000;
+    
+//             $grandTotal = $totalAmount + $shippingFee;
+    
+//             // 4. Simpan order
+//             $order_id = Order::insertGetId([
+//                 'user_id' => Auth::id(),
+//                 'product_id' => $cartItems[array_key_first($cartItems)]['id'], // Ambil product_id pertama
+//                 'status' => 'pending',
+//                 'total_price' => $grandTotal,
+//                 'payment_method' => $request->payment_selected,
+//                 'courier' => $request->courier_selected,
+//                 'invoice_no' => 'GS-' . time(),
+//                 'notes' => null,
+//                 'created_at' => now(),
+//                 'updated_at' => now()
+//             ]);
+    
+//             // 5. Simpan order items dan KURANGI STOK
+//             foreach ($cartItems as $item) {
+//                 OrderItem::insert([
+//                     'order_id' => $order_id,
+//                     'product_id' => $item['id'],
+//                     'qty' => $item['qty'],
+//                     'price' => $item['price'],
+//                     'created_at' => now(),
+//                     'updated_at' => now()
+//                 ]);
+    
+//                 // INI BAGIAN PENGURANGAN STOK
+//                 Product::where('id', $item['id'])->decrement('qty', $item['qty']);
+//             }
+    
+//             // 6. Bersihkan keranjang
+//             session()->forget('cart');
+//             DB::commit();
+    
+//             return view('customer.checkout.thanks')->with([
+//                 'message' => 'Order berhasil. Stok produk telah dikurangi.',
+//                 'alert-type' => 'success'
+//             ]);
+    
+//         } catch (\Exception $e) {
+//             DB::rollBack();
+//             return back()->with([
+//                 'message' => 'Order gagal: ' . $e->getMessage(),
+//                 'alert-type' => 'error'
+//             ]);
+//         }
+//     }
+
+public function getMidtransToken(Request $request)
 {
     DB::beginTransaction();
-     try {
-            $cartItems = session()->get('cart', []);
-            $totalAmount = 0;
-    
-            // 1. Validasi keranjang tidak kosong
-            if (empty($cartItems)) {
-                throw new \Exception('Keranjang belanja kosong');
+    try {
+        \Log::info('Midtrans Token Request Started');
+        MidtransConfig::config();
+        \Log::info('Midtrans Config loaded');
+
+        $cartItems = session()->get('cart', []);
+        $totalAmount = 0;
+
+        if (empty($cartItems)) {
+            \Log::warning('Keranjang kosong saat meminta token Midtrans');
+            return response()->json(['error' => 'Keranjang kosong!'], 400);
+        }
+
+        // Validasi stok & hitung total
+        foreach ($cartItems as $item) {
+            $product = Product::find($item['id']);
+
+            if (!$product) {
+                throw new \Exception("Produk ID {$item['id']} tidak ditemukan");
             }
-    
-            // 2. Hitung total amount dan validasi stok
-            foreach ($cartItems as $item) {
-                $product = Product::find($item['id']);
-                
-                if (!$product) {
-                    throw new \Exception("Produk ID {$item['id']} tidak ditemukan");
-                }
-                
-                if ($product->qty < $item['qty']) {
-                    throw new \Exception("Stok {$product->name} tidak mencukupi");
-                }
-                
-                $totalAmount += ($item['price'] * $item['qty']);
+
+            if ($product->qty < $item['qty']) {
+                throw new \Exception("Stok {$product->name} tidak mencukupi");
             }
-    
-            // 3. Hitung ongkir
-            $shippingFee = [
-                'JNE Reguler' => 15000,
-                'J&T Express' => 17000,
-                'SiCepat' => 13000,
-                'POS Indonesia' => 14000,
-            ][$request->courier_selected] ?? 15000;
-    
-            $grandTotal = $totalAmount + $shippingFee;
-    
-            // 4. Simpan order
-            $order_id = Order::insertGetId([
-                'user_id' => Auth::id(),
-                'product_id' => $cartItems[array_key_first($cartItems)]['id'], // Ambil product_id pertama
-                'status' => 'pending',
-                'total_price' => $grandTotal,
-                'payment_method' => $request->payment_selected,
-                'courier' => $request->courier_selected,
-                'invoice_no' => 'GS-' . time(),
-                'notes' => null,
+
+            $totalAmount += $item['price'] * $item['qty'];
+        }
+
+        $shippingFee = match($request->courier_selected) {
+            'JNE Reguler' => 15000,
+            'J&T Express' => 17000,
+            'SiCepat' => 13000,
+            'POS Indonesia' => 14000,
+            default => 15000
+        };
+
+        $grandTotal = $totalAmount + $shippingFee;
+        $invoice = 'GS-' . time();
+
+        // Simpan Order ke database
+        $order_id = Order::insertGetId([
+            'user_id' => Auth::id(),
+            'product_id' => $cartItems[array_key_first($cartItems)]['id'],
+            'status' => 'pending',
+            'total_price' => $grandTotal,
+            'payment_method' => 'Midtrans',
+            'courier' => $request->courier_selected,
+            'invoice_no' => $invoice,
+            'notes' => null,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        // Simpan order_items & kurangi stok
+        foreach ($cartItems as $item) {
+            OrderItem::insert([
+                'order_id' => $order_id,
+                'product_id' => $item['id'],
+                'qty' => $item['qty'],
+                'price' => $item['price'],
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
-    
-            // 5. Simpan order items dan KURANGI STOK
-            foreach ($cartItems as $item) {
-                OrderItem::insert([
-                    'order_id' => $order_id,
-                    'product_id' => $item['id'],
-                    'qty' => $item['qty'],
-                    'price' => $item['price'],
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
-    
-                // INI BAGIAN PENGURANGAN STOK
-                Product::where('id', $item['id'])->decrement('qty', $item['qty']);
-            }
-    
-            // 6. Bersihkan keranjang
-            session()->forget('cart');
-            DB::commit();
-    
-            return view('customer.checkout.thanks')->with([
-                'message' => 'Order berhasil. Stok produk telah dikurangi.',
-                'alert-type' => 'success'
-            ]);
-    
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with([
-                'message' => 'Order gagal: ' . $e->getMessage(),
-                'alert-type' => 'error'
-            ]);
+
+            Product::where('id', $item['id'])->decrement('qty', $item['qty']);
         }
+
+        // Hapus keranjang
+        session()->forget('cart');
+
+        // Buat Snap param
+        $params = [
+            'transaction_details' => [
+                'order_id' => $invoice,
+                'gross_amount' => $grandTotal,
+            ],
+            'customer_details' => [
+                'first_name' => Auth::user()->name,
+                'email' => Auth::user()->email,
+                'phone' => Auth::user()->phone ?? '081234567890',
+            ],
+            'item_details' => [],
+        ];
+
+        foreach ($cartItems as $item) {
+            $params['item_details'][] = [
+                'id' => $item['id'],
+                'price' => $item['price'],
+                'quantity' => $item['qty'],
+                'name' => \Str::limit($item['name'], 50),
+            ];
+        }
+
+        $params['item_details'][] = [
+            'id' => 'SHIPPING',
+            'price' => $shippingFee,
+            'quantity' => 1,
+            'name' => 'Ongkos Kirim ' . $request->courier_selected
+        ];
+
+        \Log::info('Midtrans Transaction Params:', $params);
+
+        $snapToken = Snap::getSnapToken($params);
+        \Log::info('Snap Token generated: ' . $snapToken);
+
+        DB::commit();
+
+        return response()->json(['snapToken' => $snapToken]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error('Midtrans Snap Error: ' . $e->getMessage());
+        return response()->json(['error' => $e->getMessage()], 500);
     }
+}
+
 }
