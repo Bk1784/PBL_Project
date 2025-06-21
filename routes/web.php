@@ -74,6 +74,7 @@ Route::middleware('customer')->group(function () {
         Route::get('/orders/{id}/invoice', 'downloadInvoice')->name('customer.orders.invoice');
         Route::post('/get-midtrans-token', 'getMidtransToken')->name('customer.orders.get_midtrans_token');
         Route::post('/midtrans/callback', 'callback');
+        Route::get('/checkout/thanks', 'thanks')->name('checkout.thanks');
 
     });
 });

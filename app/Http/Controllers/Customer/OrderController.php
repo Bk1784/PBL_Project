@@ -58,118 +58,128 @@ class OrderController extends Controller
         return redirect()->back()->with('error', 'Pesanan belum bisa dikonfirmasi.');
     }
 
-    public function downloadInvoice($order_id)
-    {
-        $order = Order::where('id', $order_id)->where('user_id', Auth::id())->firstOrFail();
-        $orderItem = OrderItem::with(['product', 'order.user'])->where('order_id', $order_id)->get();
-       
-        
-        $shippingCosts = [
-            'JNE Reguler' => 15000,
-            'J&T Express' => 17000,
-            'SiCepat' => 13000,
-            'POS Indonesia' => 14000,
-        ];
-    
-        // Ambil nama kurir dan cari biaya kirim
-       
-        $courierName = $order->courier;
-        $shippingFee = $shippingCosts[$courierName] ?? 15000;
+ public function downloadInvoice($order_id)
+{
+    $order = Order::where('id', $order_id)
+        ->where('user_id', Auth::id())
+        ->firstOrFail();
 
-        $Price = $orderItem->sum(fn($item) => $item->price * $item->qty);
+    $orderItem = OrderItem::with(['product', 'order.user'])
+        ->where('order_id', $order_id)
+        ->get();
 
-        $totalAmount = $Price + $shippingFee;
+    // Sesuaikan dengan value dari DB (bukan label dropdown)
+    $shippingCosts = [
+        'jne' => 2500,
+        'jnt' => 5000,
+        'sicepat' => 2000,
+        'pos' => 7000,
+    ];
 
-        $pdf = PDF::loadView('order.invoice_download', compact('order', 'orderItem', 'totalAmount', 'Price', 'shippingFee'))
-                  ->setPaper('A4');
+    $courierNames = [
+        'jne' => 'JNE Reguler',
+        'jnt' => 'J&T Express',
+        'sicepat' => 'SiCepat',
+        'pos' => 'POS Indonesia',
+    ];
 
-        return $pdf->download('invoice_' . $order->invoice_no . '.pdf');
+    $courierCode = $order->courier; // Ex: 'jne'
+    $shippingFee = $shippingCosts[$courierCode] ?? 0;
+    $courierDisplayName = $courierNames[$courierCode] ?? 'Kurir Tidak Dikenal';
+
+    $Price = $orderItem->sum(fn($item) => $item->price * $item->qty);
+    $totalAmount = $Price + $shippingFee;
+
+    $pdf = PDF::loadView('order.invoice_download', compact(
+        'order', 'orderItem', 'totalAmount', 'Price', 'shippingFee', 'courierDisplayName'
+    ))->setPaper('A4');
+
+    return $pdf->download('invoice_' . $order->invoice_no . '.pdf');
+}
+
+
+public function CashOrder(Request $request)
+{
+    DB::beginTransaction();
+    try {
+        $cartItems = session()->get('cart', []);
+        $totalAmount = 0;
+
+        // 1. Validasi keranjang tidak kosong
+        if (empty($cartItems)) {
+            throw new \Exception('Keranjang belanja kosong');
+        }
+
+        // 2. Hitung total amount dan validasi stok
+        foreach ($cartItems as $item) {
+            $product = Product::find($item['id']);
+            
+            if (!$product) {
+                throw new \Exception("Produk ID {$item['id']} tidak ditemukan");
+            }
+            
+            if ($product->qty < $item['qty']) {
+                throw new \Exception("Stok {$product->name} tidak mencukupi");
+            }
+            
+            $totalAmount += ($item['price'] * $item['qty']);
+        }
+
+        // 3. Hitung ongkir (asumsi tetap dihitung berdasarkan pilihan kurir)
+        $shippingFee = [
+            'JNE Reguler' => 2500,
+            'J&T Express' => 5000,
+            'SiCepat' => 2000,
+            'POS Indonesia' => 7000,
+        ][$request->courier_selected] ?? 0;
+
+        $grandTotal = $totalAmount + $shippingFee;
+
+        // 4. Simpan order (payment_method dipastikan COD)
+        $order_id = Order::insertGetId([
+            'user_id' => Auth::id(),
+            'product_id' => $cartItems[array_key_first($cartItems)]['id'],
+            'status' => 'pending',
+            'total_price' => $grandTotal,
+            'payment_method' => 'COD', // Sudah pasti COD
+            'courier' => $request->courier_selected,
+            'invoice_no' => 'GS-' . time(),
+            'notes' => null,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        // 5. Simpan order items dan kurangi stok
+        foreach ($cartItems as $item) {
+            OrderItem::insert([
+                'order_id' => $order_id,
+                'product_id' => $item['id'],
+                'qty' => $item['qty'],
+                'price' => $item['price'],
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            Product::where('id', $item['id'])->decrement('qty', $item['qty']);
+        }
+
+        // 6. Bersihkan keranjang
+        session()->forget('cart');
+        DB::commit();
+
+        return view('customer.checkout.thanks')->with([
+            'message' => 'Order berhasil dengan metode COD. Stok produk telah dikurangi.',
+            'alert-type' => 'success'
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->with([
+            'message' => 'Order gagal: ' . $e->getMessage(),
+            'alert-type' => 'error'
+        ]);
     }
-
-
-//     public function CashOrder(Request $request)
-// {
-//     DB::beginTransaction();
-//      try {
-//             $cartItems = session()->get('cart', []);
-//             $totalAmount = 0;
-    
-//             // 1. Validasi keranjang tidak kosong
-//             if (empty($cartItems)) {
-//                 throw new \Exception('Keranjang belanja kosong');
-//             }
-    
-//             // 2. Hitung total amount dan validasi stok
-//             foreach ($cartItems as $item) {
-//                 $product = Product::find($item['id']);
-                
-//                 if (!$product) {
-//                     throw new \Exception("Produk ID {$item['id']} tidak ditemukan");
-//                 }
-                
-//                 if ($product->qty < $item['qty']) {
-//                     throw new \Exception("Stok {$product->name} tidak mencukupi");
-//                 }
-                
-//                 $totalAmount += ($item['price'] * $item['qty']);
-//             }
-    
-//             // 3. Hitung ongkir
-//             $shippingFee = [
-//                 'JNE Reguler' => 15000,
-//                 'J&T Express' => 17000,
-//                 'SiCepat' => 13000,
-//                 'POS Indonesia' => 14000,
-//             ][$request->courier_selected] ?? 15000;
-    
-//             $grandTotal = $totalAmount + $shippingFee;
-    
-//             // 4. Simpan order
-//             $order_id = Order::insertGetId([
-//                 'user_id' => Auth::id(),
-//                 'product_id' => $cartItems[array_key_first($cartItems)]['id'], // Ambil product_id pertama
-//                 'status' => 'pending',
-//                 'total_price' => $grandTotal,
-//                 'payment_method' => $request->payment_selected,
-//                 'courier' => $request->courier_selected,
-//                 'invoice_no' => 'GS-' . time(),
-//                 'notes' => null,
-//                 'created_at' => now(),
-//                 'updated_at' => now()
-//             ]);
-    
-//             // 5. Simpan order items dan KURANGI STOK
-//             foreach ($cartItems as $item) {
-//                 OrderItem::insert([
-//                     'order_id' => $order_id,
-//                     'product_id' => $item['id'],
-//                     'qty' => $item['qty'],
-//                     'price' => $item['price'],
-//                     'created_at' => now(),
-//                     'updated_at' => now()
-//                 ]);
-    
-//                 // INI BAGIAN PENGURANGAN STOK
-//                 Product::where('id', $item['id'])->decrement('qty', $item['qty']);
-//             }
-    
-//             // 6. Bersihkan keranjang
-//             session()->forget('cart');
-//             DB::commit();
-    
-//             return view('customer.checkout.thanks')->with([
-//                 'message' => 'Order berhasil. Stok produk telah dikurangi.',
-//                 'alert-type' => 'success'
-//             ]);
-    
-//         } catch (\Exception $e) {
-//             DB::rollBack();
-//             return back()->with([
-//                 'message' => 'Order gagal: ' . $e->getMessage(),
-//                 'alert-type' => 'error'
-//             ]);
-//         }
-//     }
+}
 
 public function getMidtransToken(Request $request)
 {
@@ -177,17 +187,15 @@ public function getMidtransToken(Request $request)
     try {
         \Log::info('Midtrans Token Request Started');
         MidtransConfig::config();
-        \Log::info('Midtrans Config loaded');
 
         $cartItems = session()->get('cart', []);
-        $totalAmount = 0;
-
         if (empty($cartItems)) {
             \Log::warning('Keranjang kosong saat meminta token Midtrans');
             return response()->json(['error' => 'Keranjang kosong!'], 400);
         }
 
-        // Validasi stok & hitung total
+        $totalAmount = 0;
+
         foreach ($cartItems as $item) {
             $product = Product::find($item['id']);
 
@@ -202,18 +210,19 @@ public function getMidtransToken(Request $request)
             $totalAmount += $item['price'] * $item['qty'];
         }
 
+        // Fix: gunakan value (jne, jnt, dll) dari <select>
         $shippingFee = match($request->courier_selected) {
-            'JNE Reguler' => 15000,
-            'J&T Express' => 17000,
-            'SiCepat' => 13000,
-            'POS Indonesia' => 14000,
-            default => 15000
+            'jne' => 2500,
+            'jnt' => 5000,
+            'sicepat' => 2000,
+            'pos' => 7000,
+            default => 0
         };
 
         $grandTotal = $totalAmount + $shippingFee;
         $invoice = 'GS-' . time();
 
-        // Simpan Order ke database
+        // Simpan Order
         $order_id = Order::insertGetId([
             'user_id' => Auth::id(),
             'product_id' => $cartItems[array_key_first($cartItems)]['id'],
@@ -227,7 +236,7 @@ public function getMidtransToken(Request $request)
             'updated_at' => now()
         ]);
 
-        // Simpan order_items & kurangi stok
+        // Simpan detail order dan kurangi stok
         foreach ($cartItems as $item) {
             OrderItem::insert([
                 'order_id' => $order_id,
@@ -241,10 +250,6 @@ public function getMidtransToken(Request $request)
             Product::where('id', $item['id'])->decrement('qty', $item['qty']);
         }
 
-        // Hapus keranjang
-        session()->forget('cart');
-
-        // Buat Snap param
         $params = [
             'transaction_details' => [
                 'order_id' => $invoice,
@@ -261,25 +266,29 @@ public function getMidtransToken(Request $request)
         foreach ($cartItems as $item) {
             $params['item_details'][] = [
                 'id' => $item['id'],
-                'price' => $item['price'],
-                'quantity' => $item['qty'],
+                'price' => (int) $item['price'],
+                'quantity' => (int) $item['qty'],
                 'name' => \Str::limit($item['name'], 50),
             ];
         }
 
+        // Tambahkan ongkir sebagai item
         $params['item_details'][] = [
             'id' => 'SHIPPING',
-            'price' => $shippingFee,
+            'price' => (int) $shippingFee,
             'quantity' => 1,
-            'name' => 'Ongkos Kirim ' . $request->courier_selected
+            'name' => 'Ongkos Kirim - ' . strtoupper($request->courier_selected),
         ];
 
-        \Log::info('Midtrans Transaction Params:', $params);
+        \Log::info('Midtrans Params', $params);
 
         $snapToken = Snap::getSnapToken($params);
         \Log::info('Snap Token generated: ' . $snapToken);
 
         DB::commit();
+
+        // Hapus keranjang setelah transaksi berhasil
+        session()->forget('cart');
 
         return response()->json(['snapToken' => $snapToken]);
 
@@ -288,6 +297,10 @@ public function getMidtransToken(Request $request)
         \Log::error('Midtrans Snap Error: ' . $e->getMessage());
         return response()->json(['error' => $e->getMessage()], 500);
     }
+}
+
+public function thanks(){
+    return view('customer.checkout.thanks');
 }
 
 }
