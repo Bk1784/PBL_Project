@@ -73,6 +73,7 @@ class CustomerController extends Controller
         return view('customer.profile', compact('customer'));
     }
 
+
     public function CustomerEditProfile()
     {
         $customer = Auth::guard('customer')->user();

@@ -303,4 +303,51 @@ public function thanks(){
     return view('customer.checkout.thanks');
 }
 
+public function TampilanRating($id){
+    $order = Order::findOrFail($id);
+    return view('customer.rating.rate', compact('order'));
+}
+
+public function KirimRating(Request $request, $id)
+{
+    // Validasi input
+    $request->validate([
+        'rating'  => 'required|integer|min:1|max:5',
+        'comment' => 'nullable|string|max:500',
+    ]);
+
+    // Cari order berdasarkan ID
+    $order = Order::findOrFail($id);
+
+    // Pastikan user yang login adalah pemilik order
+    if ($order->user_id !== auth()->id()) {
+        return redirect()->back()->with('error', 'Anda tidak berhak memberi rating untuk pesanan ini.');
+    }
+
+    // Cek apakah rating untuk order ini sudah ada
+    $existing = \DB::table('order_ratings')
+        ->where('order_id', $order->id)
+        ->where('user_id', auth()->id())
+        ->first();
+
+    if ($existing) {
+        return redirect()->route('customer.orders.all_orders')
+            ->with('error', 'Anda sudah memberi rating untuk pesanan ini.');
+    }
+
+    // Simpan rating ke tabel order_ratings
+    \DB::table('order_ratings')->insert([
+        'order_id'   => $order->id,
+        'user_id'    => auth()->id(),
+        'rating'     => $request->rating,
+        'comment'    => $request->comment,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    return redirect()->route('customer.orders.all_orders')
+        ->with('success', 'Terima kasih sudah memberi rating!');
+}
+
+
 }

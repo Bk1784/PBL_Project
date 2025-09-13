@@ -2,12 +2,9 @@
 
 @section('content')
 
-
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
 
 <!-- All Orders Table -->
 <div class="bg-white p-6 rounded-lg shadow-lg">
@@ -34,25 +31,66 @@
                         {{ \Carbon\Carbon::parse($order->created_at)->format('d F Y') }}
                     </td>
                     <td class="p-3 border-b border-gray-200">{{ $order->invoice_no }}</td>
-                    <td class="p-3 border-b border-gray-200">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
+                    <td class="p-3 border-b border-gray-200">
+                        Rp {{ number_format($order->total_price, 0, ',', '.') }}
+                    </td>
                     <td class="p-3 border-b border-gray-200">{{ $order->payment_method }}</td>
                     <td class="p-3 border-b border-gray-200">
-                        <span class="bg-green-500 text-white py-1 px-3 rounded-full text-sm">{{ $order->status }}</span>
+                        <span class="bg-green-500 text-white py-1 px-3 rounded-full text-sm">
+                            {{ $order->status }}
+                        </span>
                     </td>
                     <td class="p-3 border-b border-gray-200 space-x-1">
+                        <!-- Tombol View -->
                         <a href="#"
-                            class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded" title="View"><i
-                                class="fas fa-eye"></i></a>
+                           class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded" 
+                           title="View">
+                            <i class="fas fa-eye"></i>
+                        </a>
 
+                        <!-- Tombol Cancel jika pending/confirmed -->
                         @if(in_array($order->status, ['pending', 'confirmed']))
-                        <a href="#"
-                            class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded" title="Cancel"><i
-                                class="fas fa-times"></i></a>
+                            <a href="#"
+                               class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded" 
+                               title="Cancel">
+                                <i class="fas fa-times"></i>
+                            </a>
                         @endif
 
-                        <a href="{{route('customer.orders.invoice', $order->id)}}"
-                            class="bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded" title="Invoice"><i
-                                class="fas fa-file-invoice"></i></a>
+                        <!-- Tombol Invoice -->
+                        <a href="{{ route('customer.orders.invoice', $order->id) }}"
+                           class="bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded" 
+                           title="Invoice">
+                            <i class="fas fa-file-invoice"></i>
+                        </a>
+
+                        <!-- Tombol Rating jika status completed -->
+                        @if($order->status === 'completed')
+                            @php
+                                $sudahRating = \DB::table('order_ratings')
+                                    ->where('order_id', $order->id)
+                                    ->where('user_id', auth()->id())
+                                    ->exists();
+                            @endphp
+
+                            @if($sudahRating)
+                                <button 
+                                    onclick="Swal.fire({
+                                        icon: 'info',
+                                        title: 'Sudah Rating',
+                                        text: 'Anda sudah memberikan rating untuk pesanan ini.'
+                                    })"
+                                    class="bg-green-500 text-white py-1 px-3 rounded">
+                                    <i class="fas fa-check"></i> Sudah Rating
+                                </button>
+                            @else
+                                <a href="{{ route('customer.rating.rate', $order->id) }}"
+                                   class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded" 
+                                   title="Beri Rating">
+                                    <i class="fas fa-star"></i> Rating
+                                </a>
+                            @endif
+                        @endif
                     </td>
                 </tr>
                 @endforeach
@@ -60,5 +98,29 @@
         </table>
     </div>
 </div>
+
+<!-- SweetAlert untuk pesan sukses/error -->
+@if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 2000
+        })
+    </script>
+@endif
+
+@if(session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '{{ session('error') }}',
+            showConfirmButton: true
+        })
+    </script>
+@endif
 
 @endsection
