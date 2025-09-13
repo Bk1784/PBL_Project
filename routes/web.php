@@ -18,7 +18,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\KategoriController;
 
 //// CUSTOMER GUEST: Hanya bisa diakses jika belum login
 //CUSTOMER
@@ -209,3 +209,5 @@ Route::middleware('client.guest')->group(function () {
 
 // UNTUK SEMUA PENGGUNA
 Route::get('/changeStatus', [ManageController::class, 'ChangeStatus']);
+
+Route::get('/kategori/dekorasi', [KategoriController::class, 'dekorasi'])->name('kategori.dekorasi');
