@@ -4,10 +4,12 @@ use App\Http\Controllers\Admin\ManageController;
 use App\Http\Controllers\Admin\ManageOrderController;
 use App\Http\Controllers\Admin\ManageRatingController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ReportOfflineController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\HomeController;
 use App\Http\Controllers\Customer\OrderController;
 use App\Http\Controllers\Customer\ReviewController;
+use App\Http\Controllers\OrderItemClientController;
 use App\Http\Controllers\PurchasesController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminController;
@@ -124,6 +126,15 @@ Route::middleware('admin')->group(function () {
         Route::post('/admin/search/byyear', 'AdminSearchByYear')->name('admin.search.byyear');
         Route::get('admin/search/byyear/result/{year}', 'AdminSearchByYearResult')->name('admin.search.byyear.result');
     });
+    Route::controller(ReportOfflineController::class)->group(function () {
+        Route::get('/admin/all/offline/reports', 'AdminAllReports')->name('admin.offline.all.reports');
+        Route::post('/admin/offline/search/bydate', 'AdminSearchByDate')->name('admin.offline.search.bydate');
+        Route::get('/admin/offline/search-by-date/result', 'AdminSearchByDateResult')->name('admin.offline.search.bydate.result');
+        Route::post('/admin/offline/search/bymonth', 'AdminSearchByMonth')->name('admin.offline.search.bymonth');
+        Route::get('/admin/offline/search-by-month/result', 'AdminSearchByMonthResult')->name('admin.offline.search.bymonth.result');
+        Route::post('/admin/offline/search/byyear', 'AdminSearchByYear')->name('admin.offline.search.byyear');
+        Route::get('admin/offline/search/byyear/result/{year}', 'AdminSearchByYearResult')->name('admin.offline.search.byyear.result');
+    });
     
     Route::controller(ManageController::class)->group(function () {
         Route::get('/pending/toko', 'PendingToko')->name('pending.toko');
@@ -193,6 +204,10 @@ Route::middleware(['status', 'client'])->group(function () {
     Route::put('/client/profile/update', [ClientController::class, 'updateProfile'])->name('client.update.profile');
     Route::get('/client/change-password', [ClientController::class, 'ClientChangePassword'])->name('client.change.password');
     Route::post('/client/update-password', [ClientController::class, 'ClientUpdatePassword'])->name('client.update.password');
+
+    Route::get('/pesan-langsung', [OrderItemClientController::class, 'Halaman'])->name('client.Order.penjualan_offline'); 
+    Route::post('/pesan-langsung/store', [OrderItemClientController::class, 'KirimPembelianOffline'])->name('OrderItemClient.store'); 
+
 });
 
 //CLIENT GUEST

@@ -198,15 +198,10 @@
         <div id="reportSubmenu" class="ml-8 hidden flex-col gap-2">
             <a href="{{ route('admin.all.reports') }}" class="hover:text-gray-700 transition">All Reports</a>
         </div>
+        <div id="reportSubmenudua" class="ml-8 hidden flex-col gap-2">
+            <a href="{{ route('admin.offline.all.reports') }}" class="hover:text-gray-700 transition">Offline Reports</a>
+        </div>
     </div>
-
-    <!-- Tambahkan JavaScript jika ingin membuat toggle submenu -->
-    <script>
-        document.getElementById("manageReportToggle").addEventListener("click", function () {
-            const submenu = document.getElementById("reportSubmenu");
-            submenu.classList.toggle("hidden");
-        });
-    </script>
                 <li
                     class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
                     <span>🎨</span> <span>Dekorasi</span>
@@ -350,6 +345,18 @@
             submenu.setAttribute('aria-expanded', 'false');
         }
     });
+    </script>
+
+        <!-- Tambahkan JavaScript jika ingin membuat toggle submenu -->
+    <script>
+        document.getElementById("manageReportToggle").addEventListener("click", function () {
+            const submenu = document.getElementById("reportSubmenu");
+            submenu.classList.toggle("hidden");
+        });
+        document.getElementById("manageReportToggle").addEventListener("click", function () {
+            const submenu = document.getElementById("reportSubmenudua");
+            submenu.classList.toggle("hidden");
+        });
     </script>
 </body>
 

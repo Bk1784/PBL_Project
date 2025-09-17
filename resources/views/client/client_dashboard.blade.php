@@ -35,7 +35,7 @@
                 @if ($status == '1')
                 
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>📦</span> <span>Produk</span>
+                    <span>📦</span> <a href="{{ route('client.Order.penjualan_offline') }}"><span>Produk</span></a> 
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
                     <span>🎨</span> <span>Dekorasi</span>
