@@ -113,8 +113,6 @@ Route::middleware('admin')->group(function () {
         Route::get('/admin/edit/product/{id}', 'AdminEditProduct')->name('admin.edit.product');
         Route::put('/admin/update/product', 'AdminUpdateProduct')->name('admin.update.product');
         Route::get('/admin/delete/product/{id}', 'AdminDeleteProduct')->name('admin.delete.product');
-        
-
     });
 
     Route::controller(ReportController::class)->group(function () {
@@ -152,7 +150,7 @@ Route::middleware('admin')->group(function () {
         Route::get('/orders/details/{id}', 'OrderDetails')->name('admin.order.details');
     });
 
-    Route::controller(PurchasesController::class)->group(function(){
+    Route::controller(PurchasesController::class)->group(function () {
         Route::get('/all/purchases', 'index')->name('admin.backend.purchases.all');
         Route::get('/add/purchases', 'create')->name('admin.backend.purchases.add');
         Route::post('/add/purchases/store',  'store')->name('admin.purchases.store');

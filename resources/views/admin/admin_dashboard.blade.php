@@ -27,49 +27,49 @@
 
 
     <style>
-    /* Custom styling for toggle switch */
-    .toggle-checkbox:checked {
-        right: 0;
-        border-color: #10B981;
-    }
-
-    .toggle-checkbox:checked+.toggle-label {
-        background-color: #10B981;
-    }
-
-    /* Sidebar toggle for mobile */
-    .sidebar {
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .sidebar-hidden {
-        transform: translateX(-100%);
-    }
-
-    .sidebar-visible {
-        transform: translateX(0);
-    }
-
-    .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 10;
-    }
-
-    .overlay-visible {
-        display: block;
-    }
-
-    @media (min-width: 768px) {
-        .overlay {
-            display: none !important;
+        /* Custom styling for toggle switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #10B981;
         }
-    }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #10B981;
+        }
+
+        /* Sidebar toggle for mobile */
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .sidebar-hidden {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-visible {
+            transform: translateX(0);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .overlay-visible {
+            display: block;
+        }
+
+        @media (min-width: 768px) {
+            .overlay {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 
@@ -187,25 +187,43 @@
                     </ul>
                 </li>
 
-                <div class="flex flex-col gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
-        <div class="flex items-center">
-            <span>📊</span>
-            <a href="javascript:void(0);" class="has-arrow ml-3 w-full" id="manageReportToggle">
-                <span>Manage Report</span>
-            </a>
-        </div>
-        <!-- Submenu -->
-        <div id="reportSubmenu" class="ml-8 hidden flex-col gap-2">
-            <a href="{{ route('admin.all.reports') }}" class="hover:text-gray-700 transition">All Reports</a>
-        </div>
-        <div id="reportSubmenudua" class="ml-8 hidden flex-col gap-2">
-            <a href="{{ route('admin.offline.all.reports') }}" class="hover:text-gray-700 transition">Offline Reports</a>
-        </div>
-    </div>
+                <div
+                    class="flex flex-col gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
+                    <div class="flex items-center">
+                        <span>📊</span>
+                        <a href="javascript:void(0);" class="has-arrow ml-3 w-full" id="manageReportToggle">
+                            <span>Manage Report</span>
+                        </a>
+                    </div>
+                    <!-- Submenu -->
+                    <div id="reportSubmenu" class="ml-8 hidden flex-col gap-2">
+                        <a href="{{ route('admin.all.reports') }}" class="hover:text-gray-700 transition">All
+                            Reports</a>
+                    </div>
+                    <div id="reportSubmenudua" class="ml-8 hidden flex-col gap-2">
+                        <a href="{{ route('admin.offline.all.reports') }}"
+                            class="hover:text-gray-700 transition">Offline Reports</a>
+                    </div>
+                </div>
+
                 <li
-                    class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
-                    <span>🎨</span> <span>Dekorasi</span>
+                    class="flex flex-col gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
+                    <div class="flex items-center">
+                        <span>🎨</span>
+                        <a href="javascript:void(0);" class="has-arrow ml-3 w-full" id="manageDecorationToggle">
+                            <span>Manage Decoration</span>
+                        </a>
+                    </div>
+                    <ul class="sub-menu hidden mt-2 ml-8 space-y-2" aria-expanded="false" id="manageDecorationSubmenu">
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('admin.all.decoration') }}">All Decoration</a>
+                        </li>
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('admin.add.decoration') }}">Add Decoration</a>
+                        </li>
+                    </ul>
                 </li>
+
                 <li
                     class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer p-2 rounded hover:bg-gray-100">
                     <span>💳</span> <span>Pembayaran</span>
@@ -271,89 +289,89 @@
     </div>
 
     <script>
-    // Toggle submenu
-    document.getElementById('manageProductToggle').addEventListener('click', function() {
-        const submenu = document.getElementById('manageProductSubmenu');
-        if (submenu.classList.contains('hidden')) {
-            submenu.classList.remove('hidden');
-        } else {
-            submenu.classList.add('hidden');
-        }
-    });
-
-    document.getElementById('managePurchasesToggle').addEventListener('click', function() {
-        const submenu = document.getElementById('managePurchasesSubmenu');
-        if (submenu.classList.contains('hidden')) {
-            submenu.classList.remove('hidden');
-        } else {
-            submenu.classList.add('hidden');
-        }
-    });
-
-    // Toggle submenu visibility
-    document.getElementById('manageOrdersToggle').addEventListener('click', function() {
-        const submenu = document.getElementById('manageOrdersSubmenu');
-        submenu.classList.toggle('hidden');
-    });
-
-
-    // Mobile menu toggle
-    document.getElementById('mobileMenuButton').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.remove('sidebar-hidden');
-        document.getElementById('sidebar').classList.add('sidebar-visible');
-        document.getElementById('overlay').classList.add('overlay-visible');
-    });
-
-    document.getElementById('closeSidebar').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.remove('sidebar-visible');
-        document.getElementById('sidebar').classList.add('sidebar-hidden');
-        document.getElementById('overlay').classList.remove('overlay-visible');
-    });
-
-    document.getElementById('overlay').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.remove('sidebar-visible');
-        document.getElementById('sidebar').classList.add('sidebar-hidden');
-        document.getElementById('overlay').classList.remove('overlay-visible');
-    });
-
-    // Close sidebar when clicking on a link (for mobile)
-    document.querySelectorAll('#sidebar a').forEach(link => {
-        link.addEventListener('click', function() {
-            if (window.innerWidth < 768) {
-                document.getElementById('sidebar').classList.remove('sidebar-visible');
-                document.getElementById('sidebar').classList.add('sidebar-hidden');
-                document.getElementById('overlay').classList.remove('overlay-visible');
+        // Toggle submenu
+        document.getElementById('manageProductToggle').addEventListener('click', function() {
+            const submenu = document.getElementById('manageProductSubmenu');
+            if (submenu.classList.contains('hidden')) {
+                submenu.classList.remove('hidden');
+            } else {
+                submenu.classList.add('hidden');
             }
         });
-    });
+
+        document.getElementById('managePurchasesToggle').addEventListener('click', function() {
+            const submenu = document.getElementById('managePurchasesSubmenu');
+            if (submenu.classList.contains('hidden')) {
+                submenu.classList.remove('hidden');
+            } else {
+                submenu.classList.add('hidden');
+            }
+        });
+
+        // Toggle submenu visibility
+        document.getElementById('manageOrdersToggle').addEventListener('click', function() {
+            const submenu = document.getElementById('manageOrdersSubmenu');
+            submenu.classList.toggle('hidden');
+        });
+
+
+        // Mobile menu toggle
+        document.getElementById('mobileMenuButton').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('sidebar-hidden');
+            document.getElementById('sidebar').classList.add('sidebar-visible');
+            document.getElementById('overlay').classList.add('overlay-visible');
+        });
+
+        document.getElementById('closeSidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('sidebar-visible');
+            document.getElementById('sidebar').classList.add('sidebar-hidden');
+            document.getElementById('overlay').classList.remove('overlay-visible');
+        });
+
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('sidebar-visible');
+            document.getElementById('sidebar').classList.add('sidebar-hidden');
+            document.getElementById('overlay').classList.remove('overlay-visible');
+        });
+
+        // Close sidebar when clicking on a link (for mobile)
+        document.querySelectorAll('#sidebar a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 768) {
+                    document.getElementById('sidebar').classList.remove('sidebar-visible');
+                    document.getElementById('sidebar').classList.add('sidebar-hidden');
+                    document.getElementById('overlay').classList.remove('overlay-visible');
+                }
+            });
+        });
     </script>
 
     <script>
-    function toggleManageStore() {
-        const submenu = document.getElementById('manageStoreSubmenu');
-        const isExpanded = submenu.getAttribute('aria-expanded') === 'true';
-
-        submenu.classList.toggle('hidden');
-        submenu.setAttribute('aria-expanded', !isExpanded);
-    }
-
-    // Optional: Close submenu when clicking elsewhere
-    document.addEventListener('click', function(event) {
-        if (!event.target.closest('.manageStoreToggle') && !event.target.closest('#manageStoreSubmenu')) {
+        function toggleManageStore() {
             const submenu = document.getElementById('manageStoreSubmenu');
-            submenu.classList.add('hidden');
-            submenu.setAttribute('aria-expanded', 'false');
+            const isExpanded = submenu.getAttribute('aria-expanded') === 'true';
+
+            submenu.classList.toggle('hidden');
+            submenu.setAttribute('aria-expanded', !isExpanded);
         }
-    });
+
+        // Optional: Close submenu when clicking elsewhere
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.manageStoreToggle') && !event.target.closest('#manageStoreSubmenu')) {
+                const submenu = document.getElementById('manageStoreSubmenu');
+                submenu.classList.add('hidden');
+                submenu.setAttribute('aria-expanded', 'false');
+            }
+        });
     </script>
 
-        <!-- Tambahkan JavaScript jika ingin membuat toggle submenu -->
+    <!-- Tambahkan JavaScript jika ingin membuat toggle submenu -->
     <script>
-        document.getElementById("manageReportToggle").addEventListener("click", function () {
+        document.getElementById("manageReportToggle").addEventListener("click", function() {
             const submenu = document.getElementById("reportSubmenu");
             submenu.classList.toggle("hidden");
         });
-        document.getElementById("manageReportToggle").addEventListener("click", function () {
+        document.getElementById("manageReportToggle").addEventListener("click", function() {
             const submenu = document.getElementById("reportSubmenudua");
             submenu.classList.toggle("hidden");
         });
