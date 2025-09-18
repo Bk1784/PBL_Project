@@ -36,10 +36,11 @@
                     </td>
                     <td class="p-3 border-b border-gray-200">
     <button 
-        class="bg-purple-500 text-white py-1 px-3 rounded text-sm hover:bg-purple-600"
-        onclick="showRefundReason('{{ $refund->refund_reason }}', '{{ asset('storage/' . $refund->refund_image) }}')">
-        Lihat Alasan
-    </button>
+    class="bg-purple-500 text-white py-1 px-3 rounded text-sm hover:bg-purple-600"
+    onclick="showRefundReason('{{ $refund->refund_reason }}', '{{ asset('storage/' . $refund->refund_image) }}', '{{ $refund->refund_qty }}')">
+    Lihat Alasan
+</button>
+
 </td>
 
                     <td class="p-3 border-b border-gray-200">
@@ -119,10 +120,11 @@
 </script>
 
 <script>
-    function showRefundReason(reason, imageUrl) {
+    function showRefundReason(reason, imageUrl, qty) {
         Swal.fire({
             title: 'Alasan Refund',
             html: `
+                <p style="margin-bottom: 8px;"><strong>Jumlah produk yang dikembalikan:</strong> ${qty}</p>
                 <p style="margin-bottom: 15px;">${reason}</p>
                 <img src="${imageUrl}" alt="Bukti Refund" style="max-width: 100%; height: auto; border-radius: 8px;"/>
             `,

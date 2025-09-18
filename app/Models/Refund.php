@@ -17,6 +17,7 @@ class Refund extends Model
         'reject_reason',
         'status',
         'refunded_at',
+        'refund_qty',
     ];
 
     protected $casts = [

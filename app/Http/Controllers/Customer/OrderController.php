@@ -383,6 +383,7 @@ public function KirimRating(Request $request, $id)
             'refund_reason' => $request->refund_reason,
             'refund_image' => $imagePath,
             'status' => 'pending',
+            'refund_qty'   => $request->refund_qty ?? 1,
         ]);
 
         // update status order jadi refunded
