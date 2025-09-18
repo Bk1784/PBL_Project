@@ -148,7 +148,7 @@ class AdminController extends Controller
         $admin->phone = $request->phone;
         $admin->address = $request->address;
     
-        // Handle foto profil
+        // Handle foto profil /
         if ($request->hasFile('photo')) {
             if ($admin->photo) {
                 Storage::delete('public/' . $admin->photo);

@@ -215,14 +215,9 @@
                             $profileData = App\Models\User::find($id);
                             @endphp
 
-                            <a href="{{ (!empty($profileData->photo)) ? url('upload/user_images/'.$profileData->photo) : url('upload/default.jpg') }}"
+                            <a href="{{ route('customer.profile') }}"
                                 class="block">
-                                @php
-                                $user = Auth::guard('customer')->user();
-                                $photo = $user && $user->photo ? 'storage/' . $user->photo :
-                                'profile_photos/default.jpg';
-                                @endphp
-                                <img src="{{ (!empty($profileData->photo)) ? url('upload/user_images/'.$profileData->photo) : url('upload/default.jpg') }}"
+                                <img src="{{'storage/' . $profileData->photo}}"
                                     alt="Profile" class="w-full h-full object-cover">
                             </a>
                         </div>

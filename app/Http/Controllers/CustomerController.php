@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
 {
@@ -29,13 +30,13 @@ class CustomerController extends Controller
         $oldPhotoPath = $data->photo;
 
         if ($request->hasFile('photo')) {
-            $file = $request->file('photo');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('upload/user_images'), $filename);
-            $data->photo = $filename;
+            // simpan ke storage/app/public/user_images
+            $filePath = $request->file('photo')->store('customer_photos', 'public');
+            $data->photo = $filePath;
 
-            if ($oldPhotoPath && $oldPhotoPath !== $filename) {
-                $this->deleteOldImage($oldPhotoPath);
+            // hapus foto lama jika ada
+            if ($oldPhotoPath && Storage::disk('public')->exists($oldPhotoPath)) {
+                Storage::disk('public')->delete($oldPhotoPath);
             }
         }
 
@@ -50,7 +51,7 @@ class CustomerController extends Controller
     }
     private function deleteOldImage(string $oldPhotoPath): void
     {
-        $fullPath = public_path('upload/user_images/' . $oldPhotoPath);
+        $fullPath = public_path('storage/app/public/customer_photos/' . $oldPhotoPath);
         if (file_exists($fullPath)) {
             unlink($fullPath);
         }
