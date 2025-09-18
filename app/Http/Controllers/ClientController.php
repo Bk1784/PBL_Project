@@ -352,4 +352,74 @@ class ClientController extends Controller
 
         return redirect()->route('client.dashboard')->with('success', 'Password berhasil diperbarui!');
     }
+
+    // Refund methods
+    public function refundOrders()
+    {
+        $refunds = \App\Models\Refund::with(['order', 'user'])
+            ->latest()
+            ->get();
+
+        return view('client.Order.refund', compact('refunds'));
+    }
+
+    public function executeRefund($id)
+    {
+        $refund = \App\Models\Refund::findOrFail($id);
+
+        if ($refund->status !== 'pending') {
+            return redirect()->back()->with('error', 'Refund sudah diproses.');
+        }
+
+        $refund->status = 'accepted';
+        $refund->save();
+
+        return redirect()->back()->with('success', 'Refund berhasil dieksekusi.');
+    }
+
+    public function rejectRefund(Request $request, $id)
+    {
+        $request->validate([
+            'reject_reason' => 'required|string|max:500',
+        ]);
+
+        $refund = \App\Models\Refund::findOrFail($id);
+
+        if ($refund->status !== 'pending') {
+            return redirect()->back()->with('error', 'Refund sudah diproses.');
+        }
+
+        $refund->status = 'rejected';
+        $refund->reject_reason = $request->reject_reason;
+        $refund->save();
+
+        return redirect()->back()->with('success', 'Refund berhasil ditolak.');
+    }
+
+    public function acceptRefund($id)
+    {
+        $refund = \App\Models\Refund::findOrFail($id);
+
+        if ($refund->status !== 'accepted') {
+            return redirect()->back()->with('error', 'Refund belum dieksekusi.');
+        }
+
+        // Status tetap 'accepted', tombol berubah menjadi 'Selesai'
+        return redirect()->back()->with('info', 'Refund diterima. Klik tombol Selesai untuk menyelesaikan.');
+    }
+
+    public function completeRefund($id)
+    {
+        $refund = \App\Models\Refund::findOrFail($id);
+
+        if ($refund->status !== 'accepted') {
+            return redirect()->back()->with('error', 'Refund belum diterima.');
+        }
+
+        $refund->status = 'completed';
+        $refund->refunded_at = now();
+        $refund->save();
+
+        return redirect()->back()->with('success', 'Refund berhasil diselesaikan.');
+    }
 }
