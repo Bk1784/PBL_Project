@@ -41,20 +41,30 @@
                         </span>
                     </td>
                     <td class="p-3 border-b border-gray-200 space-x-1">
-                        <!-- Tombol View -->
-                        <a href="#"
-                           class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded" 
-                           title="View">
-                            <i class="fas fa-eye"></i>
-                        </a>
+                        <!-- Tombol Refund hanya untuk status completed -->
+                        @if($order->status === 'completed')
+                            <a href="javascript:void(0);" 
+                               class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded refund-btn" 
+                               data-order-id="{{ $order->id }}"
+                               title="Refund">
+                                <i class="fas fa-undo"></i>
+                            </a>
+                        @else
+                            <!-- Tombol View -->
+                            <!-- <a href="#"
+                               class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded" 
+                               title="View">
+                                <i class="fas fa-eye"></i>
+                            </a> -->
+                        @endif
 
                         <!-- Tombol Cancel jika pending/confirmed -->
                         @if(in_array($order->status, ['pending', 'confirmed']))
-                            <a href="#"
+                            <!-- <a href="#"
                                class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded" 
                                title="Cancel">
                                 <i class="fas fa-times"></i>
-                            </a>
+                            </a> -->
                         @endif
 
                         <!-- Tombol Invoice -->
@@ -98,6 +108,85 @@
         </table>
     </div>
 </div>
+
+<!-- Tombol Link ke halaman pesanan refund -->
+        <div class="mt-4">
+            <a href="{{ route('customer.orders.all_refund') }}" 
+               class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded">
+                Pesanan Refund
+            </a>
+        </div>
+
+<!-- SweetAlert untuk input alasan refund (perbaikan) -->
+<script>
+document.querySelectorAll('.refund-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        const orderId = button.getAttribute('data-order-id');
+
+        Swal.fire({
+            title: 'Alasan Refund',
+            input: 'textarea',
+            inputPlaceholder: 'Masukkan alasan refund...',
+            showCancelButton: true,
+            confirmButtonText: 'Kirim',
+            cancelButtonText: 'Batal',
+            preConfirm: (reason) => {
+                if (!reason) {
+                    Swal.showValidationMessage('Alasan refund harus diisi');
+                }
+                return reason;
+            }
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+
+            // Gunakan path yang sesuai dengan route: /orders/{id}/refund
+            const url = "{{ url('/orders') }}/" + orderId + "/refund";
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',            // minta JSON agar Laravel merespon JSON pada error validasi
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                credentials: 'same-origin', // pastikan cookie/session dikirim
+                body: JSON.stringify({ refund_reason: result.value })
+            })
+            .then(async response => {
+                const text = await response.text(); // ambil teks dulu
+                // coba parse JSON, tapi jika bukan JSON tampilkan teks aslinya
+                let data = null;
+                try {
+                    data = text ? JSON.parse(text) : null;
+                } catch (e) {
+                    // bukan JSON
+                }
+
+                if (!response.ok) {
+                    // berikan pesan error yang lebih berguna
+                    const msg = (data && data.message) ? data.message : (text || `HTTP ${response.status}`);
+                    throw new Error(msg);
+                }
+
+                return data;
+            })
+            .then(data => {
+                if (data && data.success) {
+                    Swal.fire('Berhasil', data.message, 'success').then(() => location.reload());
+                } else {
+                    // jika API mengirim sukses=false
+                    Swal.fire('Gagal', (data && data.message) ? data.message : 'Terjadi kesalahan', 'error');
+                }
+            })
+            .catch(err => {
+                console.error('Refund error:', err);
+                Swal.fire('Gagal', 'Terjadi kesalahan server: ' + err.message, 'error');
+            });
+        });
+    });
+});
+</script>
+
 
 <!-- SweetAlert untuk pesan sukses/error -->
 @if(session('success'))

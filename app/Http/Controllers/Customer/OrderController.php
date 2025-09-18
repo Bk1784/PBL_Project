@@ -20,11 +20,15 @@ use App\Helpers\MidtransConfig;
 class OrderController extends Controller
 {
     public function index()
-    {
-        $orders = Order::where('user_id', Auth::id())->latest()->get();
-        return view('customer.orders.all_orders', compact('orders'));
-        
-    }
+{
+    $orders = Order::where('user_id', Auth::id())
+                   ->where('status', '!=', 'refunded') // sembunyikan pesanan refund
+                   ->latest()
+                   ->get();
+
+    return view('customer.orders.all_orders', compact('orders'));
+}
+
 
     public function OrderDetails($id)
     {
@@ -349,5 +353,54 @@ public function KirimRating(Request $request, $id)
         ->with('success', 'Terima kasih sudah memberi rating!');
 }
 
+    public function RefundOrder(Request $request, $id)
+{
+    try {
+        $request->validate([
+            'refund_reason' => 'required|string|max:500',
+        ]);
+
+        $order = Order::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+
+        if ($order->status !== 'completed') {
+            return response()->json(['success' => false, 'message' => 'Hanya pesanan completed yang bisa direfund.'], 422);
+        }
+
+        if (\App\Models\Refund::where('order_id', $id)->exists()) {
+            return response()->json(['success' => false, 'message' => 'Refund untuk pesanan ini sudah diajukan.'], 409);
+        }
+
+        // simpan refund
+        \App\Models\Refund::create([
+            'order_id' => $id,
+            'user_id' => Auth::id(),
+            'refund_reason' => $request->refund_reason,
+            'status' => 'pending',
+        ]);
+
+        // update status order jadi refunded
+        $order->update(['status' => 'refunded']);
+
+        return response()->json(['success' => true, 'message' => 'Refund berhasil diajukan.'], 201);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json(['success'=>false, 'message'=>'Validasi gagal','errors'=>$e->errors()], 422);
+    } catch (\Exception $e) {
+        \Log::error('RefundOrder error: '.$e->getMessage()."\n".$e->getTraceAsString());
+        return response()->json(['success' => false, 'message' => 'Terjadi kesalahan server.'], 500);
+    }
+}
+
+
+
+    public function AllRefund()
+    {
+        $refunds = \App\Models\Refund::with(['order', 'user'])
+            ->where('user_id', Auth::id())
+            ->latest()
+            ->get();
+
+        return view('customer.orders.all_refund', compact('refunds'));
+    }
 
 }

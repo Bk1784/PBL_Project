@@ -60,6 +60,9 @@
                         <li class="p-1 rounded hover:bg-gray-100">
                             <a href="{{ route('client.delivered.orders') }}">Delivered Orders</a>
                         </li>
+                        <li class="p-1 rounded hover:bg-gray-100">
+                            <a href="{{ route('client.refund') }}">Refund Orders</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
