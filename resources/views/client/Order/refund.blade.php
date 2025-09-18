@@ -18,7 +18,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Invoice</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Customer</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Jumlah</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Alasan Refund</th>
+
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Status</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Aksi</th>
                 </tr>
@@ -41,9 +41,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         Rp {{ number_format($refund->order->total_price, 0, ',', '.') }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ $refund->refund_reason }}
-                    </td>
+
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         @if($refund->status === 'pending')
                             <span class="bg-yellow-500 text-white py-1 px-3 rounded-full text-sm">
@@ -66,14 +64,12 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         @if($refund->status === 'pending')
                             <div class="flex space-x-2">
-                                <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded text-sm execute-btn"
-                                        data-refund-id="{{ $refund->id }}">
-                                    Terima
-                                </button>
-                                <button type="button" class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded text-sm reject-btn"
-                                        data-refund-id="{{ $refund->id }}">
-                                    Tolak
-                                </button>
+                                <button type="button" class="bg-purple-500 hover:bg-purple-600 text-white py-1 px-3 rounded text-sm evaluasi-btn"
+        data-refund-id="{{ $refund->id }}"
+        data-refund-reason="{{ $refund->refund_reason }}"
+        data-refund-image="{{ $refund->refund_image ? Storage::url($refund->refund_image) : '' }}">
+    Evaluasi
+</button>
                             </div>
                         @elseif($refund->status === 'accepted')
                             <div class="flex space-x-2">
@@ -190,6 +186,50 @@
 
                     document.body.appendChild(form);
                     form.submit();
+                }
+            });
+        });
+    });
+
+    // Handle evaluasi button
+    document.querySelectorAll('.evaluasi-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const refundId = button.getAttribute('data-refund-id');
+            const refundReason = button.getAttribute('data-refund-reason');
+            const refundImage = button.getAttribute('data-refund-image');
+
+            let htmlContent = `<p><strong>Alasan Refund:</strong> ${refundReason}</p>`;
+            if (refundImage) {
+                htmlContent += `<p><strong>Bukti:</strong></p><img src="${refundImage}" alt="Bukti Refund" style="max-width: 100%; max-height: 300px;">`;
+            }
+
+            Swal.fire({
+                title: 'Evaluasi Refund',
+                html: htmlContent,
+                showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonText: 'Terima',
+                denyButtonText: 'Tolak',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Terima refund
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/client/refund/execute/${refundId}`;
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = '{{ csrf_token() }}';
+                    form.appendChild(csrfToken);
+                    document.body.appendChild(form);
+                    form.submit();
+                } else if (result.isDenied) {
+                    // Tolak refund
+                    const modal = document.getElementById('rejectModal');
+                    const form = document.getElementById('rejectForm');
+                    form.action = `/client/refund/reject/${refundId}`;
+                    modal.classList.remove('hidden');
                 }
             });
         });

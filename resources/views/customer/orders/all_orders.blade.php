@@ -125,19 +125,34 @@ document.querySelectorAll('.refund-btn').forEach(button => {
 
         Swal.fire({
             title: 'Alasan Refund',
-            input: 'textarea',
-            inputPlaceholder: 'Masukkan alasan refund...',
+            html: `
+                <textarea id="refund_reason" rows="4" placeholder="Masukkan alasan refund..." class="swal2-textarea" required></textarea>
+                <input type="file" id="refund_image" accept="image/*" class="swal2-file" style="margin-top: 10px;">
+            `,
             showCancelButton: true,
             confirmButtonText: 'Kirim',
             cancelButtonText: 'Batal',
-            preConfirm: (reason) => {
+            preConfirm: () => {
+                const reason = document.getElementById('refund_reason').value;
+                const image = document.getElementById('refund_image').files[0];
                 if (!reason) {
                     Swal.showValidationMessage('Alasan refund harus diisi');
+                    return false;
                 }
-                return reason;
+                return { reason, image };
             }
         }).then((result) => {
             if (!result.isConfirmed) return;
+
+            const { reason, image } = result.value;
+
+            // Gunakan FormData untuk upload file
+            const formData = new FormData();
+            formData.append('refund_reason', reason);
+            if (image) {
+                formData.append('refund_image', image);
+            }
+            formData.append('_token', '{{ csrf_token() }}');
 
             // Gunakan path yang sesuai dengan route: /orders/{id}/refund
             const url = "{{ url('/orders') }}/" + orderId + "/refund";
@@ -145,16 +160,13 @@ document.querySelectorAll('.refund-btn').forEach(button => {
             fetch(url, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',            // minta JSON agar Laravel merespon JSON pada error validasi
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'Accept': 'application/json',
                 },
-                credentials: 'same-origin', // pastikan cookie/session dikirim
-                body: JSON.stringify({ refund_reason: result.value })
+                credentials: 'same-origin',
+                body: formData
             })
             .then(async response => {
-                const text = await response.text(); // ambil teks dulu
-                // coba parse JSON, tapi jika bukan JSON tampilkan teks aslinya
+                const text = await response.text();
                 let data = null;
                 try {
                     data = text ? JSON.parse(text) : null;
@@ -163,7 +175,6 @@ document.querySelectorAll('.refund-btn').forEach(button => {
                 }
 
                 if (!response.ok) {
-                    // berikan pesan error yang lebih berguna
                     const msg = (data && data.message) ? data.message : (text || `HTTP ${response.status}`);
                     throw new Error(msg);
                 }
@@ -174,7 +185,6 @@ document.querySelectorAll('.refund-btn').forEach(button => {
                 if (data && data.success) {
                     Swal.fire('Berhasil', data.message, 'success').then(() => location.reload());
                 } else {
-                    // jika API mengirim sukses=false
                     Swal.fire('Gagal', (data && data.message) ? data.message : 'Terjadi kesalahan', 'error');
                 }
             })

@@ -358,6 +358,7 @@ public function KirimRating(Request $request, $id)
     try {
         $request->validate([
             'refund_reason' => 'required|string|max:500',
+            'refund_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $order = Order::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
@@ -370,11 +371,17 @@ public function KirimRating(Request $request, $id)
             return response()->json(['success' => false, 'message' => 'Refund untuk pesanan ini sudah diajukan.'], 409);
         }
 
+        $imagePath = null;
+        if ($request->hasFile('refund_image')) {
+            $imagePath = $request->file('refund_image')->store('refunds', 'public');
+        }
+
         // simpan refund
         \App\Models\Refund::create([
             'order_id' => $id,
             'user_id' => Auth::id(),
             'refund_reason' => $request->refund_reason,
+            'refund_image' => $imagePath,
             'status' => 'pending',
         ]);
 

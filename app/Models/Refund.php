@@ -13,6 +13,7 @@ class Refund extends Model
         'order_id',
         'user_id',
         'refund_reason',
+        'refund_image',
         'reject_reason',
         'status',
         'refunded_at',

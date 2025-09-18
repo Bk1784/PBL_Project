@@ -34,7 +34,14 @@
                     <td class="p-3 border-b border-gray-200">
                         Rp {{ number_format($refund->order->total_price, 0, ',', '.') }}
                     </td>
-                    <td class="p-3 border-b border-gray-200">{{ $refund->refund_reason }}</td>
+                    <td class="p-3 border-b border-gray-200">
+    <button 
+        class="bg-purple-500 text-white py-1 px-3 rounded text-sm hover:bg-purple-600"
+        onclick="showRefundReason('{{ $refund->refund_reason }}', '{{ asset('storage/' . $refund->refund_image) }}')">
+        Lihat Alasan
+    </button>
+</td>
+
                     <td class="p-3 border-b border-gray-200">
                         @if($refund->status === 'pending')
                             <span class="bg-yellow-500 text-white py-1 px-3 rounded-full text-sm">
@@ -110,5 +117,23 @@
         });
     }
 </script>
+
+<script>
+    function showRefundReason(reason, imageUrl) {
+        Swal.fire({
+            title: 'Alasan Refund',
+            html: `
+                <p style="margin-bottom: 15px;">${reason}</p>
+                <img src="${imageUrl}" alt="Bukti Refund" style="max-width: 100%; height: auto; border-radius: 8px;"/>
+            `,
+            width: 600,
+            showCloseButton: true,
+            focusConfirm: false,
+            confirmButtonText: 'Tutup',
+            confirmButtonColor: '#6B46C1'
+        });
+    }
+</script>
+
 
 @endsection
