@@ -91,6 +91,8 @@ Route::middleware('customer')->group(function () {
     //     Route::post('/store/review', 'StoreReview')->name('store.review'); // simpan review
     // });
 
+    Route::get('/kategori/dekorasi', [KategoriController::class, 'dekorasi'])->name('kategori.dekorasi');
+
         
 });
 
@@ -233,5 +235,3 @@ Route::middleware('client.guest')->group(function () {
 
 // UNTUK SEMUA PENGGUNA
 Route::get('/changeStatus', [ManageController::class, 'ChangeStatus']);
-
-Route::get('/kategori/dekorasi', [KategoriController::class, 'dekorasi'])->name('kategori.dekorasi');
