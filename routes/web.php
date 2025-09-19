@@ -82,6 +82,10 @@ Route::middleware('customer')->group(function () {
         Route::get('/checkout/thanks', 'thanks')->name('checkout.thanks');
         Route::get('/orders/{id}/rate', 'TampilanRating')->name('customer.rating.rate');
         Route::post('/orders/{id}/rate', 'KirimRating')->name('rating.rate');
+
+
+        Route::post('/orders/{id}/refund', 'RefundOrder')->name('customer.orders.refund');
+        Route::get('/orders/refund/all', 'AllRefund')->name('customer.orders.all_refund');
     });
 
     // Route::controller(ReviewController::class)->group(function () {
@@ -90,6 +94,9 @@ Route::middleware('customer')->group(function () {
     // });
 
 
+
+
+    Route::get('/kategori/dekorasi', [KategoriController::class, 'dekorasi'])->name('kategori.dekorasi');
 });
 
 require __DIR__ . '/auth.php';
@@ -204,6 +211,13 @@ Route::middleware(['status', 'client'])->group(function () {
 
     Route::get('/client/pesanan/executed', [ClientController::class, 'executedOrders'])->name('client.pesanan.executed');
 
+    // Refund routes for client
+    Route::get('/client/refund', [ClientController::class, 'refundOrders'])->name('client.refund');
+    Route::post('/client/refund/execute/{id}', [ClientController::class, 'executeRefund'])->name('client.refund.execute');
+    Route::post('/client/refund/reject/{id}', [ClientController::class, 'rejectRefund'])->name('client.refund.reject');
+    Route::post('/client/refund/accept/{id}', [ClientController::class, 'acceptRefund'])->name('client.refund.accept');
+    Route::post('/client/refund/complete/{id}', [ClientController::class, 'completeRefund'])->name('client.refund.complete');
+
     Route::get('/client/laporan', [ClientController::class, 'ClientLaporan'])->name('client.laporan');
     Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');
     Route::get('/client/profile', [ClientController::class, 'profile'])->name('client.profile');
@@ -230,5 +244,3 @@ Route::middleware('client.guest')->group(function () {
 
 // UNTUK SEMUA PENGGUNA
 Route::get('/changeStatus', [ManageController::class, 'ChangeStatus']);
-
-Route::get('/kategori/dekorasi', [KategoriController::class, 'dekorasi'])->name('kategori.dekorasi');

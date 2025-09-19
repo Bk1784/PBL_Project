@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_item_client', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            $table->integer('qty');
-            $table->decimal('price', 12, 2);
-            $table->timestamps();
+        Schema::table('refunds', function (Blueprint $table) {
+            $table->string('refund_image')->nullable()->after('refund_reason');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_item_client');
+        Schema::table('refunds', function (Blueprint $table) {
+            //
+        });
     }
 };

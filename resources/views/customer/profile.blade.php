@@ -39,7 +39,7 @@ switch (type) {
     <div class="flex items-center gap-6">
         <!-- Foto Profil -->
         <div class="w-1/4 flex justify-center">
-            <img src="{{ (!empty($profileData->photo)) ? url('upload/user_images/'.$profileData->photo) : url('upload/default.jpg') }}"
+            <img src="{{  asset('storage/' . $profileData->photo)}}"
                 alt="Profile Picture" class="rounded-full w-40 h-40 object-cover shadow-md">
         </div>
 
