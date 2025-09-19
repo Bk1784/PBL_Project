@@ -157,7 +157,7 @@ class ClientController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $filePath = $request->file('photo')->store('profile_photos', 'public');
+            $filePath = $request->file('photo')->store('client_photos', 'public'); //db
             $validatedData['photo'] = $filePath;
         }
 

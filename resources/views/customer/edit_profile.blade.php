@@ -24,7 +24,7 @@
             <!-- Bagian Foto Profil -->
             <div class="w-full md:w-1/3 text-center">
                 <img id="profilePreview"
-                    src="{{ $profileData->photo ? asset('upload/user_images/' . $profileData->photo) : asset('default-avatar.png') }}"
+                    src="{{ asset('storage/' . $profileData->photo) }}"
                     alt="Profile Picture" class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300">
 
                 <input type="file" name="photo" id="photoInput"
