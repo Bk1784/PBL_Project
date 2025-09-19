@@ -375,6 +375,10 @@
             const submenu = document.getElementById("reportSubmenudua");
             submenu.classList.toggle("hidden");
         });
+        document.getElementById("manageDecorationToggle").addEventListener("click", function() {
+            const submenu = document.getElementById("manageDecorationSubmenu");
+            submenu.classList.toggle("hidden");
+        });
     </script>
 </body>
 

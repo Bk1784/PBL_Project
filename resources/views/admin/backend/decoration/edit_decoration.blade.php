@@ -8,7 +8,7 @@
 
     <h3 class="text-xl font-bold text-gray-800 mb-4">Edit Decoration</h3>
 
-    <form id="decoration-form" action="{{ route('update.decoration', $decoration->id) }}" method="POST"
+    <form id="decoration-form" action="{{ route('admin.update.decoration', $decoration->id) }}" method="POST"
         enctype="multipart/form-data">
         @csrf
         @method('PUT')

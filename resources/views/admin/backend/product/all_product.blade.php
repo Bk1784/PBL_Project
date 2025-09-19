@@ -38,25 +38,28 @@
                 </td>
                 <td class="p-3 border-b border-gray-200 flex gap-2 items-center">
                     <!-- Tombol Edit -->
-                    <a href="{{ route('admin.edit.product', $item->id) }}" class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                    <a href="{{ route('admin.edit.product', $item->id) }}"
+                        class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                         <i class="fas fa-edit"></i>
                     </a>
 
-                     <!-- Tombol Hapus (Diperbaiki) -->
-                <form action="{{ route('admin.delete.product', $item->id) }}"  class="delete-form">
-                    @csrf
+                    <!-- Tombol Hapus (Diperbaiki) -->
+                    <form action="{{ route('admin.delete.product', $item->id) }}" class="delete-form">
+                        @csrf
 
-                    <button type="button" class="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 delete-button">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </form>
+                        <button type="button"
+                            class="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 delete-button">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
 
                     <!-- Tombol Toggle Status -->
                     <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" class="sr-only peer toggle-class" 
-                               data-id="{{$item->id}}" 
-                               {{ $item->status ? 'checked' : '' }}>
-                        <div class="w-11 h-6 bg-red-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                        <input type="checkbox" class="sr-only peer toggle-class" data-id="{{$item->id}}"
+                            {{ $item->status ? 'checked' : '' }}>
+                        <div
+                            class="w-11 h-6 bg-red-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500">
+                        </div>
                     </label>
                 </td>
             </tr>
@@ -66,81 +69,84 @@
 </div>
 
 <script>
-    document.querySelectorAll('.delete-button').forEach(button => {
-        button.addEventListener('click', function() {
-            const form = this.closest('.delete-form');
-            
-            Swal.fire({
-                title: 'Konfirmasi Hapus Produk',
-                text: "Apakah Anda yakin ingin menghapus produk ini?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
+document.querySelectorAll('.delete-button').forEach(button => {
+    button.addEventListener('click', function() {
+        const form = this.closest('.delete-form');
+
+        Swal.fire({
+            title: 'Konfirmasi Hapus Produk',
+            text: "Apakah Anda yakin ingin menghapus produk ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
         });
     });
+});
 </script>
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('.toggle-class').change(function() {
-            var status = $(this).prop('checked') ? 1 : 0; 
-            var product_id = $(this).data('id'); 
-            
-            // Update the status text immediately
-            var statusText = $(this).closest('tr').find('td:nth-child(5) span');
-            if(status) {
-                statusText.removeClass('text-red-600').addClass('text-green-600').text('Active');
-            } else {
-                statusText.removeClass('text-green-600').addClass('text-red-600').text('Inactive');
-            }
-            
-            $.ajax({
-                type: "GET",
-                dataType: "json",
-                url: '/changeStatus',
-                data: {'status': status, 'product_id': product_id},
-                success: function(data){
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success', 
-                        showConfirmButton: false,
-                        timer: 3000 
+$(document).ready(function() {
+    $('.toggle-class').change(function() {
+        var status = $(this).prop('checked') ? 1 : 0;
+        var product_id = $(this).data('id');
+
+        // Update the status text immediately
+        var statusText = $(this).closest('tr').find('td:nth-child(5) span');
+        if (status) {
+            statusText.removeClass('text-red-600').addClass('text-green-600').text('Active');
+        } else {
+            statusText.removeClass('text-green-600').addClass('text-red-600').text('Inactive');
+        }
+
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: '/changeStatus',
+            data: {
+                'status': status,
+                'product_id': product_id
+            },
+            success: function(data) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+
+                if ($.isEmptyObject(data.error)) {
+                    Toast.fire({
+                        type: 'success',
+                        title: data.success,
                     });
-                    
-                    if ($.isEmptyObject(data.error)) {
-                        Toast.fire({
-                            type: 'success',
-                            title: data.success, 
-                        });
-                    } else {
-                        Toast.fire({
-                            type: 'error',
-                            title: data.error, 
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    // Revert the toggle if there's an error
-                    $(this).prop('checked', !status);
-                    
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Terjadi kesalahan saat mengubah status'
+                } else {
+                    Toast.fire({
+                        type: 'error',
+                        title: data.error,
                     });
                 }
-            });
+            },
+            error: function(xhr, status, error) {
+                // Revert the toggle if there's an error
+                $(this).prop('checked', !status);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan saat mengubah status'
+                });
+            }
         });
     });
+});
 </script>
 
 @endsection

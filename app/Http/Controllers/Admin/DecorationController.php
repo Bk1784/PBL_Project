@@ -13,13 +13,13 @@ class DecorationController extends Controller
     public function index()
     {
         $product = Decoration::latest()->get();
-        return view('backend.decoration.all_decoration', compact('product'));
+        return view('admin.backend.decoration.all_decoration', compact('product'));
     }
 
     // Form tambah dekorasi
     public function create()
     {
-        return view('backend.decoration.add_decoration');
+        return view('admin.backend.decoration.add_decoration');
     }
 
     // Simpan dekorasi baru
@@ -56,8 +56,8 @@ class DecorationController extends Controller
     // Edit dekorasi
     public function edit($id)
     {
-        $product = Decoration::findOrFail($id);
-        return view('backend.decoration.edit_decoration', compact('product'));
+        $decoration = Decoration::findOrFail($id);
+        return view('admin.backend.decoration.edit_decoration', compact('decoration'));
     }
 
     // Update dekorasi

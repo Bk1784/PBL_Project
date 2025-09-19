@@ -21,6 +21,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\Admin\DecorationController;
 
 //// CUSTOMER GUEST: Hanya bisa diakses jika belum login
 //CUSTOMER
@@ -81,7 +82,6 @@ Route::middleware('customer')->group(function () {
         Route::get('/checkout/thanks', 'thanks')->name('checkout.thanks');
         Route::get('/orders/{id}/rate', 'TampilanRating')->name('customer.rating.rate');
         Route::post('/orders/{id}/rate', 'KirimRating')->name('rating.rate');
-
     });
 
     // Route::controller(ReviewController::class)->group(function () {
@@ -89,7 +89,7 @@ Route::middleware('customer')->group(function () {
     //     Route::post('/store/review', 'StoreReview')->name('store.review'); // simpan review
     // });
 
-        
+
 });
 
 require __DIR__ . '/auth.php';
@@ -133,7 +133,7 @@ Route::middleware('admin')->group(function () {
         Route::post('/admin/offline/search/byyear', 'AdminSearchByYear')->name('admin.offline.search.byyear');
         Route::get('admin/offline/search/byyear/result/{year}', 'AdminSearchByYearResult')->name('admin.offline.search.byyear.result');
     });
-    
+
     Route::controller(ManageController::class)->group(function () {
         Route::get('/pending/toko', 'PendingToko')->name('pending.toko');
         Route::get('/clientchangeStatus', 'ClientChangeStatus');
@@ -156,10 +156,19 @@ Route::middleware('admin')->group(function () {
         Route::post('/add/purchases/store',  'store')->name('admin.purchases.store');
     });
 
-    Route::controller(ManageRatingController::class)->group(function(){
+    Route::controller(ManageRatingController::class)->group(function () {
         Route::get('/admin/rating', 'AdminRating')->name('admin.backend.rating.admin_rating');
     });
 
+    Route::controller(DecorationController::class)->group(function () {
+        Route::get('/admin/all-decoration', 'index')->name('admin.all.decoration');
+        Route::get('/admin/add-decoration', 'create')->name('admin.add.decoration');
+        Route::post('/admin/store-decoration', 'store')->name('admin.store.decoration');
+        Route::get('/admin/edit-decoration/{id}', 'edit')->name('admin.edit.decoration');
+        Route::put('/admin/update-decoration/{id}', 'update')->name('admin.update.decoration');
+        Route::post('/admin/delete-decoration/{id}', 'destroy')->name('admin.delete.decoration');
+        Route::get('/admin/changeStatus', 'changeStatus')->name('admin.changeStatus.decoration');
+    });
 });
 
 //ADMIN GUEST
@@ -203,9 +212,8 @@ Route::middleware(['status', 'client'])->group(function () {
     Route::get('/client/change-password', [ClientController::class, 'ClientChangePassword'])->name('client.change.password');
     Route::post('/client/update-password', [ClientController::class, 'ClientUpdatePassword'])->name('client.update.password');
 
-    Route::get('/pesan-langsung', [OrderItemClientController::class, 'Halaman'])->name('client.Order.penjualan_offline'); 
-    Route::post('/pesan-langsung/store', [OrderItemClientController::class, 'KirimPembelianOffline'])->name('OrderItemClient.store'); 
-
+    Route::get('/pesan-langsung', [OrderItemClientController::class, 'Halaman'])->name('client.Order.penjualan_offline');
+    Route::post('/pesan-langsung/store', [OrderItemClientController::class, 'KirimPembelianOffline'])->name('OrderItemClient.store');
 });
 
 //CLIENT GUEST
