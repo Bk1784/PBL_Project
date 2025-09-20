@@ -305,7 +305,7 @@ class ClientController extends Controller
     public function ClientLaporan(Request $request)
     {
         $sort = $request->get('sort', 'most_sold');
-        
+
         $products = Product::query()
             ->when($sort === 'most_sold', function($query) {
                 return $query->frequentlySold();
@@ -315,7 +315,14 @@ class ClientController extends Controller
             })
             ->get();
 
-        return view('client.laporan', compact('products', 'sort'));
+        // Get refund data for the report - only show accepted and rejected refunds
+        $refunds = \App\Models\Refund::with(['order.product', 'user'])
+            ->whereHas('order.product')
+            ->whereIn('status', ['accepted', 'rejected'])
+            ->latest()
+            ->get();
+
+        return view('client.laporan', compact('products', 'sort', 'refunds'));
     }
 
     public function getProductDetails($id)
@@ -326,6 +333,19 @@ class ClientController extends Controller
             'price' => $product->price,
             'total_sold' => $product->totalSold(),
             'total_revenue' => $product->totalRevenue()
+        ]);
+    }
+
+    public function getRefundDetails($id)
+    {
+        $refund = \App\Models\Refund::with(['order.product', 'user'])->findOrFail($id);
+        return response()->json([
+            'refund_reason' => $refund->refund_reason,
+            'refund_qty' => $refund->refund_qty,
+            'refund_image' => $refund->refund_image ? asset('storage/' . $refund->refund_image) : null,
+            'product_name' => $refund->order->product->name,
+            'user_name' => $refund->user->name,
+            'created_at' => $refund->created_at->format('d F Y')
         ]);
     }
 

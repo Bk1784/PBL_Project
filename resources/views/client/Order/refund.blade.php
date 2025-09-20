@@ -64,7 +64,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         @if($refund->status === 'pending')
                             <div class="flex space-x-2">
-                                <button type="button" 
+                                <button type="button"
                                     class="bg-purple-500 hover:bg-purple-600 text-white py-1 px-3 rounded text-sm evaluasi-btn"
                                     data-refund-id="{{ $refund->id }}"
                                     data-refund-reason="{{ $refund->refund_reason }}"
@@ -204,16 +204,55 @@ document.querySelectorAll('.evaluasi-btn').forEach(button => {
         const refundQty = button.getAttribute('data-refund-qty'); // ambil jumlah produk
 
         let htmlContent = `
-            <p><strong>Jumlah produk yang dikembalikan:</strong> ${refundQty}</p>
-            <p><strong>Alasan Refund:</strong> ${refundReason}</p>
-        `;
+            <div style="text-align: left; max-width: 500px; margin: 0 auto;">
+                <!-- Header Info -->
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                    <h3 style="margin: 0; font-size: 18px; font-weight: bold;">📋 Evaluasi Refund</h3>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Detail lengkap permohonan refund</p>
+                </div>
 
-        if (refundImage) {
-            htmlContent += `
-                <p><strong>Bukti:</strong></p>
-                <img src="${refundImage}" alt="Bukti Refund" style="max-width: 100%; max-height: 300px; border-radius: 8px;">
-            `;
-        }
+                <!-- Product Info Card -->
+                <div style="background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="border-left: 4px solid #007bff; padding-left: 15px; margin-bottom: 15px;">
+                        <h4 style="margin: 0 0 10px 0; color: #007bff; font-size: 16px;">📦 Informasi Produk</h4>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #dee2e6;">
+                        <span style="font-weight: 600; color: #495057;">Jumlah Produk:</span>
+                        <span style="background: #007bff; color: #fff; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 14px;">${refundQty} unit</span>
+                    </div>
+                </div>
+
+                <!-- Refund Details Card -->
+                <div style="background: #fff3cd; border: 2px solid #ffeaa7; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="border-left: 4px solid #ffc107; padding-left: 15px; margin-bottom: 15px;">
+                        <h4 style="margin: 0 0 10px 0; color: #856404; font-size: 16px;">🔄 Detail Refund</h4>
+                    </div>
+                    <div style="padding: 10px 0;">
+                        <span style="font-weight: 600; color: #856404; display: block; margin-bottom: 8px;">Alasan Refund:</span>
+                        <div style="background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #ffeaa7; color: #495057; line-height: 1.5;">${refundReason}</div>
+                    </div>
+                </div>
+
+                <!-- Evidence Section -->
+                ${refundImage ? `
+                    <div style="background: #d1ecf1; border: 2px solid #bee5eb; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <div style="border-left: 4px solid #17a2b8; padding-left: 15px; margin-bottom: 15px;">
+                            <h4 style="margin: 0 0 10px 0; color: #0c5460; font-size: 16px;">📷 Bukti Refund</h4>
+                        </div>
+                        <div style="text-align: center;">
+                            <img src="${refundImage}" alt="Bukti Refund" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 3px solid #17a2b8; box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);">
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Action Info -->
+                <div style="background: #d4edda; border: 2px solid #c3e6cb; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="border-left: 4px solid #28a745; padding-left: 15px; display: inline-block;">
+                        <span style="color: #155724; font-size: 14px; font-weight: 500;">⚡ Pilih tindakan: Terima atau Tolak refund</span>
+                    </div>
+                </div>
+            </div>
+        `;
 
         Swal.fire({
             title: 'Evaluasi Refund',
@@ -222,7 +261,17 @@ document.querySelectorAll('.evaluasi-btn').forEach(button => {
             showDenyButton: true,
             confirmButtonText: 'Terima',
             denyButtonText: 'Tolak',
-            cancelButtonText: 'Batal'
+            cancelButtonText: 'Batal',
+            background: '#ffffff',
+            backdrop: `rgba(0,0,0,0.4)`,
+            width: '600px',
+            padding: '20px',
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 const form = document.createElement('form');
@@ -246,7 +295,6 @@ document.querySelectorAll('.evaluasi-btn').forEach(button => {
 });
 
 
-    
     // Handle cancel reject
     document.getElementById('cancelReject').addEventListener('click', () => {
         document.getElementById('rejectModal').classList.add('hidden');

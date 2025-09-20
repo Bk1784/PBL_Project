@@ -194,6 +194,7 @@ Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->n
 Route::middleware(['status', 'client'])->group(function () {
     Route::get('/sales-report', [ClientController::class, 'ClientLaporan'])->name('sales.report');
     Route::get('/product-details/{id}', [ClientController::class, 'getProductDetails'])->name('product.details');
+    Route::get('/refund-details/{id}', [ClientController::class, 'getRefundDetails'])->name('refund.details');
 
     Route::get('/client/pesanan', [ClientController::class, 'ClientPesanan'])->name('client.pesanan');
     Route::get('/client/pesanan/pending', [ClientController::class, 'pendingOrders'])->name('client.pending.orders');
