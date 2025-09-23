@@ -141,7 +141,7 @@
         <div class="sidebar w-64 bg-white shadow-lg p-5 border-r border-gray-300 flex-shrink-0">
             <div class="flex justify-between items-center mb-6 lg:block">
                 <h2 class="text-base font-bold tracking-wide text-gray-800">
-                    <img src="{{ asset('images/logo.jpg') }}" width="100" height="100" alt="" class="ml-0 lg:ml-12">
+                    <img src="{{ asset('images/logo.png') }}" width="100" height="100" alt="" class="ml-0 lg:ml-12">
                 </h2>
                 <button class="close-sidebar lg:hidden text-gray-500 hover:text-gray-700">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"

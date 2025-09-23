@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -54,26 +55,48 @@ class ReportController extends Controller
         ]);
     }
 
-    public function AdminSearchByMonthResult(Request $request)
-    {
-        $monthName = $request->query('month');
-        $years = $request->query('year');
+public function AdminSearchByMonthResult(Request $request)
+{
+    $monthName = $request->query('month');
+    $years = $request->query('year');
 
-        $month = [
-            'January' => 1, 'February' => 2, 'March' => 3, 'April' => 4,
-            'May' => 5, 'June' => 6, 'July' => 7, 'August' => 8,
-            'September' => 9, 'October' => 10, 'November' => 11, 'December' => 12
-        ];
+    // Mapping nama bulan ke angka
+    $month = [
+        'January' => 1, 'February' => 2, 'March' => 3, 'April' => 4,
+        'May' => 5, 'June' => 6, 'July' => 7, 'August' => 8,
+        'September' => 9, 'October' => 10, 'November' => 11, 'December' => 12
+    ];
 
-        $months = $month[$monthName] ?? 1;
+    $months = $month[$monthName] ?? 1;
 
-        $orderMonth = Order::whereYear('created_at', $years)
-            ->whereMonth('created_at', $months)
-            ->latest()
-            ->get();
+    // ✅ Data transaksi detail (per order/invoice)
+    $orderMonth = Order::whereYear('created_at', $years)
+        ->whereMonth('created_at', $months)
+        ->with(['orderItems.product']) // Eager load orderItems and their associated products
+        ->latest()
+        ->get();
 
-        return view('admin.backend.report.search_by_month', compact('orderMonth', 'months', 'years'));
-    }
+    // ✅ Data rekap produk
+    $rekapProduk = OrderItem::with('product')
+        ->selectRaw('
+            product_id,
+            SUM(qty) as penjualan,
+            SUM(price * qty) as komisi_kotor,
+            SUM(price * qty * 0.9) as komisi_bersih
+        ')
+        ->groupBy('product_id')
+        ->get();
+
+
+
+    return view('admin.backend.report.search_by_month', compact(
+        'orderMonth',
+        'rekapProduk',
+        'months',
+        'years',
+        'monthName'
+    ));
+}
 
 
 
