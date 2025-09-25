@@ -103,7 +103,7 @@
                             {{ $index + 1 }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {{ $refund->order->product->name ?? 'N/A' }}
+                            {{ $refund->orderItem->product->name ?? 'N/A' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
                             {{ \Carbon\Carbon::parse($refund->created_at)->format('d/m/Y') }}

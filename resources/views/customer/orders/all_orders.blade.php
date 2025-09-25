@@ -54,10 +54,10 @@
                                 $maxQty = $maxQty ?: ($order->qty ?? 1);
                             @endphp
 
-                            <a href="javascript:void(0);" 
-                               class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded refund-btn" 
+                            <a href="javascript:void(0);"
+                               class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded refund-btn"
                                data-order-id="{{ $order->id }}"
-                               data-qty="{{ $maxQty }}"
+                               data-order-items='{{ $order->orderItems->toJson() }}'
                                title="Refund">
                                 <i class="fas fa-undo"></i>
                             </a>
@@ -118,132 +118,119 @@
 document.querySelectorAll('.refund-btn').forEach(button => {
     button.addEventListener('click', () => {
         const orderId = button.getAttribute('data-order-id');
-        const maxQty = parseInt(button.getAttribute('data-qty'), 10) || 1;
+        const orderItems = JSON.parse(button.getAttribute('data-order-items'));
+
+        // Build HTML for product selection
+        let productsHtml = '<div style="max-height: 300px; overflow-y: auto; margin-top: 15px;">';
+        orderItems.forEach(item => {
+            productsHtml += `
+                <div style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" class="product-checkbox" data-item-id="${item.id}" data-max-qty="${item.qty}" style="transform: scale(1.2);">
+                        <div style="flex: 1;">
+                            <strong>${item.product.name}</strong><br>
+                            <small>Harga: Rp ${parseInt(item.price).toLocaleString()}</small>
+                        </div>
+                        <div class="qty-controls" style="display: none; align-items: center; gap: 5px;">
+                            <button type="button" class="qty-minus" style="background:#ef4444;color:white;border:none;padding:4px 8px;border-radius:4px;">-</button>
+                            <input type="number" class="qty-input" value="1" min="1" max="${item.qty}" style="width: 50px; text-align: center; border: 1px solid #ccc; border-radius: 4px;">
+                            <button type="button" class="qty-plus" style="background:#3b82f6;color:white;border:none;padding:4px 8px;border-radius:4px;">+</button>
+                            <span>(max: ${item.qty})</span>
+                        </div>
+                    </label>
+                </div>
+            `;
+        });
+        productsHtml += '</div>';
 
         Swal.fire({
-            title: 'Alasan Refund',
+            title: 'Pilih Produk untuk Refund',
             html: `
                 <textarea id="refund_reason" rows="4" placeholder="Masukkan alasan refund..." class="swal2-textarea" required></textarea>
                 <input type="file" id="refund_image" accept="image/*" class="swal2-file" style="margin-top: 10px;">
-                <div style="margin-top:15px;display:flex;align-items:center;gap:8px;">
-                    <button type="button" id="qty_minus" style="background:#ef4444;color:white;border:none;padding:6px 14px;border-radius:4px;font-weight:bold;">-</button>
-                    <span id="qty_value" style="min-width:30px;display:inline-block;text-align:center;font-weight:bold;">1</span>
-                    <button type="button" id="qty_plus" style="background:#3b82f6;color:white;border:none;padding:6px 14px;border-radius:4px;font-weight:bold;">+</button>
-                    <button type="button" id="qty_max" style="background:#a21caf;color:white;border:none;padding:6px 14px;border-radius:4px;font-weight:bold;">Max</button>
-                    <span id="qty_help_text" style="margin-left:8px;">(max: ${maxQty})</span>
-                </div>
+                ${productsHtml}
             `,
             showCancelButton: true,
             confirmButtonText: 'Kirim',
             cancelButtonText: 'Batal',
             didOpen: () => {
                 const popup = Swal.getPopup();
-                const minusBtn = popup.querySelector('#qty_minus');
-                const plusBtn  = popup.querySelector('#qty_plus');
-                const maxBtn   = popup.querySelector('#qty_max');
-                const qtyValue = popup.querySelector('#qty_value');
-                const helpText = popup.querySelector('#qty_help_text');
 
-                // helper: update disabled state berdasarkan value & maxQty
-                function updateButtons() {
-                    let current = parseInt(qtyValue.textContent, 10) || 1;
-                    // min 1
-                    if (current <= 1) {
-                        minusBtn.disabled = true;
-                        minusBtn.style.opacity = '0.6';
-                        minusBtn.style.cursor = 'not-allowed';
-                    } else {
-                        minusBtn.disabled = false;
-                        minusBtn.style.opacity = '';
-                        minusBtn.style.cursor = '';
-                    }
-
-                    if (current >= maxQty) {
-                        plusBtn.disabled = true;
-                        plusBtn.style.opacity = '0.6';
-                        plusBtn.style.cursor = 'not-allowed';
-                        maxBtn.disabled = true;
-                        maxBtn.style.opacity = '0.6';
-                        maxBtn.style.cursor = 'not-allowed';
-                    } else {
-                        plusBtn.disabled = false;
-                        plusBtn.style.opacity = '';
-                        plusBtn.style.cursor = '';
-                        maxBtn.disabled = false;
-                        maxBtn.style.opacity = '';
-                        maxBtn.style.cursor = '';
-                    }
-
-                    // update help text just in case
-                    helpText.textContent = `(max: ${maxQty})`;
-                }
-
-                // inisialisasi nilai & tombol
-                qtyValue.textContent = '1';
-                updateButtons();
-
-                minusBtn.addEventListener('click', () => {
-                    let current = parseInt(qtyValue.textContent, 10) || 1;
-                    current = Math.max(1, current - 1);
-                    qtyValue.textContent = current;
-                    updateButtons();
+                // Handle checkbox changes
+                popup.querySelectorAll('.product-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', (e) => {
+                        const qtyControls = e.target.closest('label').querySelector('.qty-controls');
+                        qtyControls.style.display = e.target.checked ? 'flex' : 'none';
+                    });
                 });
 
-                plusBtn.addEventListener('click', () => {
-                    let current = parseInt(qtyValue.textContent, 10) || 1;
-                    current = Math.min(maxQty, current + 1);
-                    qtyValue.textContent = current;
-                    updateButtons();
+                // Handle qty buttons
+                popup.querySelectorAll('.qty-minus').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const input = e.target.closest('.qty-controls').querySelector('.qty-input');
+                        const max = parseInt(input.max);
+                        let val = parseInt(input.value) || 1;
+                        val = Math.max(1, val - 1);
+                        input.value = val;
+                    });
                 });
 
-                maxBtn.addEventListener('click', () => {
-                    qtyValue.textContent = maxQty;
-                    updateButtons();
+                popup.querySelectorAll('.qty-plus').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const input = e.target.closest('.qty-controls').querySelector('.qty-input');
+                        const max = parseInt(input.max);
+                        let val = parseInt(input.value) || 1;
+                        val = Math.min(max, val + 1);
+                        input.value = val;
+                    });
                 });
-
-                // Jika maxQty <= 1: langsung disable plus & max
-                if (maxQty <= 1) {
-                    plusBtn.disabled = true;
-                    plusBtn.style.opacity = '0.6';
-                    plusBtn.style.cursor = 'not-allowed';
-                    maxBtn.disabled = true;
-                    maxBtn.style.opacity = '0.6';
-                    maxBtn.style.cursor = 'not-allowed';
-                }
             },
             preConfirm: () => {
                 const reasonEl = Swal.getPopup().querySelector('#refund_reason');
                 const imageEl = Swal.getPopup().querySelector('#refund_image');
-                const qtyEl = Swal.getPopup().querySelector('#qty_value');
 
                 const reason = reasonEl ? reasonEl.value.trim() : '';
                 const image = imageEl ? imageEl.files[0] : null;
-                const qty = parseInt(qtyEl ? qtyEl.textContent : '1', 10) || 1;
 
                 if (!reason) {
                     Swal.showValidationMessage('Alasan refund harus diisi');
                     return false;
                 }
 
-                // tambahan validasi: qty harus antara 1..maxQty
-                if (qty < 1 || qty > maxQty) {
-                    Swal.showValidationMessage(`Jumlah refund harus antara 1 dan ${maxQty}`);
+                // Collect selected products
+                const selectedItems = [];
+                Swal.getPopup().querySelectorAll('.product-checkbox:checked').forEach(checkbox => {
+                    const itemId = parseInt(checkbox.getAttribute('data-item-id'));
+                    const qtyInput = checkbox.closest('label').querySelector('.qty-input');
+                    const qty = parseInt(qtyInput.value) || 1;
+                    const maxQty = parseInt(checkbox.getAttribute('data-max-qty'));
+
+                    if (qty < 1 || qty > maxQty) {
+                        Swal.showValidationMessage(`Jumlah refund untuk produk harus antara 1 dan ${maxQty}`);
+                        return false;
+                    }
+
+                    selectedItems.push({ order_item_id: itemId, qty: qty });
+                });
+
+                if (selectedItems.length === 0) {
+                    Swal.showValidationMessage('Pilih setidaknya satu produk untuk refund');
                     return false;
                 }
 
-                return { reason, image, qty };
+                return { reason, image, refund_items: selectedItems };
             }
         }).then((result) => {
             if (!result.isConfirmed) return;
 
-            const { reason, image, qty } = result.value;
+            const { reason, image, refund_items } = result.value;
 
             const formData = new FormData();
             formData.append('refund_reason', reason);
             if (image) {
                 formData.append('refund_image', image);
             }
-            formData.append('refund_qty', qty);
+            formData.append('refund_items', JSON.stringify(refund_items));
             formData.append('_token', '{{ csrf_token() }}');
 
             const url = "{{ url('/orders') }}/" + orderId + "/refund";

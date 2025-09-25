@@ -23,6 +23,7 @@ class OrderController extends Controller
 {
     $orders = Order::where('user_id', Auth::id())
                    ->where('status', '!=', 'refunded') // sembunyikan pesanan refund
+                   ->with('orderItems.product')
                    ->latest()
                    ->get();
 
@@ -402,9 +403,21 @@ public function KirimRating(Request $request, $id)
 public function RefundOrder(Request $request, $id)
 {
     try {
+        // Parse refund_items JSON string to array
+        if ($request->has('refund_items')) {
+            $refundItems = json_decode($request->input('refund_items'), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return response()->json(['success' => false, 'message' => 'Data produk refund tidak valid.'], 422);
+            }
+            $request->merge(['refund_items' => $refundItems]);
+        }
+
         $request->validate([
             'refund_reason' => 'required|string|max:500',
             'refund_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'refund_items' => 'required|array|min:1',
+            'refund_items.*.order_item_id' => 'required|integer|exists:order_items,id',
+            'refund_items.*.qty' => 'required|integer|min:1',
         ]);
 
         $order = Order::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
@@ -413,6 +426,7 @@ public function RefundOrder(Request $request, $id)
             return response()->json(['success' => false, 'message' => 'Hanya pesanan completed yang bisa direfund.'], 422);
         }
 
+        // Check if any refund already exists for this order
         if (\App\Models\Refund::where('order_id', $id)->exists()) {
             return response()->json(['success' => false, 'message' => 'Refund untuk pesanan ini sudah diajukan.'], 409);
         }
@@ -422,25 +436,41 @@ public function RefundOrder(Request $request, $id)
             $imagePath = $request->file('refund_image')->store('refunds', 'public');
         }
 
-        // simpan refund
-        \App\Models\Refund::create([
-            'order_id' => $id,
-            'user_id' => Auth::id(),
-            'refund_reason' => $request->refund_reason,
-            'refund_image' => $imagePath,
-            'status' => 'pending',
-            'refund_qty'   => $request->refund_qty ?? 1,
-        ]);
+        // Validate that order_items belong to the order
+        $orderItemIds = collect($request->refund_items)->pluck('order_item_id')->toArray();
+        $validOrderItems = OrderItem::where('order_id', $id)->whereIn('id', $orderItemIds)->get();
 
-        // update status order jadi refunded
+        if ($validOrderItems->count() !== count($orderItemIds)) {
+            return response()->json(['success' => false, 'message' => 'Produk refund tidak valid.'], 422);
+        }
+
+        // Create refunds for each item
+        foreach ($request->refund_items as $item) {
+            $orderItem = $validOrderItems->find($item['order_item_id']);
+            if ($item['qty'] > $orderItem->qty) {
+                return response()->json(['success' => false, 'message' => 'Jumlah refund melebihi jumlah pesanan untuk produk ' . $orderItem->product->name], 422);
+            }
+
+            \App\Models\Refund::create([
+                'order_id' => $id,
+                'order_item_id' => $item['order_item_id'],
+                'user_id' => Auth::id(),
+                'refund_reason' => $request->refund_reason,
+                'refund_image' => $imagePath,
+                'status' => 'pending',
+                'refund_qty' => $item['qty'],
+            ]);
+        }
+
+        // Update order status to refunded
         $order->update(['status' => 'refunded']);
 
         return response()->json(['success' => true, 'message' => 'Refund berhasil diajukan.'], 201);
 
     } catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json(['success'=>false, 'message'=>'Validasi gagal','errors'=>$e->errors()], 422);
+        return response()->json(['success' => false, 'message' => 'Validasi gagal', 'errors' => $e->errors()], 422);
     } catch (\Exception $e) {
-        \Log::error('RefundOrder error: '.$e->getMessage()."\n".$e->getTraceAsString());
+        \Log::error('RefundOrder error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         return response()->json(['success' => false, 'message' => 'Terjadi kesalahan server.'], 500);
     }
 }
@@ -459,7 +489,7 @@ public function RefundOrder(Request $request, $id)
 
     public function AllRefund()
     {
-        $refunds = \App\Models\Refund::with(['order', 'user'])
+        $refunds = \App\Models\Refund::with(['order', 'user', 'orderItem.product'])
             ->where('user_id', Auth::id())
             ->latest()
             ->get();
