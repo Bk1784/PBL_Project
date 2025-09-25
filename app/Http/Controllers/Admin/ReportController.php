@@ -30,17 +30,36 @@ class ReportController extends Controller
             'date' => $validated['date'],
         ]);
     }
-    public function AdminSearchByDateResult(Request $request)
-    {
-        $date = new DateTime($request->query('date'));
-        $formatDate = $date->format('d F Y');
+public function AdminSearchByDateResult(Request $request)
+{
+    $date = new DateTime($request->query('date'));
+    $formatDate = $date->format('d F Y');
 
-        $orderDate = Order::whereDate('created_at', $date->format('Y-m-d'))
-            ->latest()
-            ->get();
+    // ✅ Data transaksi detail (per order/invoice)
+    $orderDate = Order::whereDate('created_at', $date->format('Y-m-d'))
+        ->with(['orderItems.product'])
+        ->latest()
+        ->get();
 
-        return view('admin.backend.report.search_by_date', compact('orderDate', 'formatDate'));
-    }
+    // ✅ Data rekap produk per tanggal
+    $rekapProduk = OrderItem::with('product')
+        ->whereDate('created_at', $date->format('Y-m-d'))
+        ->selectRaw('
+            product_id,
+            SUM(qty) as penjualan,
+            SUM(price * qty) as komisi_kotor,
+            SUM(price * qty * 0.9) as komisi_bersih
+        ')
+        ->groupBy('product_id')
+        ->get();
+
+    return view('admin.backend.report.search_by_date', compact(
+        'orderDate',
+        'rekapProduk',
+        'formatDate'
+    ));
+}
+
 
     public function AdminSearchByMonth(Request $request)
     {
@@ -98,8 +117,6 @@ public function AdminSearchByMonthResult(Request $request)
     ));
 }
 
-
-
     // // Method untuk pencarian laporan berdasarkan tahun (Admin)
     public function AdminSearchByYear(Request $request)
     {
@@ -111,12 +128,39 @@ public function AdminSearchByMonthResult(Request $request)
         return redirect()->route('admin.search.byyear.result', ['year' => $request->year]);
     }
 
-    public function AdminSearchByYearResult($year)
-    {
-        $orderYears = Order::whereYear('created_at', $year)
-            ->latest()
-            ->get();
-
-        return view('admin.backend.report.search_by_year', compact('orderYears', 'year'));
+public function AdminSearchByYearResult($year)
+{
+    // Pastikan tahun valid
+    if (!is_numeric($year) || $year < 1900 || $year > date('Y')) {
+        abort(404, 'Tahun tidak valid.');
     }
+
+    // ✅ Data transaksi detail (per order/invoice)
+    $orderYears = Order::whereYear('created_at', $year)
+        ->with(['orderItems.product']) // load orderItems + product
+        ->latest()
+        ->get();
+
+    // ✅ Data rekap produk
+    $rekapProduk = OrderItem::with('product')
+        ->whereHas('order', function ($query) use ($year) {
+            $query->whereYear('created_at', $year);
+        })
+        ->selectRaw('
+            product_id,
+            SUM(qty) as penjualan,
+            SUM(price * qty) as komisi_kotor,
+            SUM(price * qty * 0.9) as komisi_bersih
+        ')
+        ->groupBy('product_id')
+        ->get();
+
+    return view('admin.backend.report.search_by_year', compact(
+        'orderYears',
+        'rekapProduk',
+        'year'
+    ));
+}
+
+
 }
