@@ -54,4 +54,41 @@
     </table>
 </div>
 
+<!-- Bagian Rekap Produk -->
+<div class="bg-white p-6 rounded-lg shadow-lg mt-8">
+    <h3 class="text-2xl font-bold mb-4">
+        Rekap Produk Bulan {{ $monthName }} Tahun {{ $years }}
+    </h3>
+    <table class="w-full border-collapse">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="p-3 text-left">No</th>
+                <th class="p-3 text-left">Produk</th>
+                <th class="p-3 text-left">Gambar</th>
+                <th class="p-3 text-left">Penjualan</th>
+                <th class="p-3 text-left">Komisi Kotor</th>
+                <th class="p-3 text-left">Komisi Bersih</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($rekapProduk as $key => $item)
+            <tr>
+                <td>{{ $key + 1 }}</td>
+                <td>{{ $item->product->name }}</td>
+                <td>
+                    <img src="{{ asset($item->product->image) }}" 
+                        alt="{{ $item->product->name }}" 
+                        class="h-16 w-16 object-cover rounded">
+                </td>
+                <td>{{ $item->penjualan }}</td>
+                <td>Rp {{ number_format($item->komisi_kotor, 0, ',', '.') }}</td>
+                <td>Rp {{ number_format($item->komisi_bersih, 0, ',', '.') }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+
+
 @endsection

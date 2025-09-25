@@ -24,9 +24,8 @@
             <h2 class="text-base font-bold mb-6 tracking-wide text-gray-800 text-center">
                 @php
                 $client = Auth::guard('client')->user();
-                $logo = $client && $client->logo ? 'storage/' . $client->logo : 'images/logo.jpg';
                 @endphp
-                <img src="{{ asset($logo) }}" alt="Logo" class="mx-auto w-32 h-32 object-cover rounded-full">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="mx-auto w-32 h-32 object-cover rounded-full">
             </h2>
             <ul class="space-y-4 text-gray-700">
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">

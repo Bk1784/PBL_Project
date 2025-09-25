@@ -54,7 +54,7 @@
                     Password?</a>
             </div>
             <div class="w-1/2 flex justify-center items-center">
-                <img src="{{ asset('images/logo.jpg') }}" alt="Profile Image"
+                <img src=" {{ asset('images/logo.png') }}" alt="Profile Image"
                     class="w-36 h-auto rounded-2xl object-cover">
             </div>
         </div>
