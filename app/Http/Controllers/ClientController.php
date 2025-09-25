@@ -180,7 +180,7 @@ class ClientController extends Controller
 
     public function pendingOrders()
     {
-        $orders = Order::with('product')
+        $orders = Order::with('orderItems.product')
             ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -190,7 +190,7 @@ class ClientController extends Controller
 
     public function confirmOrders()
     {
-        $orders = Order::with('product')
+        $orders = Order::with('orderItems.product')
             ->where('status', 'confirmed')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -200,7 +200,7 @@ class ClientController extends Controller
 
     public function processingOrders()
     {
-        $orders = Order::with('product')
+        $orders = Order::with('orderItems.product')
             ->where('status', 'processing')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -210,7 +210,7 @@ class ClientController extends Controller
 
     public function deliveredOrders()
     {
-        $orders = Order::with('product')
+        $orders = Order::with('orderItems.product')
             ->where('status', 'delivered')
             ->orderBy('created_at', 'desc')
             ->get();
