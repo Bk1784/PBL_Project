@@ -180,7 +180,7 @@ class ClientController extends Controller
 
     public function pendingOrders()
     {
-        $orders = Order::with('product')
+        $orders = Order::with('orderItems.product')
             ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -190,7 +190,7 @@ class ClientController extends Controller
 
     public function confirmOrders()
     {
-        $orders = Order::with('product')
+        $orders = Order::with('orderItems.product')
             ->where('status', 'confirmed')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -200,7 +200,7 @@ class ClientController extends Controller
 
     public function processingOrders()
     {
-        $orders = Order::with('product')
+        $orders = Order::with('orderItems.product')
             ->where('status', 'processing')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -210,7 +210,7 @@ class ClientController extends Controller
 
     public function deliveredOrders()
     {
-        $orders = Order::with('product')
+        $orders = Order::with('orderItems.product')
             ->where('status', 'delivered')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -316,8 +316,8 @@ class ClientController extends Controller
             ->get();
 
         // Get refund data for the report - only show accepted and rejected refunds
-        $refunds = \App\Models\Refund::with(['order.product', 'user'])
-            ->whereHas('order.product')
+        $refunds = \App\Models\Refund::with(['orderItem.product', 'user'])
+            ->whereHas('orderItem.product')
             ->whereIn('status', ['accepted', 'rejected'])
             ->latest()
             ->get();
@@ -338,12 +338,12 @@ class ClientController extends Controller
 
     public function getRefundDetails($id)
     {
-        $refund = \App\Models\Refund::with(['order.product', 'user'])->findOrFail($id);
+        $refund = \App\Models\Refund::with(['orderItem.product', 'user'])->findOrFail($id);
         return response()->json([
             'refund_reason' => $refund->refund_reason,
             'refund_qty' => $refund->refund_qty,
             'refund_image' => $refund->refund_image ? asset('storage/' . $refund->refund_image) : null,
-            'product_name' => $refund->order->product->name,
+            'product_name' => $refund->orderItem->product->name,
             'user_name' => $refund->user->name,
             'created_at' => $refund->created_at->format('d F Y')
         ]);
@@ -376,7 +376,7 @@ class ClientController extends Controller
     // Refund methods
     public function refundOrders()
     {
-        $refunds = \App\Models\Refund::with(['order', 'user'])
+        $refunds = \App\Models\Refund::with(['order', 'user', 'orderItem.product'])
             ->latest()
             ->get();
 

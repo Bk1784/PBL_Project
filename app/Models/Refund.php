@@ -11,6 +11,7 @@ class Refund extends Model
 
     protected $fillable = [
         'order_id',
+        'order_item_id',
         'user_id',
         'refund_reason',
         'refund_image',
@@ -32,5 +33,10 @@ class Refund extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function orderItem()
+    {
+        return $this->belongsTo(OrderItem::class);
     }
 }

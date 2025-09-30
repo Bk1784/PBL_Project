@@ -17,6 +17,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Tanggal Refund</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Invoice</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Customer</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Produk</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Jumlah</th>
 
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Status</th>
@@ -37,6 +38,9 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {{ $refund->user->name }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ $refund->orderItem->product->name ?? 'N/A' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         Rp {{ number_format($refund->order->total_price, 0, ',', '.') }}
@@ -69,7 +73,8 @@
                                     data-refund-id="{{ $refund->id }}"
                                     data-refund-reason="{{ $refund->refund_reason }}"
                                     data-refund-image="{{ $refund->refund_image ? Storage::url($refund->refund_image) : '' }}"
-                                    data-refund-qty="{{ $refund->refund_qty }}">
+                                    data-refund-qty="{{ $refund->refund_qty }}"
+                                    data-product-name="{{ $refund->orderItem->product->name ?? 'N/A' }}">
                                     Evaluasi
                                 </button>
 
@@ -202,6 +207,7 @@ document.querySelectorAll('.evaluasi-btn').forEach(button => {
         const refundReason = button.getAttribute('data-refund-reason');
         const refundImage = button.getAttribute('data-refund-image');
         const refundQty = button.getAttribute('data-refund-qty'); // ambil jumlah produk
+        const productName = button.getAttribute('data-product-name');
 
         let htmlContent = `
             <div style="text-align: left; max-width: 500px; margin: 0 auto;">
@@ -216,8 +222,12 @@ document.querySelectorAll('.evaluasi-btn').forEach(button => {
                     <div style="border-left: 4px solid #007bff; padding-left: 15px; margin-bottom: 15px;">
                         <h4 style="margin: 0 0 10px 0; color: #007bff; font-size: 16px;">📦 Informasi Produk</h4>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #dee2e6;">
-                        <span style="font-weight: 600; color: #495057;">Jumlah Produk:</span>
+                    <div style="padding: 10px 0; border-bottom: 1px solid #dee2e6;">
+                        <span style="font-weight: 600; color: #495057; display: block; margin-bottom: 5px;">Produk:</span>
+                        <div style="background: #e3f2fd; padding: 8px; border-radius: 6px; color: #1976d2; font-weight: bold;">${productName}</div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+                        <span style="font-weight: 600; color: #495057;">Jumlah Refund:</span>
                         <span style="background: #007bff; color: #fff; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 14px;">${refundQty} unit</span>
                     </div>
                 </div>
