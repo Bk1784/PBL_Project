@@ -403,8 +403,8 @@ public function KirimRating(Request $request, $id)
 public function RefundOrder(Request $request, $id)
 {
     try {
-        // Parse refund_items JSON string to array
-        if ($request->has('refund_items')) {
+        // Parse refund_items JSON string to array if it's a string
+        if ($request->has('refund_items') && is_string($request->input('refund_items'))) {
             $refundItems = json_decode($request->input('refund_items'), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return response()->json(['success' => false, 'message' => 'Data produk refund tidak valid.'], 422);
@@ -413,11 +413,11 @@ public function RefundOrder(Request $request, $id)
         }
 
         $request->validate([
-            'refund_reason' => 'required|string|max:500',
-            'refund_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'refund_items' => 'required|array|min:1',
             'refund_items.*.order_item_id' => 'required|integer|exists:order_items,id',
             'refund_items.*.qty' => 'required|integer|min:1',
+            'refund_items.*.refund_reason' => 'required|string|max:500',
+            'refund_items.*.refund_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $order = Order::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
@@ -429,11 +429,6 @@ public function RefundOrder(Request $request, $id)
         // Check if any refund already exists for this order
         if (\App\Models\Refund::where('order_id', $id)->exists()) {
             return response()->json(['success' => false, 'message' => 'Refund untuk pesanan ini sudah diajukan.'], 409);
-        }
-
-        $imagePath = null;
-        if ($request->hasFile('refund_image')) {
-            $imagePath = $request->file('refund_image')->store('refunds', 'public');
         }
 
         // Validate that order_items belong to the order
@@ -451,11 +446,16 @@ public function RefundOrder(Request $request, $id)
                 return response()->json(['success' => false, 'message' => 'Jumlah refund melebihi jumlah pesanan untuk produk ' . $orderItem->product->name], 422);
             }
 
+            $imagePath = null;
+            if (isset($item['refund_image']) && $item['refund_image'] instanceof \Illuminate\Http\UploadedFile) {
+                $imagePath = $item['refund_image']->store('refunds', 'public');
+            }
+
             \App\Models\Refund::create([
                 'order_id' => $id,
                 'order_item_id' => $item['order_item_id'],
                 'user_id' => Auth::id(),
-                'refund_reason' => $request->refund_reason,
+                'refund_reason' => $item['refund_reason'],
                 'refund_image' => $imagePath,
                 'status' => 'pending',
                 'refund_qty' => $item['qty'],

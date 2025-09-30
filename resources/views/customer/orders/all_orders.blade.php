@@ -125,11 +125,13 @@ document.querySelectorAll('.refund-btn').forEach(button => {
         orderItems.forEach(item => {
             productsHtml += `
                 <div style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
-                    <label style="display: flex; align-items: center; gap: 10px;">
-                        <input type="checkbox" class="product-checkbox" data-item-id="${item.id}" data-max-qty="${item.qty}" style="transform: scale(1.2);">
-                        <div style="flex: 1;">
-                            <strong>${item.product.name}</strong><br>
-                            <small>Harga: Rp ${parseInt(item.price).toLocaleString()}</small>
+                    <label style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" class="product-checkbox" data-item-id="${item.id}" data-max-qty="${item.qty}" style="transform: scale(1.2);">
+                            <div style="flex: 1;">
+                                <strong>${item.product.name}</strong><br>
+                                <small>Harga: Rp ${parseInt(item.price).toLocaleString()}</small>
+                            </div>
                         </div>
                         <div class="qty-controls" style="display: none; align-items: center; gap: 5px;">
                             <button type="button" class="qty-minus" style="background:#ef4444;color:white;border:none;padding:4px 8px;border-radius:4px;">-</button>
@@ -137,6 +139,8 @@ document.querySelectorAll('.refund-btn').forEach(button => {
                             <button type="button" class="qty-plus" style="background:#3b82f6;color:white;border:none;padding:4px 8px;border-radius:4px;">+</button>
                             <span>(max: ${item.qty})</span>
                         </div>
+                        <textarea class="refund-reason" placeholder="Masukkan alasan refund untuk produk ini..." style="width: 100%; min-height: 60px; border: 1px solid #ccc; border-radius: 4px; padding: 6px;"></textarea>
+                        <input type="file" class="refund-image" accept="image/*" style="margin-top: 5px;">
                     </label>
                 </div>
             `;
@@ -146,8 +150,6 @@ document.querySelectorAll('.refund-btn').forEach(button => {
         Swal.fire({
             title: 'Pilih Produk untuk Refund',
             html: `
-                <textarea id="refund_reason" rows="4" placeholder="Masukkan alasan refund..." class="swal2-textarea" required></textarea>
-                <input type="file" id="refund_image" accept="image/*" class="swal2-file" style="margin-top: 10px;">
                 ${productsHtml}
             `,
             showCancelButton: true,
@@ -186,51 +188,65 @@ document.querySelectorAll('.refund-btn').forEach(button => {
                 });
             },
             preConfirm: () => {
-                const reasonEl = Swal.getPopup().querySelector('#refund_reason');
-                const imageEl = Swal.getPopup().querySelector('#refund_image');
+                const popup = Swal.getPopup();
 
-                const reason = reasonEl ? reasonEl.value.trim() : '';
-                const image = imageEl ? imageEl.files[0] : null;
-
-                if (!reason) {
-                    Swal.showValidationMessage('Alasan refund harus diisi');
-                    return false;
-                }
-
-                // Collect selected products
+                // Collect selected products with their refund reason and image
                 const selectedItems = [];
-                Swal.getPopup().querySelectorAll('.product-checkbox:checked').forEach(checkbox => {
+                let validationError = null;
+
+                for (const checkbox of popup.querySelectorAll('.product-checkbox:checked')) {
                     const itemId = parseInt(checkbox.getAttribute('data-item-id'));
                     const qtyInput = checkbox.closest('label').querySelector('.qty-input');
                     const qty = parseInt(qtyInput.value) || 1;
                     const maxQty = parseInt(checkbox.getAttribute('data-max-qty'));
 
+                    const reasonEl = checkbox.closest('label').querySelector('.refund-reason');
+                    const imageEl = checkbox.closest('label').querySelector('.refund-image');
+
+                    const reason = reasonEl ? reasonEl.value.trim() : '';
+                    const image = imageEl ? imageEl.files[0] : null;
+
                     if (qty < 1 || qty > maxQty) {
-                        Swal.showValidationMessage(`Jumlah refund untuk produk harus antara 1 dan ${maxQty}`);
-                        return false;
+                        validationError = `Jumlah refund untuk produk harus antara 1 dan ${maxQty}`;
+                        break;
                     }
 
-                    selectedItems.push({ order_item_id: itemId, qty: qty });
-                });
+                    if (!reason) {
+                        validationError = 'Alasan refund harus diisi untuk setiap produk yang dipilih';
+                        break;
+                    }
+
+                    selectedItems.push({ order_item_id: itemId, qty: qty, refund_reason: reason, refund_image: image });
+                }
+
+                if (validationError) {
+                    Swal.showValidationMessage(validationError);
+                    return false;
+                }
 
                 if (selectedItems.length === 0) {
                     Swal.showValidationMessage('Pilih setidaknya satu produk untuk refund');
                     return false;
                 }
 
-                return { reason, image, refund_items: selectedItems };
+                return { refund_items: selectedItems };
             }
         }).then((result) => {
             if (!result.isConfirmed) return;
 
-            const { reason, image, refund_items } = result.value;
+            const { refund_items } = result.value;
 
             const formData = new FormData();
-            formData.append('refund_reason', reason);
-            if (image) {
-                formData.append('refund_image', image);
-            }
-            formData.append('refund_items', JSON.stringify(refund_items));
+
+            refund_items.forEach((item, index) => {
+                formData.append(`refund_items[${index}][order_item_id]`, item.order_item_id);
+                formData.append(`refund_items[${index}][qty]`, item.qty);
+                formData.append(`refund_items[${index}][refund_reason]`, item.refund_reason);
+                if (item.refund_image) {
+                    formData.append(`refund_items[${index}][refund_image]`, item.refund_image);
+                }
+            });
+
             formData.append('_token', '{{ csrf_token() }}');
 
             const url = "{{ url('/orders') }}/" + orderId + "/refund";
