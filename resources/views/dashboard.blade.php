@@ -159,7 +159,7 @@
                     <span>📦</span> <a href="{{ route('atk_dashboard') }}">Produk</a>
                 </li>
                 <li class="flex items-center gap-3 hover:text-gray-500 transition-all cursor-pointer">
-                    <span>🎨</span> <a href="{{ route('kategori.dekorasi') }}">Dekorasi</a>
+                    <span>🎨</span> <a href="">Dekorasi</a>
                 </li>
                 <li class="relative">
                     <button id="customerOrdersToggle"
