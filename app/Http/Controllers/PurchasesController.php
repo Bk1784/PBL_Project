@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Purchases;
 use Illuminate\Http\Request;
+use PDF; // Tambahkan ini jika menggunakan barryvdh/laravel-dompdf
 
 class PurchasesController extends Controller
 {
@@ -38,9 +39,44 @@ class PurchasesController extends Controller
         return redirect()->route('admin.backend.purchases.all')->with('success', 'Pembelian berhasil dicatat dan stok bertambah');
     }
     
-    public function index()
+    public function index(Request $request)
     {
-        $purchases = Purchases::with(['product'])->latest()->get();
-        return view('admin.backend.purchases.all', compact('purchases'));
+        $month = [
+            'January', 'February', 'March', 'April',
+            'May', 'June', 'July', 'August',
+            'September', 'October', 'November', 'December'
+        ];
+
+        $currentMonth = date('n');
+        $selectedMonth = $request->get('month', $month[$currentMonth-1]);
+        $selectedMonthIndex = array_search($selectedMonth, $month) + 1;
+
+        $purchases = Purchases::with(['product'])
+            ->whereMonth('created_at', $selectedMonthIndex)
+            ->latest()
+            ->get();
+
+
+        return view('admin.backend.purchases.all', compact('purchases', 'month', 'selectedMonth'));
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $month = [
+            'January', 'February', 'March', 'April',
+            'May', 'June', 'July', 'August',
+            'September', 'October', 'November', 'December'
+        ];
+
+        $selectedMonth = $request->get('month', $month[date('n')-1]);
+        $selectedMonthIndex = array_search($selectedMonth, $month) + 1;
+
+        $purchases = Purchases::with(['product'])
+            ->whereMonth('created_at', $selectedMonthIndex)
+            ->latest()
+            ->get();
+
+        $pdf = PDF::loadView('admin.backend.purchases.pdf', compact('purchases', 'selectedMonth'));
+        return $pdf->download('laporan_pembelian_'.$selectedMonth.'.pdf');
     }
 }
