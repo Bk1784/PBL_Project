@@ -86,10 +86,6 @@
                                         data-refund-id="{{ $refund->id }}">
                                     Diterima
                                 </button>
-                                <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded text-sm banking-btn"
-                                        data-refund-id="{{ $refund->id }}">
-                                    Lihat Rekening
-                                </button>
                             </div>
                         @elseif($refund->status === 'completed')
                             <span class="text-green-600 font-semibold">Selesai</span>
@@ -146,39 +142,8 @@
     document.querySelectorAll('.accept-btn').forEach(button => {
         button.addEventListener('click', () => {
             const refundId = button.getAttribute('data-refund-id');
-            Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Apakah anda sudah menerima produk yang dikembalikan atau refund?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Selesai',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Buat form dan submit untuk complete refund
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = `/client/refund/complete/${refundId}`;
 
-                    const csrfToken = document.createElement('input');
-                    csrfToken.type = 'hidden';
-                    csrfToken.name = '_token';
-                    csrfToken.value = '{{ csrf_token() }}';
-                    form.appendChild(csrfToken);
-
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-            });
-        });
-    });
-
-    // Handle banking button
-    document.querySelectorAll('.banking-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const refundId = button.getAttribute('data-refund-id');
-
-            // Fetch banking data
+            // Fetch banking data first
             fetch(`/customer/refund/${refundId}/banking`)
                 .then(response => response.json())
                 .then(data => {
@@ -196,15 +161,118 @@
                     }
 
                     Swal.fire({
-                        title: 'Rekening Penerima Dana Refund',
+                        title: '<i class="fas fa-check-circle" style="color: #10B981;"></i> Konfirmasi & Rekening Penerima',
                         html: `
-                            <div style="text-align: left; margin-bottom: 20px;">
-                                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                            <style>
+                                .confirmation-section {
+                                    background: linear-gradient(135deg, #10B981, #059669);
+                                    color: white;
+                                    padding: 20px;
+                                    border-radius: 15px;
+                                    margin-bottom: 25px;
+                                    text-align: center;
+                                    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+                                    animation: slideInFromTop 0.6s ease-out;
+                                }
+                                .confirmation-section h3 {
+                                    margin: 0 0 10px 0;
+                                    font-size: 18px;
+                                    font-weight: bold;
+                                }
+                                .confirmation-section p {
+                                    margin: 0;
+                                    font-size: 16px;
+                                    opacity: 0.9;
+                                }
+                                .banking-section {
+                                    background: #f8fafc;
+                                    border: 2px solid #e2e8f0;
+                                    border-radius: 15px;
+                                    padding: 20px;
+                                    margin-bottom: 20px;
+                                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                                    animation: slideInFromBottom 0.6s ease-out;
+                                }
+                                .banking-section h4 {
+                                    margin: 0 0 15px 0;
+                                    color: #4F46E5;
+                                    font-weight: bold;
+                                    font-size: 16px;
+                                    display: flex;
+                                    align-items: center;
+                                }
+                                .banking-section h4 i {
+                                    margin-right: 8px;
+                                }
+                                .banking-table {
+                                    width: 100%;
+                                    border-collapse: collapse;
+                                    border-radius: 10px;
+                                    overflow: hidden;
+                                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                                }
+                                .banking-table th {
+                                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                    color: white;
+                                    padding: 12px 10px;
+                                    text-align: left;
+                                    font-weight: 600;
+                                    font-size: 14px;
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.5px;
+                                }
+                                .banking-table td {
+                                    padding: 10px;
+                                    border-bottom: 1px solid #e9ecef;
+                                    background: #fff;
+                                    transition: all 0.3s ease;
+                                }
+                                .banking-table tr:hover td {
+                                    background: #f8f9ff;
+                                    transform: scale(1.01);
+                                }
+                                .banking-table tr:last-child td {
+                                    border-bottom: none;
+                                }
+                                .empty-state {
+                                    text-align: center;
+                                    padding: 30px 20px;
+                                    color: #a0aec0;
+                                    font-style: italic;
+                                    animation: fadeIn 0.5s ease-out;
+                                }
+                                .empty-state i {
+                                    font-size: 40px;
+                                    margin-bottom: 10px;
+                                    opacity: 0.5;
+                                }
+                                @keyframes slideInFromTop {
+                                    from { opacity: 0; transform: translateY(-30px); }
+                                    to { opacity: 1; transform: translateY(0); }
+                                }
+                                @keyframes slideInFromBottom {
+                                    from { opacity: 0; transform: translateY(30px); }
+                                    to { opacity: 1; transform: translateY(0); }
+                                }
+                                @keyframes fadeIn {
+                                    from { opacity: 0; }
+                                    to { opacity: 1; }
+                                }
+                            </style>
+
+                            <div class="confirmation-section">
+                                <h3><i class="fas fa-question-circle"></i> Konfirmasi Penyelesaian</h3>
+                                <p>Apakah anda sudah menerima produk yang dikembalikan atau refund?</p>
+                            </div>
+
+                            <div class="banking-section">
+                                <h4><i class="fas fa-credit-card"></i> Rekening Penerima Dana Refund</h4>
+                                <table class="banking-table">
                                     <thead>
-                                        <tr style="background-color: #f8f9fa;">
-                                            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Nama Penerima</th>
-                                            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Bank/E-Wallet</th>
-                                            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Nomor Rekening</th>
+                                        <tr>
+                                            <th><i class="fas fa-user"></i> Nama Penerima</th>
+                                            <th><i class="fas fa-university"></i> Bank/E-Wallet</th>
+                                            <th><i class="fas fa-hashtag"></i> Nomor Rekening</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -213,8 +281,38 @@
                                 </table>
                             </div>
                         `,
-                        showConfirmButton: true,
-                        confirmButtonText: 'Tutup'
+                        showCancelButton: true,
+                        confirmButtonText: '<i class="fas fa-check"></i> Ya, Selesai',
+                        cancelButtonText: '<i class="fas fa-times"></i> Batal',
+                        confirmButtonColor: '#10B981',
+                        cancelButtonColor: '#6c757d',
+                        width: '700px',
+                        padding: '30px',
+                        background: '#ffffff',
+                        backdrop: `rgba(16, 185, 129, 0.1)`,
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInUp animate__faster'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutDown animate__faster'
+                        },
+                        icon: 'question'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Buat form dan submit untuk complete refund
+                            const form = document.createElement('form');
+                            form.method = 'POST';
+                            form.action = `/client/refund/complete/${refundId}`;
+
+                            const csrfToken = document.createElement('input');
+                            csrfToken.type = 'hidden';
+                            csrfToken.name = '_token';
+                            csrfToken.value = '{{ csrf_token() }}';
+                            form.appendChild(csrfToken);
+
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
                     });
                 })
                 .catch(error => {
@@ -223,6 +321,8 @@
                 });
         });
     });
+
+
 
     // Handle execute button (Eksekusi)
     document.querySelectorAll('.execute-btn').forEach(button => {

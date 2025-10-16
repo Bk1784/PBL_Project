@@ -533,4 +533,18 @@ public function RefundOrder(Request $request, $id)
 
         return response()->json(['success' => true, 'message' => 'Data rekening berhasil disimpan.']);
     }
+
+    public function deleteBankingData(Request $request, $refundId, $bankingId)
+    {
+        // Cek apakah refund milik user yang sedang login
+        $refund = \App\Models\Refund::where('id', $refundId)->where('user_id', Auth::id())->firstOrFail();
+
+        // Cek apakah banking data milik refund tersebut
+        $banking = MBankingEWallet::where('id', $bankingId)->where('refund_id', $refundId)->firstOrFail();
+
+        // Hapus data
+        $banking->delete();
+
+        return response()->json(['success' => true, 'message' => 'Data rekening berhasil dihapus.']);
+    }
 }

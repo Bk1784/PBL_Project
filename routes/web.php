@@ -88,6 +88,7 @@ Route::middleware('customer')->group(function () {
         Route::get('/orders/refund/invoice/{id}', 'refundInvoice')->name('customer.orders.refund.invoice');
         Route::get('/customer/refund/{id}/banking', 'getBankingData')->name('customer.refund.banking.get');
         Route::post('/customer/refund/{id}/banking', 'storeBankingData')->name('customer.refund.banking.store');
+        Route::delete('/customer/refund/{id}/banking/{bankingId}', 'deleteBankingData')->name('customer.refund.banking.delete');
     });
 
     // Route::controller(ReviewController::class)->group(function () {
