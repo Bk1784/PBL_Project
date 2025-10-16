@@ -5,6 +5,7 @@
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 
 <div class="container mx-auto px-4 py-8">
     <h1 class="text-2xl font-bold mb-6">Semua Pesanan Refund</h1>
@@ -83,7 +84,12 @@
                         @elseif($refund->status === 'accepted')
                             <div class="flex space-x-2">
                                 <button type="button" class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded text-sm accept-btn"
-                                        data-refund-id="{{ $refund->id }}">
+                                        data-refund-id="{{ $refund->id }}"
+                                        data-refund-reason="{{ $refund->refund_reason }}"
+                                        data-refund-image="{{ $refund->refund_image ? Storage::url($refund->refund_image) : '' }}"
+                                        data-refund-qty="{{ $refund->refund_qty }}"
+                                        data-product-name="{{ $refund->orderItem->product->name ?? 'N/A' }}"
+                                        data-refund-amount="{{ ($refund->orderItem->price ?? 0) * $refund->refund_qty }}">
                                     Diterima
                                 </button>
                             </div>
@@ -142,22 +148,39 @@
     document.querySelectorAll('.accept-btn').forEach(button => {
         button.addEventListener('click', () => {
             const refundId = button.getAttribute('data-refund-id');
+            const refundReason = button.getAttribute('data-refund-reason');
+            const refundImage = button.getAttribute('data-refund-image');
+            const refundQty = button.getAttribute('data-refund-qty');
+            const productName = button.getAttribute('data-product-name');
+            const refundAmount = parseInt(button.getAttribute('data-refund-amount')) || 0;
 
             // Fetch banking data first
             fetch(`/customer/refund/${refundId}/banking`)
                 .then(response => response.json())
                 .then(data => {
                     let tableContent = '';
+                    let qrData = null;
                     if (data && data.length > 0) {
-                        tableContent = data.map(item => `
-                            <tr>
-                                <td style="border: 1px solid #ddd; padding: 8px;">${item.nama_penerima}</td>
-                                <td style="border: 1px solid #ddd; padding: 8px;">${item.bank_ewallet}</td>
-                                <td style="border: 1px solid #ddd; padding: 8px;">${item.nomor_rekening}</td>
+                        tableContent = data.map((item, index) => `
+                            <tr onclick="generateQRCode('${item.nama_penerima}', '${item.bank_ewallet}', '${item.nomor_rekening}', ${index})">
+                                <td><i class="fas fa-user-circle" style="color: #4F46E5; margin-right: 8px;"></i>${item.nama_penerima}</td>
+                                <td><i class="fas fa-building" style="color: #48bb78; margin-right: 8px;"></i>${item.bank_ewallet}</td>
+                                <td><i class="fas fa-hashtag" style="color: #ed8936; margin-right: 8px;"></i>${item.nomor_rekening}</td>
                             </tr>
                         `).join('');
+                        // Set QR data for the first rekening by default
+                        if (data.length > 0) {
+                            qrData = data[0];
+                        }
                     } else {
-                        tableContent = '<tr><td colspan="3" style="border: 1px solid #ddd; padding: 8px; text-align: center;">Belum ada data rekening</td></tr>';
+                        tableContent = `
+                            <tr>
+                                <td colspan="3" class="empty-state">
+                                    <i class="fas fa-inbox"></i><br>
+                                    Belum ada data rekening yang tersimpan
+                                </td>
+                            </tr>
+                        `;
                     }
 
                     Swal.fire({
@@ -227,12 +250,62 @@
                                     background: #fff;
                                     transition: all 0.3s ease;
                                 }
+                                .banking-table tr {
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+                                }
+                                .banking-table tr:hover {
+                                    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+                                    transform: translateX(5px);
+                                    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+                                }
                                 .banking-table tr:hover td {
-                                    background: #f8f9ff;
-                                    transform: scale(1.01);
+                                    color: #1e40af;
+                                    font-weight: 500;
+                                }
+                                .banking-table tr.selected {
+                                    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+                                    border-left: 4px solid #3b82f6;
+                                    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+                                }
+                                .banking-table tr.selected td {
+                                    color: #1e40af;
+                                    font-weight: 600;
                                 }
                                 .banking-table tr:last-child td {
                                     border-bottom: none;
+                                }
+                                .qr-code-container {
+                                    text-align: center;
+                                    margin-top: 15px;
+                                    padding: 15px;
+                                    background: white;
+                                    border-radius: 12px;
+                                    display: inline-block;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                                    animation: slideInFromRight 0.6s ease-out;
+                                }
+                                .qr-code-container img {
+                                    max-width: 120px;
+                                    border-radius: 8px;
+                                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                                }
+                                .qr-btn {
+                                    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+                                    border: none;
+                                    color: white;
+                                    padding: 6px 12px;
+                                    border-radius: 20px;
+                                    font-size: 12px;
+                                    font-weight: 500;
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+                                    margin-top: 8px;
+                                    box-shadow: 0 2px 8px rgba(106, 17, 203, 0.3);
+                                }
+                                .qr-btn:hover {
+                                    transform: translateY(-2px);
+                                    box-shadow: 0 4px 15px rgba(106, 17, 203, 0.4);
                                 }
                                 .empty-state {
                                     text-align: center;
@@ -254,6 +327,10 @@
                                     from { opacity: 0; transform: translateY(30px); }
                                     to { opacity: 1; transform: translateY(0); }
                                 }
+                                @keyframes slideInFromRight {
+                                    from { opacity: 0; transform: translateX(30px); }
+                                    to { opacity: 1; transform: translateX(0); }
+                                }
                                 @keyframes fadeIn {
                                     from { opacity: 0; }
                                     to { opacity: 1; }
@@ -263,6 +340,37 @@
                             <div class="confirmation-section">
                                 <h3><i class="fas fa-question-circle"></i> Konfirmasi Penyelesaian</h3>
                                 <p>Apakah anda sudah menerima produk yang dikembalikan atau refund?</p>
+                            </div>
+
+                            <!-- Refund Details Section -->
+                            <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                <h4 style="margin: 0 0 15px 0; color: #4F46E5; font-weight: bold; font-size: 16px; display: flex; align-items: center;">
+                                    <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Detail Refund
+                                </h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div>
+                                        <strong style="color: #374151;">Nama Produk:</strong><br>
+                                        <span style="color: #6b7280;">${productName}</span>
+                                    </div>
+                                    <div>
+                                        <strong style="color: #374151;">Jumlah Produk Refund:</strong><br>
+                                        <span style="color: #6b7280;">${refundQty} item</span>
+                                    </div>
+                                    <div>
+                                        <strong style="color: #374151;">Jumlah Dana Refund:</strong><br>
+                                        <span style="color: #6b7280;">Rp ${refundAmount.toLocaleString('id-ID')}</span>
+                                    </div>
+                                    <div>
+                                        <strong style="color: #374151;">Alasan Refund:</strong><br>
+                                        <span style="color: #6b7280;">${refundReason}</span>
+                                    </div>
+                                </div>
+                                ${refundImage ? `
+                                    <div style="margin-top: 15px; text-align: center;">
+                                        <strong style="color: #374151;">Bukti Refund:</strong><br>
+                                        <img src="${refundImage}" alt="Bukti Refund" style="max-width: 100%; max-height: 200px; border-radius: 8px; border: 2px solid #e2e8f0; margin-top: 10px;">
+                                    </div>
+                                ` : ''}
                             </div>
 
                             <div class="banking-section">
@@ -279,6 +387,31 @@
                                         ${tableContent}
                                     </tbody>
                                 </table>
+                                <div style="margin-top: 15px; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                    <p style="margin: 0; font-size: 13px; color: #64748b; text-align: center;">
+                                        <i class="fas fa-mouse-pointer" style="color: #3b82f6; margin-right: 5px;"></i>
+                                        Pilih rekening untuk generate QR code
+                                    </p>
+                                </div>
+                                <div id="qrContainer" class="qr-code-container" style="display: none;">
+                                    <p style="margin: 0 0 10px 0; font-size: 14px; color: #4F46E5; font-weight: bold;">
+                                        <i class="fas fa-qrcode"></i> QR Code Pembayaran
+                                    </p>
+                                    <div id="qrCodeDisplay"></div>
+                                    <button class="qr-btn" onclick="downloadQRCode()">
+                                        <i class="fas fa-download"></i> Download QR
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Warning Section -->
+                            <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 15px; margin-top: 20px; text-align: center; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);">
+                                <div style="border-left: 4px solid #f59e0b; padding-left: 15px; display: inline-block;">
+                                    <p style="margin: 0; color: #92400e; font-size: 14px; font-weight: 500;">
+                                        <i class="fas fa-exclamation-triangle" style="color: #f59e0b; margin-right: 8px;"></i>
+                                        Cek kembali transaksi anda dan pastikan jika transaksi sudah sukses tekan tombol Ya, Selesai untuk menyelasaikan pembayaran refund ini
+                                    </p>
+                                </div>
                             </div>
                         `,
                         showCancelButton: true,
@@ -314,6 +447,8 @@
                             form.submit();
                         }
                     });
+
+                    // QR code will be generated only when user clicks on a rekening row
                 })
                 .catch(error => {
                     console.error('Error loading banking data:', error);
@@ -493,6 +628,67 @@ document.querySelectorAll('.evaluasi-btn').forEach(button => {
             showConfirmButton: true
         });
     @endif
+
+    // Function to generate QR code
+    function generateQRCode(nama, bank, nomor, index) {
+        const qrData = `Bank/E-Wallet: ${bank}\nNomor: ${nomor}\nPemilik: ${nama}`;
+        const qr = qrcode(0, 'M');
+        qr.addData(qrData);
+        qr.make();
+
+        const qrCodeDataURL = qr.createDataURL(8, 0);
+        const qrContainer = document.getElementById('qrContainer');
+        const qrDisplay = document.getElementById('qrCodeDisplay');
+
+        qrDisplay.innerHTML = `<img src="${qrCodeDataURL}" alt="QR Code" style="max-width: 120px;">`;
+        qrContainer.style.display = 'block';
+
+        // Store current QR data for download
+        qrContainer.dataset.qrData = qrCodeDataURL;
+        qrContainer.dataset.fileName = `QR-${bank}-${nomor}.png`;
+
+        // Add visual feedback for selected row
+        const rows = document.querySelectorAll('.banking-table tbody tr');
+        rows.forEach((row, i) => {
+            if (i === index) {
+                row.classList.add('selected');
+            } else {
+                row.classList.remove('selected');
+            }
+        });
+    }
+
+    // Function to download QR code
+    function downloadQRCode() {
+        const qrContainer = document.getElementById('qrContainer');
+        const qrDataURL = qrContainer.dataset.qrData;
+        const fileName = qrContainer.dataset.fileName;
+
+        if (qrDataURL) {
+            const link = document.createElement('a');
+            link.href = qrDataURL;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Show download success notification
+            Swal.fire({
+                title: 'Berhasil!',
+                text: 'QR Code berhasil diunduh',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#10B981',
+                timer: 2000,
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            });
+        }
+    }
 </script>
 
 @endsection
