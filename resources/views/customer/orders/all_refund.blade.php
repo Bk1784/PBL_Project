@@ -18,7 +18,7 @@
                     <th class="p-3 text-left">Tanggal Refund</th>
                     <th class="p-3 text-left">Invoice</th>
                     <th class="p-3 text-left">Jumlah</th>
-                    <th class="p-3 text-left">Alasan Refund</th>
+                    <th class="p-3 text-left">Detail Refund</th>
                     <th class="p-3 text-left">Status Refund</th>
                     <th class="p-3 text-left">Alasan Penolakan</th>
                 </tr>
@@ -35,15 +35,10 @@
                         Rp {{ number_format($refund->order->total_price, 0, ',', '.') }}
                     </td>
                     <td class="p-3 border-b border-gray-200">
-    <button 
-    class="bg-purple-500 text-white py-1 px-3 rounded text-sm hover:bg-purple-600 mr-2"
-    onclick="showRefundReason('{{ $refund->refund_reason }}', '{{ asset('storage/' . $refund->refund_image) }}', '{{ $refund->refund_qty }}')">
-    Lihat Alasan
-</button>
-<button 
-    class="bg-green-500 text-white py-1 px-3 rounded text-sm hover:bg-green-600"
-    onclick="downloadRefundInvoice({{ $refund->id }})">
-    <i class="fas fa-file-invoice"></i> Invoice
+    <button
+    class="bg-purple-500 text-white py-1 px-3 rounded text-sm hover:bg-purple-600"
+    onclick="showRefundReason('{{ $refund->refund_reason }}', '{{ asset('storage/' . $refund->refund_image) }}', '{{ $refund->refund_qty }}', {{ $refund->id }}, '{{ number_format($refund->orderItem->price ?? 0, 0, ',', '.') }}', '{{ number_format(($refund->refund_qty * ($refund->orderItem->price ?? 0)), 0, ',', '.') }}')">
+    Lihat Detail
 </button>
 
 </td>
@@ -125,30 +120,54 @@
 </script>
 
 <script>
-    function showRefundReason(reason, imageUrl, qty) {
+    function showRefundReason(reason, imageUrl, qty, refundId, unitPrice, refundAmount) {
+        let imageHtml = '';
+        if (imageUrl && imageUrl !== 'null') {
+            imageHtml = `<div style="text-align: center; margin-top: 15px;">
+                <img src="${imageUrl}" alt="Bukti Refund" style="max-width: 100%; max-height: 300px; border: 2px solid #e5e7eb; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"/>
+            </div>`;
+        }
+
         Swal.fire({
-            title: 'Alasan Refund',
+            title: '<span style="color: #4F46E5; font-weight: bold;">Detail Refund</span>',
             html: `
-                <p style="margin-bottom: 8px;"><strong>Jumlah produk yang dikembalikan:</strong> ${qty}</p>
-                <p style="margin-bottom: 15px;">${reason}</p>
-                <img src="${imageUrl}" alt="Bukti Refund" style="max-width: 100%; height: auto; border-radius: 8px;"/>
+                <div style="text-align: left; line-height: 1.6;">
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #4F46E5;">
+                        <strong style="color: #4F46E5;">Jumlah Produk yang Dikembalikan:</strong><br>
+                        <span style="font-size: 16px; color: #333;">${qty} item</span>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #4F46E5;">
+                        <strong style="color: #4F46E5;">Harga Satuan:</strong><br>
+                        <span style="font-size: 16px; color: #333; font-weight: bold;">Rp ${unitPrice}</span>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #4F46E5;">
+                        <strong style="color: #4F46E5;">Jumlah Refund:</strong><br>
+                        <span style="font-size: 16px; color: #333; font-weight: bold;">Rp ${refundAmount}</span>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #4F46E5;">
+                        <strong style="color: #4F46E5;">Alasan Refund:</strong><br>
+                        <span style="color: #333;">${reason}</span>
+                    </div>
+                    ${imageHtml}
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="downloadRefundInvoice(${refundId})" style="background: linear-gradient(135deg, #10B981, #059669); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <i class="fas fa-file-invoice" style="margin-right: 8px;"></i>Download Invoice
+                        </button>
+                    </div>
+                </div>
             `,
-            width: 600,
+            width: 650,
             showCloseButton: true,
+            showConfirmButton: false,
             focusConfirm: false,
-            confirmButtonText: 'Tutup',
-            confirmButtonColor: '#6B46C1'
+            customClass: {
+                popup: 'swal-custom-popup'
+            }
         });
     }
 
     function downloadRefundInvoice(refundId) {
-        const form = document.createElement('form');
-        form.method = 'GET';
-        form.action = `/orders/refund/invoice/${refundId}`;
-        form.target = '_blank';
-        document.body.appendChild(form);
-        form.submit();
-        document.body.removeChild(form);
+        window.open(`/orders/refund/invoice/${refundId}`, '_blank');
     }
 </script>
 
