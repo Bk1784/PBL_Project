@@ -55,7 +55,7 @@
                         @elseif($refund->status === 'accepted')
                             <button
                                 class="bg-blue-500 text-white py-1 px-3 rounded-full text-sm focus:outline-none"
-                                onclick="showAcceptedAlert()"
+                                onclick="showAcceptedAlert({{ $refund->id }})"
                                 type="button"
                             >
                                 Diterima
@@ -109,13 +109,130 @@
 
 <!-- Tambahkan script SweetAlert untuk tombol Diterima -->
 <script>
-    function showAcceptedAlert() {
+    function showAcceptedAlert(refundId) {
         Swal.fire({
-            icon: 'info',
-            title: 'Informasi',
-            text: 'mohon kembalikan produk ke toko untuk mendapatkan pengembalian dana',
-            showConfirmButton: true
+            title: 'Rekening Penerima Dana Refund',
+            html: `
+                <div style="text-align: left; margin-bottom: 20px;">
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                        <thead>
+                            <tr style="background-color: #f8f9fa;">
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Nama Penerima</th>
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Bank/E-Wallet</th>
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Nomor Rekening</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bankingTableBody">
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="nama_penerima" style="display: block; margin-bottom: 5px; font-weight: bold;">Masukan Nama Pemilik:</label>
+                    <input type="text" id="nama_penerima" class="swal2-input" placeholder="Nama pemilik rekening" style="width: 100%;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="bank_ewallet" style="display: block; margin-bottom: 5px; font-weight: bold;">Pilih Bank/E-Wallet:</label>
+                    <select id="bank_ewallet" class="swal2-input" style="width: 100%;">
+                        <option value="">Pilih Bank/E-Wallet</option>
+                        <option value="BCA">BCA</option>
+                        <option value="BNI">BNI</option>
+                        <option value="BRI">BRI</option>
+                        <option value="Mandiri">Mandiri</option>
+                        <option value="CIMB Niaga">CIMB Niaga</option>
+                        <option value="Danamon">Danamon</option>
+                        <option value="Permata">Permata</option>
+                        <option value="BSI">BSI</option>
+                        <option value="OCBC NISP">OCBC NISP</option>
+                        <option value="Maybank">Maybank</option>
+                        <option value="Panin">Panin</option>
+                        <option value="UOB">UOB</option>
+                        <option value="DBS">DBS</option>
+                        <option value="HSBC">HSBC</option>
+                        <option value="Citibank">Citibank</option>
+                        <option value="Standard Chartered">Standard Chartered</option>
+                        <option value="Gopay">Gopay</option>
+                        <option value="OVO">OVO</option>
+                        <option value="DANA">DANA</option>
+                        <option value="LinkAja">LinkAja</option>
+                        <option value="ShopeePay">ShopeePay</option>
+                        <option value="QRIS">QRIS</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="nomor_rekening" style="display: block; margin-bottom: 5px; font-weight: bold;">Masukan Nomor Rekening/HP:</label>
+                    <input type="text" id="nomor_rekening" class="swal2-input" placeholder="Nomor rekening atau HP" style="width: 100%;">
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Simpan',
+            cancelButtonText: 'Batal',
+            preConfirm: () => {
+                const namaPenerima = document.getElementById('nama_penerima').value;
+                const bankEwallet = document.getElementById('bank_ewallet').value;
+                const nomorRekening = document.getElementById('nomor_rekening').value;
+
+                if (!namaPenerima || !bankEwallet || !nomorRekening) {
+                    Swal.showValidationMessage('Semua field harus diisi!');
+                    return false;
+                }
+
+                return { namaPenerima, bankEwallet, nomorRekening };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const { namaPenerima, bankEwallet, nomorRekening } = result.value;
+
+                // Kirim data ke server
+                fetch(`/customer/refund/${refundId}/banking`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        nama_penerima: namaPenerima,
+                        bank_ewallet: bankEwallet,
+                        nomor_rekening: nomorRekening
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Berhasil!', 'Data rekening berhasil disimpan.', 'success');
+                        // Reload halaman atau update tabel
+                        location.reload();
+                    } else {
+                        Swal.fire('Gagal!', data.message || 'Terjadi kesalahan.', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Gagal!', 'Terjadi kesalahan saat menyimpan data.', 'error');
+                });
+            }
         });
+
+        // Load existing banking data
+        fetch(`/customer/refund/${refundId}/banking`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('bankingTableBody');
+                if (data && data.length > 0) {
+                    tbody.innerHTML = data.map(item => `
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px;">${item.nama_penerima}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">${item.bank_ewallet}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">${item.nomor_rekening}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="3" style="border: 1px solid #ddd; padding: 8px; text-align: center;">Belum ada data rekening</td></tr>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading banking data:', error);
+            });
     }
 </script>
 

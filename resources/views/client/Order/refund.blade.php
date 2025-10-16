@@ -86,6 +86,10 @@
                                         data-refund-id="{{ $refund->id }}">
                                     Diterima
                                 </button>
+                                <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded text-sm banking-btn"
+                                        data-refund-id="{{ $refund->id }}">
+                                    Lihat Rekening
+                                </button>
                             </div>
                         @elseif($refund->status === 'completed')
                             <span class="text-green-600 font-semibold">Selesai</span>
@@ -166,6 +170,57 @@
                     form.submit();
                 }
             });
+        });
+    });
+
+    // Handle banking button
+    document.querySelectorAll('.banking-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const refundId = button.getAttribute('data-refund-id');
+
+            // Fetch banking data
+            fetch(`/customer/refund/${refundId}/banking`)
+                .then(response => response.json())
+                .then(data => {
+                    let tableContent = '';
+                    if (data && data.length > 0) {
+                        tableContent = data.map(item => `
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 8px;">${item.nama_penerima}</td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">${item.bank_ewallet}</td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">${item.nomor_rekening}</td>
+                            </tr>
+                        `).join('');
+                    } else {
+                        tableContent = '<tr><td colspan="3" style="border: 1px solid #ddd; padding: 8px; text-align: center;">Belum ada data rekening</td></tr>';
+                    }
+
+                    Swal.fire({
+                        title: 'Rekening Penerima Dana Refund',
+                        html: `
+                            <div style="text-align: left; margin-bottom: 20px;">
+                                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                    <thead>
+                                        <tr style="background-color: #f8f9fa;">
+                                            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Nama Penerima</th>
+                                            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Bank/E-Wallet</th>
+                                            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Nomor Rekening</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${tableContent}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `,
+                        showConfirmButton: true,
+                        confirmButtonText: 'Tutup'
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading banking data:', error);
+                    Swal.fire('Error', 'Gagal memuat data rekening.', 'error');
+                });
         });
     });
 

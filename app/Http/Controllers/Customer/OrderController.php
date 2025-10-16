@@ -14,6 +14,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Midtrans\Snap;
 use App\Helpers\MidtransConfig;
+use App\Models\MBankingEWallet;
 
 
 
@@ -503,5 +504,33 @@ public function RefundOrder(Request $request, $id)
 
         $pdf = Pdf::loadView('customer.refund_invoice', compact('refund'));
         return $pdf->download('refund-invoice-' . $refund->id . '.pdf');
+    }
+
+    public function getBankingData($refundId)
+    {
+        $bankingData = MBankingEWallet::where('refund_id', $refundId)->get();
+        return response()->json($bankingData);
+    }
+
+    public function storeBankingData(Request $request, $refundId)
+    {
+        $request->validate([
+            'nama_penerima' => 'required|string|max:255',
+            'bank_ewallet' => 'required|string',
+            'nomor_rekening' => 'required|string|max:255',
+        ]);
+
+        // Cek apakah refund milik user yang sedang login
+        $refund = \App\Models\Refund::where('id', $refundId)->where('user_id', Auth::id())->firstOrFail();
+
+        // Simpan data banking
+        MBankingEWallet::create([
+            'refund_id' => $refundId,
+            'nama_penerima' => $request->nama_penerima,
+            'bank_ewallet' => $request->bank_ewallet,
+            'nomor_rekening' => $request->nomor_rekening,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Data rekening berhasil disimpan.']);
     }
 }
