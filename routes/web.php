@@ -20,7 +20,6 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\Admin\DecorationController;
 
 //// CUSTOMER GUEST: Hanya bisa diakses jika belum login
@@ -97,7 +96,7 @@ Route::middleware('customer')->group(function () {
 
 
 
-    Route::get('/kategori/dekorasi', [KategoriController::class, 'dekorasi'])->name('kategori.dekorasi');
+    
 });
 
 require __DIR__ . '/auth.php';
@@ -162,6 +161,7 @@ Route::middleware('admin')->group(function () {
         Route::get('/all/purchases', 'index')->name('admin.backend.purchases.all');
         Route::get('/add/purchases', 'create')->name('admin.backend.purchases.add');
         Route::post('/add/purchases/store',  'store')->name('admin.purchases.store');
+        Route::get('admin/purchases/export-pdf', 'exportPdf')->name('admin.backend.purchases.exportPdf');
     });
 
     Route::controller(ManageRatingController::class)->group(function () {
