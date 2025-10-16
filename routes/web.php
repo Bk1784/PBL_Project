@@ -86,6 +86,7 @@ Route::middleware('customer')->group(function () {
 
         Route::post('/orders/{id}/refund', 'RefundOrder')->name('customer.orders.refund');
         Route::get('/orders/refund/all', 'AllRefund')->name('customer.orders.all_refund');
+        Route::get('/orders/refund/invoice/{id}', 'refundInvoice')->name('customer.orders.refund.invoice');
     });
 
     // Route::controller(ReviewController::class)->group(function () {
@@ -218,6 +219,7 @@ Route::middleware(['status', 'client'])->group(function () {
     Route::post('/client/refund/reject/{id}', [ClientController::class, 'rejectRefund'])->name('client.refund.reject');
     Route::post('/client/refund/accept/{id}', [ClientController::class, 'acceptRefund'])->name('client.refund.accept');
     Route::post('/client/refund/complete/{id}', [ClientController::class, 'completeRefund'])->name('client.refund.complete');
+    Route::get('/client/refund/invoice/{id}', [ClientController::class, 'refundInvoice'])->name('client.refund.invoice');
 
     Route::get('/client/laporan', [ClientController::class, 'ClientLaporan'])->name('client.laporan');
     Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');

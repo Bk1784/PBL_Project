@@ -36,9 +36,14 @@
                     </td>
                     <td class="p-3 border-b border-gray-200">
     <button 
-    class="bg-purple-500 text-white py-1 px-3 rounded text-sm hover:bg-purple-600"
+    class="bg-purple-500 text-white py-1 px-3 rounded text-sm hover:bg-purple-600 mr-2"
     onclick="showRefundReason('{{ $refund->refund_reason }}', '{{ asset('storage/' . $refund->refund_image) }}', '{{ $refund->refund_qty }}')">
     Lihat Alasan
+</button>
+<button 
+    class="bg-green-500 text-white py-1 px-3 rounded text-sm hover:bg-green-600"
+    onclick="downloadRefundInvoice({{ $refund->id }})">
+    <i class="fas fa-file-invoice"></i> Invoice
 </button>
 
 </td>
@@ -134,6 +139,16 @@
             confirmButtonText: 'Tutup',
             confirmButtonColor: '#6B46C1'
         });
+    }
+
+    function downloadRefundInvoice(refundId) {
+        const form = document.createElement('form');
+        form.method = 'GET';
+        form.action = `/orders/refund/invoice/${refundId}`;
+        form.target = '_blank';
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
     }
 </script>
 

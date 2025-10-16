@@ -497,4 +497,11 @@ public function RefundOrder(Request $request, $id)
         return view('customer.orders.all_refund', compact('refunds'));
     }
 
+    public function refundInvoice($id)
+    {
+        $refund = \App\Models\Refund::with(['order', 'user', 'orderItem.product'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('customer.refund_invoice', compact('refund'));
+        return $pdf->download('refund-invoice-' . $refund->id . '.pdf');
+    }
 }
