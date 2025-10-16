@@ -121,48 +121,223 @@ document.querySelectorAll('.refund-btn').forEach(button => {
         const orderItems = JSON.parse(button.getAttribute('data-order-items'));
 
         // Build HTML for product selection
-        let productsHtml = '<div style="max-height: 300px; overflow-y: auto; margin-top: 15px;">';
+        let productsHtml = '<div style="max-height: 350px; overflow-y: auto;">';
         orderItems.forEach(item => {
             productsHtml += `
-                <div style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
-                    <label style="display: flex; flex-direction: column; gap: 8px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" class="product-checkbox" data-item-id="${item.id}" data-max-qty="${item.qty}" style="transform: scale(1.2);">
-                            <div style="flex: 1;">
-                                <strong>${item.product.name}</strong><br>
-                                <small>Harga: Rp ${parseInt(item.price).toLocaleString()}</small>
-                            </div>
+                <div class="product-item">
+                    <div class="product-header">
+                        <input type="checkbox" class="product-checkbox" data-item-id="${item.id}" data-max-qty="${item.qty}">
+                        <div class="product-info">
+                            <div class="product-name">${item.product.name}</div>
+                            <div class="product-price">Rp ${parseInt(item.price).toLocaleString()}</div>
                         </div>
-                        <div class="qty-controls" style="display: none; align-items: center; gap: 5px;">
-                            <button type="button" class="qty-minus" style="background:#ef4444;color:white;border:none;padding:4px 8px;border-radius:4px;">-</button>
-                            <input type="number" class="qty-input" value="1" min="1" max="${item.qty}" style="width: 50px; text-align: center; border: 1px solid #ccc; border-radius: 4px;">
-                            <button type="button" class="qty-plus" style="background:#3b82f6;color:white;border:none;padding:4px 8px;border-radius:4px;">+</button>
-                            <span>(max: ${item.qty})</span>
+                    </div>
+                    <div class="refund-details">
+                    <div class="qty-controls">
+                        <span class="qty-label">Jumlah:</span>
+                        <button type="button" class="qty-btn qty-minus">-</button>
+                        <input type="number" class="qty-input" value="1" min="1" max="${item.qty}" readonly>
+                        <button type="button" class="qty-btn qty-plus">+</button>
+                        <span style="font-size: 11px; color: #6b7280; margin-left: 4px;">(max: ${item.qty})</span>
+                    </div>
+                        <div class="reason-section">
+                            <span class="reason-label">Alasan Refund:</span>
+                            <textarea class="refund-reason" placeholder="Jelaskan alasan refund..." rows="2"></textarea>
                         </div>
-                        <textarea class="refund-reason" placeholder="Masukkan alasan refund untuk produk ini..." style="width: 100%; min-height: 60px; border: 1px solid #ccc; border-radius: 4px; padding: 6px;"></textarea>
-                        <input type="file" class="refund-image" accept="image/*" style="margin-top: 5px;">
-                    </label>
+                        <div class="image-section">
+                            <span class="image-label">Bukti (opsional):</span>
+                            <input type="file" class="refund-image" accept="image/*">
+                        </div>
+                    </div>
                 </div>
             `;
         });
         productsHtml += '</div>';
 
         Swal.fire({
-            title: 'Pilih Produk untuk Refund',
+            title: '<i class="fas fa-undo-alt" style="color: #ef4444;"></i> Refund Produk',
             html: `
-                ${productsHtml}
+                <style>
+                    .refund-container {
+                        text-align: left;
+                        max-width: 100%;
+                    }
+                    .product-item {
+                        border: 1px solid #e5e7eb;
+                        border-radius: 10px;
+                        padding: 12px;
+                        margin-bottom: 12px;
+                        background: #ffffff;
+                        transition: all 0.2s ease;
+                    }
+                    .product-item:hover {
+                        border-color: #ef4444;
+                        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1);
+                    }
+                    .product-header {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        margin-bottom: 8px;
+                    }
+                    .product-checkbox {
+                        width: 18px;
+                        height: 18px;
+                        accent-color: #ef4444;
+                    }
+                    .product-info {
+                        flex: 1;
+                        font-size: 14px;
+                    }
+                    .product-name {
+                        font-weight: 600;
+                        color: #111827;
+                        margin-bottom: 2px;
+                    }
+                    .product-price {
+                        color: #6b7280;
+                        font-size: 13px;
+                    }
+                    .refund-details {
+                        display: none;
+                        margin-top: 10px;
+                        padding-top: 10px;
+                        border-top: 1px solid #e5e7eb;
+                    }
+                    .qty-controls {
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        margin-bottom: 8px;
+                    }
+                    .qty-label {
+                        font-size: 13px;
+                        font-weight: 500;
+                        color: #374151;
+                    }
+                    .qty-btn {
+                        background: #f3f4f6;
+                        color: #374151;
+                        border: 1px solid #d1d5db;
+                        width: 24px;
+                        height: 24px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 12px;
+                        transition: all 0.2s ease;
+                    }
+                    .qty-btn:hover {
+                        background: #ef4444;
+                        color: white;
+                        border-color: #ef4444;
+                    }
+                    .qty-input {
+                        width: 50px;
+                        text-align: center;
+                        border: 1px solid #d1d5db;
+                        border-radius: 4px;
+                        padding: 4px;
+                        font-size: 13px;
+                        font-weight: 500;
+                    }
+                    .reason-section {
+                        margin-top: 8px;
+                    }
+                    .reason-label {
+                        font-size: 13px;
+                        font-weight: 500;
+                        color: #374151;
+                        margin-bottom: 4px;
+                        display: block;
+                    }
+                    .refund-reason {
+                        width: 100%;
+                        border: 1px solid #d1d5db;
+                        border-radius: 6px;
+                        padding: 8px;
+                        font-size: 13px;
+                        resize: vertical;
+                        min-height: 50px;
+                        transition: border-color 0.2s ease;
+                    }
+                    .refund-reason:focus {
+                        border-color: #ef4444;
+                        outline: none;
+                    }
+                    .image-section {
+                        margin-top: 8px;
+                    }
+                    .image-label {
+                        font-size: 12px;
+                        color: #6b7280;
+                        margin-bottom: 4px;
+                        display: block;
+                    }
+                    .refund-image {
+                        width: 100%;
+                        padding: 6px;
+                        border: 1px dashed #d1d5db;
+                        border-radius: 6px;
+                        background: #f9fafb;
+                        font-size: 12px;
+                        transition: border-color 0.2s ease;
+                    }
+                    .refund-image:hover {
+                        border-color: #ef4444;
+                    }
+                    .instruction {
+                        background: #f0f9ff;
+                        border: 1px solid #bae6fd;
+                        border-radius: 8px;
+                        padding: 10px;
+                        margin-bottom: 15px;
+                        text-align: center;
+                        font-size: 13px;
+                        color: #0369a1;
+                    }
+                    .instruction i {
+                        color: #0284c7;
+                        margin-right: 6px;
+                    }
+                </style>
+                <div class="refund-container">
+                    <div class="instruction">
+                        <i class="fas fa-info-circle"></i>
+                        Pilih produk, tentukan jumlah, berikan alasan refund, dan sertakan bukti refund
+                    </div>
+                    ${productsHtml}
+                </div>
             `,
             showCancelButton: true,
-            confirmButtonText: 'Kirim',
-            cancelButtonText: 'Batal',
+            confirmButtonText: '<i class="fas fa-paper-plane"></i> Kirim Refund',
+            cancelButtonText: '<i class="fas fa-times"></i> Batal',
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            width: '700px',
+            padding: '25px',
+            background: '#ffffff',
+            backdrop: `rgba(0,0,0,0.4)`,
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown animate__faster'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp animate__faster'
+            },
             didOpen: () => {
                 const popup = Swal.getPopup();
 
                 // Handle checkbox changes
                 popup.querySelectorAll('.product-checkbox').forEach(checkbox => {
                     checkbox.addEventListener('change', (e) => {
-                        const qtyControls = e.target.closest('label').querySelector('.qty-controls');
-                        qtyControls.style.display = e.target.checked ? 'flex' : 'none';
+                        const refundDetails = e.target.closest('.product-item').querySelector('.refund-details');
+                        if (e.target.checked) {
+                            refundDetails.style.display = 'block';
+                        } else {
+                            refundDetails.style.display = 'none';
+                        }
                     });
                 });
 
@@ -196,12 +371,12 @@ document.querySelectorAll('.refund-btn').forEach(button => {
 
                 for (const checkbox of popup.querySelectorAll('.product-checkbox:checked')) {
                     const itemId = parseInt(checkbox.getAttribute('data-item-id'));
-                    const qtyInput = checkbox.closest('label').querySelector('.qty-input');
+                    const qtyInput = checkbox.closest('.product-item').querySelector('.qty-input');
                     const qty = parseInt(qtyInput.value) || 1;
                     const maxQty = parseInt(checkbox.getAttribute('data-max-qty'));
 
-                    const reasonEl = checkbox.closest('label').querySelector('.refund-reason');
-                    const imageEl = checkbox.closest('label').querySelector('.refund-image');
+                    const reasonEl = checkbox.closest('.product-item').querySelector('.refund-reason');
+                    const imageEl = checkbox.closest('.product-item').querySelector('.refund-image');
 
                     const reason = reasonEl ? reasonEl.value.trim() : '';
                     const image = imageEl ? imageEl.files[0] : null;

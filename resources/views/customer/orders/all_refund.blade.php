@@ -20,7 +20,6 @@
                     <th class="p-3 text-left">Jumlah</th>
                     <th class="p-3 text-left">Detail Refund</th>
                     <th class="p-3 text-left">Status Refund</th>
-                    <th class="p-3 text-left">Alasan Penolakan</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,29 +44,34 @@
 
                     <td class="p-3 border-b border-gray-200">
                         @if($refund->status === 'pending')
-                            <span class="bg-yellow-500 text-white py-1 px-3 rounded-full text-sm">
+                            <button
+                                class="bg-yellow-500 text-white py-1 px-3 rounded text-sm hover:bg-yellow-600 focus:outline-none"
+                                onclick="showStatusAlert('Menunggu', 'Refund Anda sedang dalam proses evaluasi oleh toko. Mohon tunggu konfirmasi selanjutnya.', 'info')"
+                                type="button"
+                            >
                                 Menunggu
-                            </span>
+                            </button>
                         @elseif($refund->status === 'rejected')
-                            <span class="bg-red-500 text-white py-1 px-3 rounded-full text-sm">
+                            <button
+                                class="bg-red-500 text-white py-1 px-3 rounded text-sm hover:bg-red-600 focus:outline-none"
+                                onclick="showStatusAlert('Ditolak', '{{ $refund->reject_reason ?: 'Refund Anda ditolak. Silakan hubungi admin untuk informasi lebih lanjut.' }}', 'error')"
+                                type="button"
+                            >
                                 Ditolak
-                            </span>
+                            </button>
                         @elseif($refund->status === 'accepted')
                             <button
-                                class="bg-blue-500 text-white py-1 px-3 rounded-full text-sm focus:outline-none"
+                                class="bg-blue-500 text-white py-1 px-3 rounded text-sm hover:bg-blue-600 focus:outline-none"
                                 onclick="showAcceptedAlert({{ $refund->id }})"
                                 type="button"
                             >
                                 Diterima
                             </button>
                         @elseif($refund->status === 'completed')
-                            <span class="bg-green-500 text-white py-1 px-3 rounded-full text-sm">
+                            <span class="bg-green-500 text-white py-1 px-3 rounded text-sm">
                                 Selesai
                             </span>
                         @endif
-                    </td>
-                    <td class="p-3 border-b border-gray-200">
-                        {{ $refund->reject_reason ?: '-' }}
                     </td>
                 </tr>
                 @endforeach
@@ -500,6 +504,22 @@
 
     function downloadRefundInvoice(refundId) {
         window.open(`/orders/refund/invoice/${refundId}`, '_blank');
+    }
+
+    function showStatusAlert(title, message, icon) {
+        Swal.fire({
+            title: `<i class="fas fa-info-circle" style="color: ${icon === 'info' ? '#3b82f6' : '#ef4444'};"></i> ${title}`,
+            text: message,
+            icon: icon,
+            confirmButtonText: 'OK',
+            confirmButtonColor: icon === 'info' ? '#3b82f6' : '#ef4444',
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp'
+            }
+        });
     }
 </script>
 
