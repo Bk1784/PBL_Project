@@ -31,11 +31,12 @@ class OrderController extends Controller
 }
 
 
-    public function OrderDetails($id)
-    {
-        $order = Order::with('orderItems')->where('user_id', Auth::id())->findOrFail($id);
-        return view('customer.orders.order_details', compact('order'));
-    }
+    // public function OrderDetails($id)
+    // {
+    //     $order = Order::with('orderItems')->where('user_id', Auth::id())->findOrFail($id);
+    //     return view('customer.orders.order_details', compact('order'));
+    // }
+    
 
     public function CancelOrder($id)
     {
@@ -49,7 +50,6 @@ class OrderController extends Controller
 
         return redirect()->back()->with('error', 'Pesanan tidak bisa dibatalkan.');
     }
-
     public function ConfirmReceived($id)
     {
         $order = Order::where('id', $id)->where('user_id', Auth::id())->firstOrFail();

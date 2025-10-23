@@ -73,7 +73,9 @@ Route::middleware('customer')->group(function () {
     Route::controller(OrderController::class)->group(function () {
         Route::get('/orders', 'index')->name('customer.orders.all_orders');
         Route::post('/cash/order', 'CashOrder')->name('customer.orders.cash_order');
+        
         Route::get('/orders/{id}/details', 'OrderDetails')->name('customer.orders.details');
+        
         Route::post('/orders/{id}/cancel', 'CancelOrder')->name('customer.orders.cancel');
         Route::post('/orders/{id}/received', 'ConfirmReceived')->name('customer.orders.received');
         Route::get('/orders/{id}/invoice', 'downloadInvoice')->name('customer.orders.invoice');
@@ -105,7 +107,7 @@ require __DIR__ . '/auth.php';
 Route::middleware('admin')->group(function () {
     Route::get('/admin/manage_client', [AdminController::class, 'AdminManageClient'])->name('admin.manage_client');
     Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
-    Route::get('/admin/logout', [AdminController::class, 'AdminLogout'])->name('admin.logout');
+    Route::get('/admin/logout', [AdminController::class, 'AdminLogout'])->name('admin.logout');//
     Route::get('/admin/profile', [AdminController::class, 'AdminProfile'])->name('admin.profile');
     Route::get('/admin/edit_profile', [AdminController::class, 'AdminEditProfile'])->name('admin.edit.profile');
     Route::put('/admin/profile/update', [AdminController::class, 'AdminUpdateProfile'])->name('admin.update.profile');

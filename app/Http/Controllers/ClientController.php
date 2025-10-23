@@ -63,7 +63,7 @@ class ClientController extends Controller
             return redirect()->route('client.dashboard')->with('success', 'Login Successfully');
         } else {
             return redirect()->route('client.login')->with('error', 'Invalid Credentials');
-        }
+        }//
     }
 
     public function ClientLogout()

@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+//
 class CartController extends Controller
 {
     public function AddToCart($id){
@@ -35,72 +36,71 @@ class CartController extends Controller
 
     }
 
-    public function UpdateCartQuantity(Request $request) {
-        $cart = session()->get('cart', []);
-        $grandTotal = 0;
-        $totalItems = 0;
-    
-        if(isset($cart[$request->id])) {
-            // Update quantity
-            $cart[$request->id]['qty'] = $request->quantity;
-            
-            // Hitung ulang total
-            foreach($cart as $item) {
-                $grandTotal += $item['price'] * $item['qty'];
-                $totalItems += $item['qty'];
-            }
-            //
-            session()->put('cart', $cart);
-    
-            // Return JSON response
-            return response()->json([
-                'success' => true,
-                'price' => (float)$cart[$request->id]['price'],
-                'grandTotal' => (float)$grandTotal,
-                'totalItems' => (int)$totalItems,
-                'cart' => $cart,
-                'message' => 'Cart Updated Successfully'
-            ]);
-        }
-    
+        public function UpdateCartQuantity(Request $request)
+{
+    $request->validate([
+        'id' => 'required',
+        'quantity' => 'required|integer|min:1',
+    ]);
+
+    $cart = session()->get('cart', []);
+
+    if (!isset($cart[$request->id])) {
         return response()->json([
             'success' => false,
-            'message' => 'Item not found in cart'
+            'message' => 'Item not found in cart',
         ], 404);
     }
 
+    // Update quantity item
+    $cart[$request->id]['qty'] = $request->quantity;
 
-    public function CartRemove(Request $request)
-    {
+    // Hitung ulang total harga & item
+    $grandTotal = collect($cart)->sum(fn($item) => $item['price'] * $item['qty']);
+    $totalItems = collect($cart)->sum('qty');
+
+    session()->put('cart', $cart);
+
+    return response()->json([
+        'success' => true,
+        'price' => (float) $cart[$request->id]['price'],
+        'grandTotal' => (float) $grandTotal,
+        'totalItems' => (int) $totalItems,
+        'cart' => $cart,
+        'message' => 'Cart updated successfully',
+    ]);
+}
+
+    public function CartRemove(Request $request){
+        $request->validate([
+            'id' => 'required:integer|min:1',
+        ]);
+
         $cart = session()->get('cart', []);
-        $total = 0;
-        $totalItems = 0;
 
-        if(isset($cart[$request->id])) {
-            // Hapus item dari cart
+        if(isset($cart[$request->id])){
+
             unset($cart[$request->id]);
             session()->put('cart', $cart);
-
-            // Hitung ulang total
-            foreach($cart as $item) {
-                $total += $item['price'] * $item['qty'];
-                $totalItems += $item['qty'];
-            }
+            
+            $collection = collect($cart);
+            $grandTotal = $collection->sum(fn($item) => $item['price'] * $item['qty']);
+            $totalItems = $collection->sum('qty');
 
             return response()->json([
                 'success' => true,
-                'grandTotal' => $total,
-                'cartCount' => count($cart),
-                'message' => 'Item berhasil dihapus'
+                'grandTotal' => (float) $grandTotal,
+                'total_items' => (int) $totalItems,
+                'cart_count' => count($cart),
+                'message' => 'Item berhasil dihapus dari keranjang'
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Item tidak ditemukan'
+            'message' => 'Item tidak ditemukan di keranjang'
         ], 404);
     }
-
     public function CheckoutProduk(){
         if(Auth::check()){
             $cart = session()->get('cart', []);
