@@ -85,7 +85,18 @@
                 <p class="text-sm">0812-9876-5432</p>
             </div>
         </div>
-        <div class="text-center text-xs text-gray-600 mt-4">© 2025 Galaxy Store - All Rights Reserved.</div>
+                    <!-- Bagian copyright -->
+        <div class="flex flex-col md:flex-row items-center justify-center gap-3 text-xs text-gray-600">
+            <div class="flex items-center gap-2">
+                <img src="{{ asset('images/logo_poliwangi.png') }}" alt="Logo Poliwangi" class="w-8 h-8">
+                <span class="font-semibold">Politeknik Negeri Banyuwangi</span>
+            </div>
+            <span class="hidden md:inline">|</span>
+            <div class="flex items-center gap-2">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo Galaxy Store" class="w-8 h-8">
+                <span class="font-semibold">Galaxy Store</span>
+            </div>
+        </div>
     </div>
 
     <!-- END FOOTER -->

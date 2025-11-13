@@ -119,21 +119,35 @@
             <!-- Konten yang akan berubah -->
             @yield('content')
 
-            <!-- Footer -->
-            <div
-                class="bg-white text-gray-800 p-6 flex justify-between text-sm rounded-lg shadow-md mt-6 border border-gray-300">
-                <div>
-                    <h2 class="font-semibold text-lg">📍 Alamat</h2>
-                    <p class="text-gray-700">Galaxy Store, Srono</p>
+           <!-- Footer -->
+            <div class="bg-white text-gray-800 p-6 rounded-lg shadow-md mt-6 border border-gray-300">
+                <div class="flex flex-col md:flex-row justify-between text-sm">
+                    <div>
+                        <h2 class="font-semibold text-lg">📍 Alamat</h2>
+                        <p class="text-gray-700">Galaxy Store, Srono</p>
+                    </div>
+                    <div>
+                        <h2 class="font-semibold text-lg">📢 Ikuti Kami</h2>
+                        <p class="text-blue-500">Instagram</p>
+                        <p class="text-orange-500">Shopee</p>
+                    </div>
+                    <div>
+                        <h2 class="font-semibold text-lg">📞 Kontak Kami</h2>
+                        <p class="text-gray-700">0812-3456-7890</p>
+                    </div>
                 </div>
-                <div>
-                    <h2 class="font-semibold text-lg">📢 Ikuti Kami</h2>
-                    <p class="text-blue-500">Instagram</p>
-                    <p class="text-orange-500">Shopee</p>
-                </div>
-                <div>
-                    <h2 class="font-semibold text-lg">📞 Kontak Kami</h2>
-                    <p class="text-gray-700">0812-3456-7890</p>
+
+                <!-- Bagian logo di bawah -->
+                <div class="flex items-center justify-center gap-6 mt-4 text-xs text-gray-600">
+                    <div class="flex items-center gap-2">
+                        <img src="{{ asset('images/logo_poliwangi.png') }}" alt="Logo Poliwangi" class="w-8 h-8">
+                        <span class="font-semibold">Politeknik Negeri Banyuwangi</span>
+                    </div>
+                    <span class="text-gray-400">|</span>
+                    <div class="flex items-center gap-2">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo Galaxy Store" class="w-8 h-8">
+                        <span class="font-semibold">Galaxy Store</span>
+                    </div>
                 </div>
             </div>
         </div>
