@@ -139,6 +139,7 @@ class ClientController extends Controller
         return view('client.client_edit_profile', compact('client'));
     }
 
+    
     public function updateProfile(Request $request)
     {
         $client = Client::find(Auth::guard('client')->id());
@@ -153,25 +154,36 @@ class ClientController extends Controller
             'phone' => 'required|string|max:15',
             'address' => 'nullable|string',
             'bio' => 'nullable|string',
-            'photo' => 'nullable|image|max:2048'
+            'photo' => 'nullable|image|max:2048',
         ]);
 
+        // Proses upload foto ke folder public/upload/client_images
         if ($request->hasFile('photo')) {
-            $filePath = $request->file('photo')->store('client_photos', 'public'); //db
-            $validatedData['photo'] = $filePath;
+            $image = $request->file('photo');
+
+            // Buat nama file unik
+            $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+
+            // Tentukan path tujuan
+            $destinationPath = public_path('upload/client_images');
+
+            // Pindahkan file ke folder public/upload/client_images
+            $image->move($destinationPath, $filename);
+
+            // Simpan path relatif ke database (agar bisa diakses lewat URL)
+            $validatedData['photo'] = 'upload/client_images/' . $filename;
         }
 
+        // Update data client
         $client->fill($validatedData);
 
         if ($client->isDirty()) {
-            $client->update($validatedData);
             $client->save();
             return redirect()->route('client.profile')->with('success', 'Profil berhasil diperbarui!');
         }
 
         return redirect()->route('client.profile')->with('info', 'Tidak ada perubahan pada profil.');
     }
-
 
     public function ClientPesanan()
     {

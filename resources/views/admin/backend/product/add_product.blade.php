@@ -21,7 +21,8 @@
         <div class="flex flex-col md:flex-row gap-6">
             <!-- Bagian Foto Produk -->
             <div class="w-full md:w-1/3 text-center">
-                <img id="productPreview" src="#"
+                <img id="productPreview"
+                    src="{{ isset($product) && $product->image ? asset($product->image) : asset('upload/no_image.jpg') }}"
                     alt="Product Image"
                     class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300 object-cover">
 

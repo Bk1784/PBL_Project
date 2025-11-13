@@ -47,7 +47,7 @@
                 <button type="submit" class="bg-gray-300 text-black font-bold py-3 rounded-xl w-full mt-4 hover:bg-gray-400">Sign Up</button>
             </div>
             <div class="w-1/2 flex justify-center items-center p-4">
-                <img src="{{ asset('images/logo.jpg') }}" alt="Profile Image" class="w-full max-w-[150px] rounded-2xl object-cover">
+                <img src="{{ asset('images/logo.png') }}" alt="Profile Image" class="w-full max-w-[150px] rounded-2xl object-cover">
             </div>
         </div>
     </form>

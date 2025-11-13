@@ -255,9 +255,10 @@
                     <div class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden shrink-0">
                         <a href="{{ route('admin.profile') }}" class="block">
                             @php
-                            $admin = Auth::guard('admin')->user();
-                            $photo = $admin && $admin->photo ? 'storage/' . $admin->photo :
-                            'profile_photos/default.jpg';
+                                $admin = Auth::guard('admin')->user();
+                                $photo = $admin && $admin->photo
+                                    ? $admin->photo
+                                    : 'upload/no_image.jpg'; // default foto jika belum ada
                             @endphp
                             <img src="{{ asset($photo) }}" alt="Profile" class="w-full h-full object-cover">
                         </a>

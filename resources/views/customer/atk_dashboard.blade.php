@@ -15,7 +15,7 @@
                 @foreach ($products as $product)
                 <div class="p-2 bg-white rounded-lg shadow hover:scale-105 hover:shadow-md transform transition">
                     <a href="{{ route('detail_products', $product->id) }}" class="cursor-pointer block h-full">
-                        <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full h-20 object-cover rounded">
+                       <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="w-full h-20 object-cover rounded">
                         <h3 class="text-xs font-semibold mt-1 line-clamp-1">{{ $product->name }}</h3>
                         <p class="text-xs text-gray-500">⭐⭐⭐⭐☆ (4.5)</p>
                         <p class="text-xs font-bold text-blue-500">{{ $product->price }}</p>

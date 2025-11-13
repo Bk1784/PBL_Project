@@ -105,13 +105,13 @@
                     <div class="w-10 h-10 bg-gray-400 rounded-full overflow-hidden">
                         <a href="{{ route('client.profile') }}" class="block">
                             @php
-                            $client = Auth::guard('client')->user();
-                            $photo = $client && $client->photo ? 'storage/' . $client->photo :
-                            'profile_photos/default.jpg';
+                                $client = Auth::guard('client')->user();
+                                $photo = $client && $client->photo && file_exists(public_path($client->photo))
+                                    ? $client->photo
+                                    : 'upload/client_images/default.jpg';
                             @endphp
                             <img src="{{ asset($photo) }}" alt="Profile" class="w-full h-full object-cover">
                         </a>
-
                     </div>
                 </div>
             </div>

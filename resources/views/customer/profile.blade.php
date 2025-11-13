@@ -39,9 +39,12 @@ switch (type) {
     <div class="flex items-center gap-6">
         <!-- Foto Profil -->
         <div class="w-1/4 flex justify-center">
-            <img src="{{  asset('storage/' . $profileData->photo)}}"
-                alt="Profile Picture" class="rounded-full w-40 h-40 object-cover shadow-md">
+            <img 
+                src="{{ $profileData->photo ? asset($profileData->photo) : asset('upload/no_image.jpg') }}"
+                alt="Profile Picture"
+                class="rounded-full w-40 h-40 object-cover shadow-md border-2 border-gray-300">
         </div>
+
 
         <!-- Informasi Client (Grid) -->
         <div class="w-2/4 grid grid-cols-2 gap-4">

@@ -17,16 +17,17 @@
         @endif
 
         <div class="flex flex-col md:flex-row gap-6">
-            <!-- Bagian Foto Profil -->
-            <div class="w-full md:w-1/3 text-center">
-                <img id="profilePreview" src="{{ $client->photo ? asset('storage/' . $client->photo) : asset('default-avatar.png') }}"
-                    alt="Profile Picture"
-                    class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300">
+        <!-- Bagian Foto Profil -->
+        <div class="w-full md:w-1/3 text-center">
+            <img id="profilePreview"
+                src="{{ $client->photo && file_exists(public_path($client->photo)) ? asset($client->photo) : asset('upload/client_images/default-avatar.png') }}"
+                alt="Profile Picture"
+                class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300 object-cover">
 
-                <input type="file" name="photo" id="photoInput"
-                    class="mt-4 block w-full text-sm text-gray-600 border border-gray-300 rounded p-2"
-                    onchange="previewImage(event)">
-            </div>
+            <input type="file" name="photo" id="photoInput"
+                class="mt-4 block w-full text-sm text-gray-600 border border-gray-300 rounded p-2"
+                onchange="previewImage(event)">
+        </div>
 
             <!-- Bagian Form -->
             <div class="w-full md:w-2/3">

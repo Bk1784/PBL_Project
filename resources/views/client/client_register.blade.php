@@ -59,7 +59,7 @@
                     class="bg-gray-300 text-black font-bold py-3 rounded-xl w-full mt-4 hover:bg-gray-400">Submit</button>
             </div>
             <div class="w-1/2 flex justify-center items-center p-4">
-                <img src="{{ asset('images/logo.jpg') }}" alt="Profile Image"
+                <img src="{{ asset('images/logo.png') }}" alt="Profile Image"
                     class="w-full max-w-[150px] rounded-2xl object-cover">
             </div>
         </div>

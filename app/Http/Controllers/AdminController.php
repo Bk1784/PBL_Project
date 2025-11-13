@@ -130,36 +130,47 @@ class AdminController extends Controller
         return view('admin.admin_edit_profile', compact('admin'));
     }
 
-    public function AdminUpdateProfile(Request $request)
-    {
-        $admin = Auth::guard('admin')->user();
-    
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:admins,email,' . $admin->id,
-            'phone' => 'nullable|string|max:15',
-            'address' => 'nullable|string|max:255',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-    
-        // Update data
-        $admin->name = $request->name;
-        $admin->email = $request->email;
-        $admin->phone = $request->phone;
-        $admin->address = $request->address;
-    
-        // Handle foto profil /
-        if ($request->hasFile('photo')) {
-            if ($admin->photo) {
-                Storage::delete('public/' . $admin->photo);
-            }
-            $photoPath = $request->file('photo')->store('profile_photos', 'public');
-            $admin->photo = $photoPath;
+public function AdminUpdateProfile(Request $request)
+{
+    $admin = Auth::guard('admin')->user();
+
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:admins,email,' . $admin->id,
+        'phone' => 'nullable|string|max:15',
+        'address' => 'nullable|string|max:255',
+        'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
+
+    // Update data dasar
+    $admin->name = $request->name;
+    $admin->email = $request->email;
+    $admin->phone = $request->phone;
+    $admin->address = $request->address;
+
+    // ✅ Handle upload foto profil
+    if ($request->hasFile('photo')) {
+        // Hapus foto lama jika ada
+        if ($admin->photo && file_exists(public_path($admin->photo))) {
+            unlink(public_path($admin->photo));
         }
-        $admin->save();
-    
-        return redirect()->route('admin.profile')->with('success', 'Profil berhasil diperbarui.');
+
+        // Simpan foto baru ke folder public/upload/admin_images
+        $image = $request->file('photo');
+        $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+        $path = 'upload/admin_images/' . $name_gen;
+        $image->move(public_path('upload/admin_images'), $name_gen);
+
+        // Simpan path ke database (misal: upload/admin_images/nama.jpg)
+        $admin->photo = $path;
     }
+
+    $admin->save();
+
+    return redirect()->route('admin.profile')->with('success', 'Profil berhasil diperbarui.');
+}
+
+
 
     public function AdminManageClient(){
         return view('admin.manage_client');

@@ -18,37 +18,50 @@ class CustomerController extends Controller
     }
 
     public function ProfileStore(Request $request)
-    {
-        $id = Auth::user()->id;
-        $data = User::find($id);
+{
+    $id = Auth::user()->id;
+    $data = User::find($id);
 
-        $data->name = $request->name;
-        $data->email = $request->email;
-        $data->phone = $request->phone;
-        $data->address = $request->address;
+    $data->name = $request->name;
+    $data->email = $request->email;
+    $data->phone = $request->phone;
+    $data->address = $request->address;
 
-        $oldPhotoPath = $data->photo;
+    $oldPhotoPath = $data->photo;
 
-        if ($request->hasFile('photo')) {
-            // simpan ke storage/app/public/user_images
-            $filePath = $request->file('photo')->store('customer_photos', 'public');
-            $data->photo = $filePath;
+    if ($request->hasFile('photo')) {
+        $file = $request->file('photo');
+        $filename = date('YmdHis') . '_' . $file->getClientOriginalName();
+        $uploadPath = public_path('upload/user_images');
 
-            // hapus foto lama jika ada
-            if ($oldPhotoPath && Storage::disk('public')->exists($oldPhotoPath)) {
-                Storage::disk('public')->delete($oldPhotoPath);
-            }
+        // buat folder jika belum ada
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
         }
 
-        $data->save();
+        // pindahkan file ke folder public/upload/user_images
+        $file->move($uploadPath, $filename);
 
-        $notification = array(
-            'message' => 'Profile Updated Successfully',
-            'alert-type' => 'success'
-        );
+        // simpan path relatif ke database
+        $data->photo = 'upload/user_images/' . $filename;
 
-        return redirect()->route('customer.profile')->with($notification);
+        // hapus foto lama jika ada
+        if ($oldPhotoPath && file_exists(public_path($oldPhotoPath))) {
+            unlink(public_path($oldPhotoPath));
+        }
     }
+
+    $data->save();
+
+    $notification = [
+        'message' => 'Profile Updated Successfully',
+        'alert-type' => 'success'
+    ];
+
+    return redirect()->route('customer.profile')->with($notification);
+}
+
+
     private function deleteOldImage(string $oldPhotoPath): void
     {
         $fullPath = public_path('storage/app/public/customer_photos/' . $oldPhotoPath);

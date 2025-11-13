@@ -23,7 +23,7 @@
         <div class="flex flex-col md:flex-row gap-6">
             <!-- Product Image Section -->
             <div class="w-full md:w-1/3 text-center">
-                <img id="productPreview" src="{{ $product->image ? asset('upload/product/' . $product->image) : '#' }}"
+                <img id="productPreview"  src="{{ asset($product->image) }}" alt="{{ $product->name }}"
                     alt="Product Image"
                     class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300 object-cover">
 

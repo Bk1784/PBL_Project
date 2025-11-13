@@ -6,10 +6,10 @@
     <div class="flex items-center gap-6">
         <!-- Foto Profil -->
         <div class="w-1/4 flex justify-center">
-            <img src="{{ asset('storage/' . $client->photo) }}" alt="Profile Picture"
-                class="rounded-full w-40 h-40 object-cover shadow-md">
+            <img src="{{ $client->photo && file_exists(public_path($client->photo)) ? asset($client->photo) : asset('upload/client_images/default-avatar.png') }}"
+                alt="Profile Picture"
+                class="rounded-full w-40 h-40 object-cover shadow-md border border-gray-300">
         </div>
-
 
         <!-- Informasi Client (Grid) -->
         <div class="w-2/4 grid grid-cols-2 gap-4">

@@ -215,11 +215,13 @@
                             $profileData = App\Models\User::find($id);
                             @endphp
 
-                            <a href="{{ route('customer.profile') }}"
-                                class="block">
-                                <img src="{{'storage/' . $profileData->photo}}"
-                                    alt="Profile" class="w-full h-full object-cover">
+                            <a href="{{ route('customer.profile') }}" class="block">
+                                <img 
+                                    src="{{ $profileData->photo ? asset($profileData->photo) : asset('upload/no_image.jpg') }}"
+                                    alt="Profile"
+                                    class="w-full h-full object-cover rounded-full border border-gray-300 shadow-sm">
                             </a>
+
                         </div>
                     </div>
                 </div>

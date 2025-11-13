@@ -14,7 +14,9 @@
                         @csrf
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="text-center">
-                                <img src="{{ asset('storage/' . $admin->photo) }}" alt="Profile Picture" class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300">
+                                <img src="{{ $admin->photo ? asset($admin->photo) : asset('upload/no_image.jpg') }}"
+                                    alt="Profile Picture"
+                                    class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300 object-cover">
                                 <input type="file" name="photo" class="mt-4 block w-full text-sm text-gray-600 border border-gray-300 rounded p-2">
                             </div>
                             <div class="col-span-2">

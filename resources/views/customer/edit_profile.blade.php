@@ -21,16 +21,24 @@
         @endif
 
         <div class="flex flex-col md:flex-row gap-6">
-            <!-- Bagian Foto Profil -->
-            <div class="w-full md:w-1/3 text-center">
-                <img id="profilePreview"
-                    src="{{ asset('storage/' . $profileData->photo) }}"
-                    alt="Profile Picture" class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300">
+        <!-- Bagian Foto Profil -->
+        <div class="w-full md:w-1/3 text-center">
+            <img 
+                id="profilePreview"
+                src="{{ $profileData->photo ? asset($profileData->photo) : asset('upload/no_image.jpg') }}"
+                alt="Profile Picture"
+                class="w-36 h-36 rounded-full mx-auto border-2 border-gray-300 object-cover shadow-md">
 
-                <input type="file" name="photo" id="photoInput"
-                    class="mt-4 block w-full text-sm text-gray-600 border border-gray-300 rounded p-2"
-                    onchange="previewImage(event)">
-            </div>
+            <input 
+                type="file" 
+                name="photo" 
+                id="photoInput"
+                class="mt-4 block w-full text-sm text-gray-600 border border-gray-300 rounded p-2 focus:ring focus:ring-blue-200"
+                onchange="previewImage(event)">
+        </div>
+
+
+
 
             <!-- Bagian Form -->
             <div class="w-full md:w-2/3">
@@ -66,6 +74,7 @@
             </div>
         </div>
     </form>
+    
 
     <!-- Tambahkan script SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
