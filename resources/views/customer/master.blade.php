@@ -37,10 +37,11 @@
 
             <div class="flex space-x-4 overflow-x-auto p-4 bg-gray-200 rounded-lg">
             <!-- Produk 1 -->
-             <a href="">
+
+             <a href=""> 
 
                  <div class="w-48 p-4 bg-gray-100 rounded-lg shadow-md flex-none">
-                     <img src="{{ asset('asset/image1.png') }}" alt="Produk 1" class="w-full h-24 object-cover rounded">
+                     <img src="{{ asset('asset/pulpen.png') }}" alt="Produk 1" class="w-full h-24 object-cover rounded">
                      <h3 class="text-sm font-semibold mt-2">Pulpen Hitam</h3>
                      <p class="text-xs text-gray-500">⭐⭐⭐⭐☆ (4.5)</p>
                      <p class="text-sm font-bold text-blue-500">Rp5.000</p>
@@ -49,7 +50,7 @@
             
             <!-- Produk 2 -->
             <div class="w-48 p-4 bg-gray-100 rounded-lg shadow-md flex-none">
-                <img src="{{ asset('asset/image2.png') }}" alt="Produk 2" class="w-full h-24 object-cover rounded">
+                <img src="{{ asset('asset/buku_catatan.png') }}" alt="Produk 2" class="w-full h-24 object-cover rounded">
                 <h3 class="text-sm font-semibold mt-2">Buku Catatan</h3>
                 <p class="text-xs text-gray-500">⭐⭐⭐⭐☆ (4.2)</p>
                 <p class="text-sm font-bold text-blue-500">Rp12.000</p>
@@ -57,15 +58,15 @@
             
             <!-- Produk 3 -->
             <div class="w-48 p-4 bg-gray-100 rounded-lg shadow-md flex-none">
-                <img src="{{ asset('asset/image3.png') }}" alt="Produk 3" class="w-full h-24 object-cover rounded">
+                <img src="{{ asset('asset/pensil.png') }}" alt="Produk 3" class="w-full h-24 object-cover rounded">
                 <h3 class="text-sm font-semibold mt-2">Pensil</h3>
                 <p class="text-xs text-gray-500">⭐⭐⭐⭐⭐ (5.0)</p>
-                <p class="text-sm font-bold text-blue-500">Rp25.000</p>
+                <p class="text-sm font-bold text-blue-500">Rp5.000</p>
             </div>
             
             <!-- Produk 4 -->
             <div class="w-48 p-4 bg-gray-100 rounded-lg shadow-md flex-none">
-                <img src="{{ asset('asset/image4.png') }}" alt="Produk 4" class="w-full h-24 object-cover rounded">
+                <img src="{{ asset('asset/krayon.png') }}" alt="Produk 4" class="w-full h-24 object-cover rounded">
                 <h3 class="text-sm font-semibold mt-2">Krayon</h3>
                 <p class="text-xs text-gray-500">⭐⭐⭐⭐ (4.0)</p>
                 <p class="text-sm font-bold text-blue-500">Rp8.000</p>
@@ -73,7 +74,7 @@
 
             <!-- Produk 5 -->
             <div class="w-48 p-4 bg-gray-100 rounded-lg shadow-md flex-none">
-                <img src="{{ asset('asset/image5.png') }}" alt="Produk 5" class="w-full h-24 object-cover rounded">
+                <img src="{{ asset('asset/penggaris.png') }}" alt="Produk 5" class="w-full h-24 object-cover rounded">
                 <h3 class="text-sm font-semibold mt-2">Penggaris</h3>
                 <p class="text-xs text-gray-500">⭐⭐⭐⭐ (4.0)</p>
                 <p class="text-sm font-bold text-blue-500">Rp8.000</p>
@@ -83,19 +84,36 @@
         </div>
 
             <!-- Footer -->
-            <div class="bg-white text-gray-800 p-6 flex justify-between text-sm rounded-lg shadow-md mt-6 border border-gray-300">
-                <div>
-                    <h2 class="font-semibold text-lg">📍 Alamat</h2>
-                    <p class="text-gray-700">Galaxy Store, Srono</p>
+            <div class="bg-white text-gray-800 p-6 rounded-lg shadow-md mt-6 border border-gray-300">
+                <!-- Bagian utama footer -->
+                <div class="flex flex-col md:flex-row justify-between text-sm mb-4">
+                    <div class="mb-4 md:mb-0">
+                        <h2 class="font-semibold text-lg">📍 Alamat</h2>
+                        <p class="text-gray-700">Galaxy Store, Srono</p>
+                    </div>
+                    <div class="mb-4 md:mb-0">
+                        <h2 class="font-semibold text-lg">📢 Ikuti Kami</h2>
+                        <div><p class="text-blue-500">Instagram</p> <p class="text-orange-500">Shopee</p> </div>
+                    </div>
+                    <div>
+                        <h2 class="font-semibold text-lg">📞 Kontak Kami</h2>
+                        <p class="text-gray-700">0812-3456-7890</p>
+                    </div>
                 </div>
-                <div>
-                    <h2 class="font-semibold text-lg">📢 Ikuti Kami</h2>
-                    <p class="text-blue-500">Instagram</p>
-                    <p class="text-orange-500">Shopee</p>
-                </div>
-                <div>
-                    <h2 class="font-semibold text-lg">📞 Kontak Kami</h2>
-                    <p class="text-gray-700">0812-3456-7890</p>
+
+                <hr class="my-4 border-gray-300">
+
+                <!-- Bagian copyright -->
+                <div class="flex flex-col md:flex-row items-center justify-center gap-3 text-xs text-gray-600">
+                    <div class="flex items-center gap-2">
+                        <img src="images/logo_poliwangi.png" alt="Logo Poliwangi" class="w-8 h-8">
+                        <span class="font-semibold">Politeknik Negeri Banyuwangi</span>
+                    </div>
+                    <span class="hidden md:inline">|</span>
+                    <div class="flex items-center gap-2">
+                        <img src="images/logo.png" alt="Logo Galaxy Store" class="w-8 h-8">
+                        <span class="font-semibold">Galaxy Store</span>
+                    </div>
                 </div>
             </div>
         </div>
