@@ -192,7 +192,7 @@
         <div class="evidence-section">
             <h3 class="section-title">Bukti Refund</h3>
             <div class="image-section">
-                <img src="{{ public_path('storage/' . $refund->refund_image) }}" height="150px" width="150px" alt="Refund Image">
+                <img src="{{ str_starts_with($refund->refund_image, 'upload/') ? asset($refund->refund_image) : asset('storage/' . $refund->refund_image) }}" height="150px" width="150px" alt="Refund Image">
             </div>
         </div>
         @endif

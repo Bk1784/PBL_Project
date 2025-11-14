@@ -36,7 +36,7 @@
                     <td class="p-3 border-b border-gray-200">
     <button
     class="bg-purple-500 text-white py-1 px-3 rounded text-sm hover:bg-purple-600"
-    onclick="showRefundReason('{{ $refund->refund_reason }}', '{{ asset('storage/' . $refund->refund_image) }}', '{{ $refund->refund_qty }}', {{ $refund->id }}, '{{ number_format($refund->orderItem->price ?? 0, 0, ',', '.') }}', '{{ number_format(($refund->refund_qty * ($refund->orderItem->price ?? 0)), 0, ',', '.') }}')">
+    onclick="showRefundReason('{{ $refund->refund_reason }}', '{{ $refund->refund_image ? (str_starts_with($refund->refund_image, 'upload/') ? asset($refund->refund_image) : asset('storage/' . $refund->refund_image)) : '' }}', '{{ $refund->refund_qty }}', {{ $refund->id }}, '{{ number_format($refund->orderItem->price ?? 0, 0, ',', '.') }}', '{{ number_format(($refund->refund_qty * ($refund->orderItem->price ?? 0)), 0, ',', '.') }}')">
     Lihat Detail
 </button>
 

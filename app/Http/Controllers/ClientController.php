@@ -354,7 +354,7 @@ class ClientController extends Controller
         return response()->json([
             'refund_reason' => $refund->refund_reason,
             'refund_qty' => $refund->refund_qty,
-            'refund_image' => $refund->refund_image ? asset('storage/' . $refund->refund_image) : null,
+            'refund_image' => $refund->refund_image ? asset('upload/' . $refund->refund_image) : null,
             'product_name' => $refund->orderItem->product->name,
             'user_name' => $refund->user->name,
             'created_at' => $refund->created_at->format('d F Y')

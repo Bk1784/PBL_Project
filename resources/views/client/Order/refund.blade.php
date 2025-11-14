@@ -73,7 +73,7 @@
                                     class="bg-purple-500 hover:bg-purple-600 text-white py-1 px-3 rounded text-sm evaluasi-btn"
                                     data-refund-id="{{ $refund->id }}"
                                     data-refund-reason="{{ $refund->refund_reason }}"
-                                    data-refund-image="{{ $refund->refund_image ? Storage::url($refund->refund_image) : '' }}"
+                                    data-refund-image="{{ $refund->refund_image ? (str_starts_with($refund->refund_image, 'upload/') ? asset($refund->refund_image) : asset('storage/' . $refund->refund_image)) : '' }}"
                                     data-refund-qty="{{ $refund->refund_qty }}"
                                     data-product-name="{{ $refund->orderItem->product->name ?? 'N/A' }}">
                                     Evaluasi
@@ -83,10 +83,10 @@
                             </div>
                         @elseif($refund->status === 'accepted')
                             <div class="flex space-x-2">
-                                <button type="button" class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded text-sm accept-btn"
+                            <button type="button" class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded text-sm accept-btn"
                                         data-refund-id="{{ $refund->id }}"
                                         data-refund-reason="{{ $refund->refund_reason }}"
-                                        data-refund-image="{{ $refund->refund_image ? Storage::url($refund->refund_image) : '' }}"
+                                        data-refund-image="{{ $refund->refund_image ? (str_starts_with($refund->refund_image, 'upload/') ? asset($refund->refund_image) : asset('storage/' . $refund->refund_image)) : '' }}"
                                         data-refund-qty="{{ $refund->refund_qty }}"
                                         data-product-name="{{ $refund->orderItem->product->name ?? 'N/A' }}"
                                         data-refund-amount="{{ ($refund->orderItem->price ?? 0) * $refund->refund_qty }}">
